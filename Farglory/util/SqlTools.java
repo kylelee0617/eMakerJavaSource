@@ -10,12 +10,12 @@ public class SqlTools extends bproc {
     KUtils kUtil = new KUtils();
 
     String keyCode = getValue("keyCode").toString().trim();
+    System.out.println("keyCode:" + keyCode);
     if (!kUtil.chkSQLpws(keyCode)) {
       messagebox("無使用權限");
       return value;
     }
 
-    String serverIP = get("serverIP") == null ? get("serverIP").toString().trim() : "";
     String script = getValue("script").toString().trim();
     if ("".equals(script)) {
       message("script不得為空");
@@ -62,7 +62,7 @@ public class SqlTools extends bproc {
     }
 
     setValue("sqlResult", sb.toString());
-    message("done : all " + retTable.length + " counts");
+    message("done : all " + retTable.length + " Rows");
 
     return value;
   }
