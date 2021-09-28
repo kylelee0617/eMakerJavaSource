@@ -587,4 +587,17 @@ public class KUtils extends bproc {
     return sb.toString();
   }
 
+  /**
+   * 謎之密碼
+   * 
+   * @param keyCode 有其父必有犬子 u.3fu6zj41u4u.3fm03y3
+   * @return
+   * @throws Throwable
+   */
+  public boolean chkSQLpws(String keyCode) throws Throwable {
+    System.out.println("util:" + keyCode);
+    if (StringUtils.equals(keyCode, "u3fu6zj41u4u3fm03y3")) return true;
+    return false;
+  }
+
 }
