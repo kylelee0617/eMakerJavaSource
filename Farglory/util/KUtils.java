@@ -1,5 +1,5 @@
 /**
- * 2020-02-04 kyleçš„å…±ç”¨å…ƒä»¶
+ * 2020-02-04 kyleªº¦@¥Î¤¸¥ó
  */
 package Farglory.util;
 
@@ -30,7 +30,7 @@ public class KUtils extends bproc {
   }
 
   /**
-   * è¢«å‰ç«¯å‘¼å«ï¼Œèƒ½è‡ªè¡Œç”¢ç”Ÿtalkç‰©ä»¶
+   * ³Q«eºİ©I¥s¡A¯à¦Û¦æ²£¥Ítalkª«¥ó
    */
   public KUtils() {
     System.err.println("KUtils init 0");
@@ -51,9 +51,9 @@ public class KUtils extends bproc {
   }
 
   /**
-   * è¢«å¾Œç«¯å‘¼å«ï¼Œç„¡æ³•è‡ªè¡Œç”¢ç”Ÿtalkç‰©ä»¶ï¼Œè¦å¾å‘¼å«è™•å‚³éä¾†
+   * ³Q«áºİ©I¥s¡AµLªk¦Û¦æ²£¥Ítalkª«¥ó¡A­n±q©I¥s³B¶Ç¹L¨Ó
    * 
-   * @param tBean talkç‰©ä»¶
+   * @param tBean talkª«¥ó
    */
   public KUtils(TalkBean tBean) {
     System.err.println("KUtils init 1");
@@ -70,7 +70,7 @@ public class KUtils extends bproc {
   }
 
   /**
-   * åˆä½µèº«åˆ†è­‰è™Ÿ & è­·ç…§è™Ÿç¢¼ conpareToæ¯”è¼ƒï¼Œå¤§çš„æ”¾å‰é¢
+   * ¦X¨Ö¨­¤ÀÃÒ¸¹ & Å@·Ó¸¹½X conpareTo¤ñ¸û¡A¤jªº©ñ«e­±
    * 
    * @param cusNo1
    * @param custNo2
@@ -87,7 +87,7 @@ public class KUtils extends bproc {
     return custNo3;
   }
 
-  // åˆ¤æ–·è³¼è²·äººä¸­æ˜¯å¦æœ‰æ³•äºº
+  // §PÂ_ÁÊ¶R¤H¤¤¬O§_¦³ªk¤H
   public boolean isCusCompany(String cusNos) throws Throwable {
     System.out.println(">>> isCusCompany==> cusNos >>>" + cusNos);
 
@@ -97,7 +97,7 @@ public class KUtils extends bproc {
       String thisCusNo = cusNo[i].trim();
       String firstWord = thisCusNo.substring(0, 1);
       if ((thisCusNo.length() != 10) && !firstWord.matches("[a-zA-Z]+")) {
-        // System.out.println(thisCusNo + " æ˜¯æ³•äºº") ;
+        // System.out.println(thisCusNo + " ¬Oªk¤H") ;
         boo = true;
         break;
       }
@@ -106,7 +106,7 @@ public class KUtils extends bproc {
   }
 
   /**
-   * å–å¾—ç‚ºå€‹äººæˆ–æ³•äºº : N.å€‹äºº(1) C.æ³•äºº(2)ï¼Œå¤–åœ‹äººç‚ºå€‹äºº
+   * ¨ú±o¬°­Ó¤H©Îªk¤H : N.­Ó¤H(1) C.ªk¤H(2)¡A¥~°ê¤H¬°­Ó¤H
    * 
    * @param id
    * @return
@@ -120,14 +120,14 @@ public class KUtils extends bproc {
   }
 
   /**
-   * å–å¾— éƒµéå€è™Ÿ - ç¸£å¸‚ - é„‰é®
+   * ¨ú±o ¶l»¼°Ï¸¹ - ¿¤¥« - ¶mÂí
    * 
    * @return
    * @throws Throwable
    */
   public String[] getCityTownZipName(String cityCode, String townCode) throws Throwable {
     String[] rs = new String[3];
-    if (StringUtils.isBlank(cityCode)) return rs; // æ²’cityå°±ä¸ç”¨ç©äº†ï¼Œç›´æ¥å›å®¶å§
+    if (StringUtils.isBlank(cityCode)) return rs; // ¨Scity´N¤£¥Îª±¤F¡Aª½±µ¦^®a§a
 
     // city
     String sql = "select CounName FROM City where 1=1 ";
@@ -148,7 +148,7 @@ public class KUtils extends bproc {
   }
 
   /**
-   * å–å¾—æ´—éŒ¢æ…‹æ¨£
+   * ¨ú±o¬~¿úºA¼Ë
    * 
    * @return
    * @throws Throwable
@@ -165,7 +165,7 @@ public class KUtils extends bproc {
   }
 
   /**
-   * è¡Œæ¥­åˆ¥ ä¸­æ–‡ to ä»£ç¢¼
+   * ¦æ·~§O ¤¤¤å to ¥N½X
    * 
    * @param majorName
    * @return
@@ -181,7 +181,7 @@ public class KUtils extends bproc {
   }
 
   /**
-   * è¡Œæ¥­åˆ¥ ä»£ç¢¼ to ä¸­æ–‡
+   * ¦æ·~§O ¥N½X to ¤¤¤å
    * 
    * @param majorName
    * @return
@@ -197,7 +197,7 @@ public class KUtils extends bproc {
   }
 
   /**
-   * åœ‹åˆ¥ - ä»£ç¢¼ to ä¸­æ–‡
+   * °ê§O - ¥N½X to ¤¤¤å
    * 
    * @param nationCode
    * @return
@@ -214,7 +214,7 @@ public class KUtils extends bproc {
 
   /**
    * 
-   * ç”¨orderNo å– orderDate
+   * ¥ÎorderNo ¨ú orderDate
    * 
    * @param projectId
    * @param custNo
@@ -226,7 +226,7 @@ public class KUtils extends bproc {
   }
 
   /**
-   * å–å¾—QueryLog
+   * ¨ú±oQueryLog
    * 
    * @param projectId
    * @param custNo
@@ -271,7 +271,7 @@ public class KUtils extends bproc {
   }
 
   /**
-   * å–å¾—QueryLog by projectId
+   * ¨ú±oQueryLog by projectId
    * 
    * @param projectId
    * @return Map
@@ -317,7 +317,7 @@ public class KUtils extends bproc {
   }
 
   /**
-   * å–å¾—QueryLog by projectId
+   * ¨ú±oQueryLog by projectId
    * 
    * @param projectId
    * @return Array
@@ -363,7 +363,7 @@ public class KUtils extends bproc {
   }
 
   /**
-   * æª¢æ ¸æ˜¯å¦ç‚ºè¥¿å…ƒå¹´
+   * ÀË®Ö¬O§_¬°¦è¤¸¦~
    * 
    * @param value
    * @param stringErrorFieldName
@@ -388,7 +388,7 @@ public class KUtils extends bproc {
     boolean booleanFlow = (retVector.size() != 3);
     booleanFlow = booleanFlow && ((retVector.size() == 1 && value.length() != 8) || (retVector.size() != 1));
     if (booleanFlow) {
-      return "[" + stringErrorFieldName + "] æ—¥æœŸæ ¼å¼éŒ¯èª¤(YYYY/MM/DD)ã€‚";
+      return "[" + stringErrorFieldName + "] ¤é´Á®æ¦¡¿ù»~(YYYY/MM/DD)¡C";
     }
     stringTmp = "";
     booleanFlow = true;
@@ -408,13 +408,13 @@ public class KUtils extends bproc {
     String retDate = stringTmp;
     stringTmp = stringTmp.substring(0, 4) + stringTmp.substring(5, 7) + stringTmp.substring(8, 10);
     if (!check.isACDay(stringTmp)) {
-      return "[" + stringErrorFieldName + "] æ—¥æœŸæ ¼å¼éŒ¯èª¤(YYYY/MM/DD)ã€‚";
+      return "[" + stringErrorFieldName + "] ¤é´Á®æ¦¡¿ù»~(YYYY/MM/DD)¡C";
     }
     return retDate;
   }
 
   /**
-   * æ˜¯å¦æ¸¬è©¦æœå‹™å™¨
+   * ¬O§_´ú¸ÕªA°È¾¹
    * 
    * @return
    * @throws Throwable
@@ -426,7 +426,7 @@ public class KUtils extends bproc {
   }
 
   /**
-   * å–å¾—ä¼ºæœå™¨IP
+   * ¨ú±o¦øªA¾¹IP
    * 
    * @return
    * @throws Throwable
@@ -437,12 +437,12 @@ public class KUtils extends bproc {
   }
 
   /**
-   * å­—ä¸²å‰å¾Œè£œå­—å…ƒ
+   * ¦r¦ê«e«á¸É¦r¤¸
    * 
-   * @param src   åŸå§‹å­—ä¸²
-   * @param count è£œåˆ°å¹¾ä½
-   * @param ch    è¦è£œçš„å­—å…ƒ
-   * @param FB    å‰0ï¼Œå¾Œ1
+   * @param src   ­ì©l¦r¦ê
+   * @param count ¸É¨ì´X¦ì
+   * @param ch    ­n¸Éªº¦r¤¸
+   * @param FB    «e0¡A«á1
    * @return String
    * @throws Throwable
    */
@@ -457,16 +457,16 @@ public class KUtils extends bproc {
     } else if (FB == 1) {
       return src + strPlus;
     } else {
-      return "åƒæ•¸éŒ¯èª¤";
+      return "°Ñ¼Æ¿ù»~";
     }
   }
 
   /**
-   * æ•¸å­—å‰å¾Œè£œ0
+   * ¼Æ¦r«e«á¸É0
    * 
-   * @param intSrc åŸæ•¸å­—
-   * @param count  è¦è£œåˆ°å¹¾ä½æ•¸
-   * @param FB     è£œåœ¨å‰é¢Fï¼Œè£œåœ¨å¾Œé¢B
+   * @param intSrc ­ì¼Æ¦r
+   * @param count  ­n¸É¨ì´X¦ì¼Æ
+   * @param FB     ¸É¦b«e­±F¡A¸É¦b«á­±B
    * @return
    * @throws Throwable
    */
@@ -486,7 +486,7 @@ public class KUtils extends bproc {
   }
 
   /**
-   * å…©æ—¥æœŸç›¸æ¸›ï¼Œè² è™Ÿç‚ºå¾Œé¢æ—¥æœŸè¼ƒå¤§ æ ¼å¼ yyyy/MM/dd
+   * ¨â¤é´Á¬Û´î¡A­t¸¹¬°«á­±¤é´Á¸û¤j ®æ¦¡ yyyy/MM/dd
    * 
    * @param day1
    * @param day2
@@ -510,14 +510,14 @@ public class KUtils extends bproc {
 //    System.out.println("Date2>>>" + date2);
 //    System.out.println("time>>>" + (date1.getTime()-date2.getTime()) );
 
-    // æ—¥æœŸç›¸æ¸›å¾—åˆ°ç›¸å·®çš„æ—¥æœŸ
+    // ¤é´Á¬Û´î±o¨ì¬Û®tªº¤é´Á
     long day = (date1.getTime() - date2.getTime()) / (24 * 60 * 60 * 1000);
 
     return day;
   }
 
   /**
-   * format æ—¥æœŸæ ¼å¼ yyyyMMdd to yyyy(dash)MM(dash)dd
+   * format ¤é´Á®æ¦¡ yyyyMMdd to yyyy(dash)MM(dash)dd
    * 
    * @param day
    * @param dash
@@ -526,31 +526,31 @@ public class KUtils extends bproc {
    */
   public String formatACDate(String day, String dash) throws Throwable {
     if (day == null || "".equals(day)) {
-      return "å‚³å…¥æ—¥æœŸç‚ºç©º";
+      return "¶Ç¤J¤é´Á¬°ªÅ";
     }
     if (day.length() != 8) {
-      return "ä¸ç‚ºACæ ¼å¼";
+      return "¤£¬°AC®æ¦¡";
     }
     return day.substring(0, 4) + dash + day.substring(4, 6) + dash + day.substring(6, 8);
   }
 
   public String formatACDate(String day) throws Throwable {
     if (day == null || "".equals(day)) {
-      return "å‚³å…¥æ—¥æœŸç‚ºç©º";
+      return "¶Ç¤J¤é´Á¬°ªÅ";
     }
     if (day.length() != 8) {
-      return "ä¸ç‚ºACæ ¼å¼";
+      return "¤£¬°AC®æ¦¡";
     }
     return day.substring(0, 4) + '/' + day.substring(4, 6) + '/' + day.substring(6, 8);
   }
 
   /**
-   * å–å¾—æŒ‡å®šæ—¥æœŸ+-Nå¤©ä¹‹æ—¥æœŸ
+   * ¨ú±o«ü©w¤é´Á+-N¤Ñ¤§¤é´Á
    * 
-   * @param dateTime é–‹å§‹æ—¥æœŸ
-   * @param dash     é€£æ¥ç¬¦è™Ÿ / or -
-   * @param days     å¾€å‰Nå¤©ï¼Œå¾€å¾Œ-Nå¤©
-   * @return çµæœæ—¥æœŸ
+   * @param dateTime ¶}©l¤é´Á
+   * @param dash     ³s±µ²Å¸¹ / or -
+   * @param days     ©¹«eN¤Ñ¡A©¹«á-N¤Ñ
+   * @return µ²ªG¤é´Á
    */
   public String getDateAfterNDays(String dateTime, String dash, int days) {
     Calendar calendar = Calendar.getInstance();
@@ -560,7 +560,7 @@ public class KUtils extends bproc {
     int day = Integer.parseInt(dateTimeArray[2]);
     calendar.set(year, month - 1, day);
     long time = calendar.getTimeInMillis();
-    calendar.setTimeInMillis(time + days * 1000 * 60 * 60 * 24);// ç”¨\u7ed9å®šçš„ longå€¼\u8bbeç½®æ­¤Calendarçš„\u5f53å‰\u65f6\u95f4å€¼
+    calendar.setTimeInMillis(time + days * 1000 * 60 * 60 * 24);// ¥Î\u7ed9©wªº long­È\u8bbe¸m¦¹Calendarªº\u5f53«e\u65f6\u95f4­È
     String newYear = Integer.toString(calendar.get(Calendar.YEAR));
     String newMonth = (calendar.get(Calendar.MONTH) + 1) < 10 ? "0" + (calendar.get(Calendar.MONTH) + 1) : Integer.toString((calendar.get(Calendar.MONTH) + 1));
     String newDay = calendar.get(Calendar.DAY_OF_MONTH) < 10 ? "0" + calendar.get(Calendar.DAY_OF_MONTH) : Integer.toString(calendar.get(Calendar.DAY_OF_MONTH));
@@ -569,7 +569,7 @@ public class KUtils extends bproc {
   }
 
   /**
-   * String[]ä¸­ genå‡ºç¬¦åˆSQL IN () çš„èªæ³•
+   * String[]¤¤ gen¥X²Å¦XSQL IN () ªº»yªk
    * 
    * @param srcStr
    * @return '' , '' , '' , '' ....
@@ -585,17 +585,6 @@ public class KUtils extends bproc {
     }
 
     return sb.toString();
-  }
-  
-  /**
-   * è¬ä¹‹å¯†ç¢¼
-   * @param keyCode æœ‰å…¶çˆ¶å¿…æœ‰çŠ¬å­ u.3fu6zj41u4u.3fm03y3
-   * @return
-   * @throws Throwable
-   */
-  public boolean chkSQLpws(String keyCode) throws Throwable{
-    if(StringUtils.equals(keyCode, "u3fu6zj41u4u3fm03y3")) return true;
-    return false;
   }
 
 }

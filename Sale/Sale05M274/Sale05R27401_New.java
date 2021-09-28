@@ -1320,7 +1320,7 @@ public class Sale05R27401_New extends bTransaction {
     }
     // **********************************************************************************************************************************
     for (int intRow = 0; intRow < retData.length; intRow++) {
-//      System.out.println(">>>retData : " + retData[intRow][0]);
+      System.out.println(">>>retData : " + retData[intRow][0]);
       objectSheetTemp = Dispatch.call(objectSheets, "Item", retData[intRow][0]).toDispatch();
       exeExcel.setProtect("Sale05R27401_New", objectSheetTemp);
     }

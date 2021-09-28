@@ -60,7 +60,7 @@ public class AMLyodsBean {
   private String modifyData = "Y";    // Y: 更新客戶資料, N: 不更新客戶資料，僅有查詢
   private String addCustomer = "Y";    // Y: 新增, N: 註銷
   private String addAccount = "Y";     // Y: 新增, N: 註銷
-  private String calculationCode = "1";     // 是否計算風險評分代碼，0: 不計算風險值但進行名單檢測 1: 計算風險值且進行名單檢測 2: 計算風險值但不進行名單檢測 3: 不計算風險值且不進行名單檢測
+  private String calculationCode = "1";     // 是否計算風險評分代碼0: 不計算風險值但進行名單檢測 1: 計算風險值且進行名單檢測 2: 計算風險值但不進行名單檢測 3: 不計算風險值且不進行名單檢測
   
   private boolean isTestServer = true;   // 是否為測試環境
   private boolean updSale05M091 = false;

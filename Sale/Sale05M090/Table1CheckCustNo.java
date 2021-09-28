@@ -23,12 +23,14 @@ public class Table1CheckCustNo extends bvalidate {
     System.out.println("getFunctionName>>>" + getFunctionName());
     System.out.println("POSITION>>>" + POSITION);
 
+//    value = value.trim();
     KSqlUtils kSqlUtil = new KSqlUtils();
     KUtils kUtil = new KUtils();
 
     JTable tb1 = getTable("table1");
     int sRow = tb1.getSelectedRow();
     int sColumn = tb1.getSelectedColumn();
+//    setValueAt("table1", value, sRow, "CustomNo");
 
     String custNo = "";
     String engNo = "";
@@ -82,6 +84,8 @@ public class Table1CheckCustNo extends bvalidate {
         }
       }
       
+//      setValueAt("table1", value, sRow, "CustomNo");
+
       // 取ID值
       custNo = value.trim();
       engNo = getValueAt("table1", sRow, "EngNo").toString();
@@ -90,6 +94,8 @@ public class Table1CheckCustNo extends bvalidate {
         messagebox("外國國籍須先行");
         return false;
       }
+      
+//      setValueAt("table1", value, sRow, "EngNo");
 
       // 取ID
       custNo = getValueAt("table1", sRow, "CustomNo").toString();

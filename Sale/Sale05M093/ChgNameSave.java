@@ -148,21 +148,20 @@ public class ChgNameSave extends bproc {
       strIsControlList = ("" + getValueAt("table2", i, "IsControlList")).trim();
       strIsLinked = ("" + getValueAt("table2", i, "IsLinked")).trim();
       String engName = getValueAt("table2", i, "EngName").toString().trim();
-      String engNo = getValueAt("table2", i, "EngNo").toString().trim();
       String countryName2 = getValueAt("table2", i, "CountryName2").toString().trim();
 
       if ("1".equals(stringChangeName)) {
 
         // ID空白
-        if ( StringUtils.isBlank(stringCustomNo) && StringUtils.isBlank(engNo) ) {
-          message("[統編/身份證號] 或 [護照證件號] 不可為空白。");
+        if ("".equals(stringCustomNo)) {
+          message("[統編/身份證號] 不可為空白。");
           jtable2.setRowSelectionInterval(i, i);
           return value;
         }
 
         // 訂戶姓名空白
-        if ( StringUtils.isBlank(stringCustomName) && StringUtils.isBlank(engName) ) {
-          message("[訂戶姓名] 或 [護照證件名] 不可為空白。");
+        if ("".equals(stringCustomName)) {
+          message("[訂戶姓名] 不可為空白。");
           jtable2.setRowSelectionInterval(i, i);
           return value;
         }
@@ -379,12 +378,12 @@ public class ChgNameSave extends bproc {
       // System.out.println("i2"+tb2_string[i][2]);
       if ("1".equals(stringChangeName)) {
         stringSQL = "INSERT  INTO Sale05M091  (OrderNo,RecordNo,auditorship,Nationality,CountryName, CustomNo,CustomName,Percentage,Birthday,MajorName, "
-            + "PositionName,ZIP,City,Town,Address,Cellphone,Tel,Tel2,eMail,IsBlackList,IsLinked,IsControlList,TrxDateDown, EngNo, EngName, CountryName2) " + "VALUES ('"
-            + stringOrderNo + "'," + "N'" + RecordNo + "', N'A'," + "N'" + stringNationality + "'," + "N'" + strCountryName + "'," + "N'" + stringCustomNo + "'," + "N'"
-            + stringCustomName + "'," + "N'" + stringPercent + "'," + "N'" + strBirthday + "'," + "N'" + strMajorName + "'," + "N'" + strPositionName + "', " + "N'" + stringZIP
-            + "', " + "N'" + stringCity + "' ," + "N'" + stringTown + "' ," + "N'" + stringAddress + "' ," + "N'" + strCellphone + "' ," + "N'" + stringTel + "' ," + "N'" + strTel2
-            + "' ," + "N'" + streMail + "' , " + "N'" + strIsBlackList + "' ," + "N'" + strIsLinked + "' ," + "N'" + strIsControlList + "' ," + "N'" + stringTrxDate + "', " + "N'"
-            + engNo + "', N'" + engName + "', N'" + countryName2 + "' ) ";
+            + "PositionName,ZIP,City,Town,Address,Cellphone,Tel,Tel2,eMail,IsBlackList,IsLinked,IsControlList,TrxDateDown, EngNo, EngName, CountryName2) " + "VALUES ('" + stringOrderNo + "'," + "N'" + RecordNo
+            + "', N'A'," + "N'" + stringNationality + "'," + "N'" + strCountryName + "'," + "N'" + stringCustomNo + "'," + "N'" + stringCustomName + "',"
+            + "N'" + stringPercent + "'," + "N'" + strBirthday + "'," + "N'" + strMajorName + "'," + "N'" + strPositionName + "', " + "N'" + stringZIP + "', " + "N'" + stringCity
+            + "' ," + "N'" + stringTown + "' ," + "N'" + stringAddress + "' ," + "N'" + strCellphone + "' ," + "N'" + stringTel + "' ," + "N'" + strTel2 + "' ," + "N'" + streMail + "' , " 
+            + "N'" + strIsBlackList + "' ," + "N'" + strIsLinked + "' ," + "N'" + strIsControlList + "' ," + "N'" + stringTrxDate + "', "
+            + "N'"+engNo+"', N'"+engName+"', N'"+countryName2+"' ) ";
         vectorSql.add(stringSQL);
         RecordNo = RecordNo + 1;
       }
@@ -484,8 +483,8 @@ public class ChgNameSave extends bproc {
         str91AgentIsBlackList = ("" + getValueAt("table6", k, "IsBlackList")).trim();
         str91AgentIsControlList = ("" + getValueAt("table6", k, "IsControlList")).trim();
         str91AgentIsLinked = ("" + getValueAt("table6", k, "IsLinked")).trim();
-        String aIdent = getValueAt("table6", k, "AIdent").toString().trim();
-
+		String aIdent = getValueAt("table6", k, "AIdent").toString().trim();
+		
         String getMapKey = getValueAt("table6", k, "CustomNo").toString().trim();
         int recordNo = k + maxRecordNo;
         stringCustomNo = tb2Map.get(getMapKey) == null ? "" : tb2Map.get(getMapKey).toString();
@@ -495,9 +494,9 @@ public class ChgNameSave extends bproc {
           message("請確認更新客戶名單及對應代理人是否正確!!");
           return value;
         }
-        stringSQL = " INSERT INTO Sale05M091Agent (OrderNo,RecordNo,CustomNo,AgentName,ACustomNo,CountryName,AgentRel,AgentReason,IsBlackList,IsControlList,IsLinked,AIdent ) "
+		stringSQL = " INSERT INTO Sale05M091Agent (OrderNo,RecordNo,CustomNo,AgentName,ACustomNo,CountryName,AgentRel,AgentReason,IsBlackList,IsControlList,IsLinked,AIdent ) "
             + " VALUES   (    " + "N'" + getValue("OrderNo") + "'," + "N'" + recordNo + "'," + "N'" + stringCustomNo + "'," + "N'" + str91AgentName + "'," + "N'" + str91ACustomNo
-            + "'," + "N'" + str91AgentCountryName + "'," + "N'" + str91AgentRel + "'," + "N'" + str91AgentReason + "'," + "N'" + str91AgentIsBlackList + "', " + "N'"
+            + "'," + "N'" + str91AgentCountryName + "'," + "N'" + str91AgentRel + "'," + "N'" + str91AgentReason + "'," + "N'" + str91AgentIsBlackList + "'," + "N'"
             + str91AgentIsControlList + "'," + "N'" + str91AgentIsLinked + "', N'"+aIdent+"' ) ";
         System.out.println(k + "------------------INSERT  Sale05M091Agent----------" + stringSQL);
         vectorSql.add(stringSQL);
@@ -529,7 +528,7 @@ public class ChgNameSave extends bproc {
     System.out.println("洗錢防治相關-------------------------------------S");
     // 21-05 Kyle : 更新主要客戶與關聯人
     getButton("RenewRelated").doClick();
-
+ 
     // 21-05 Kyle : 查詢客戶風險值
     getButton("CheckRiskNew").doClick();
 
@@ -539,6 +538,7 @@ public class ChgNameSave extends bproc {
     System.out.println("洗錢防治相關-------------------------------------E");
 
     messagebox("換名成功");
+
     return value;
   }
 

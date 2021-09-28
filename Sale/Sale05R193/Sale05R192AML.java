@@ -1,20 +1,20 @@
 // 20191001 Justin 整理/新增
 //20200107 Kyle 新增風險等級欄位
-
 package Sale.Sale05R193;
 
-import javax.swing.*;
-import jcx.jform.bproc;
-import java.io.*;
-import java.util.*;
-import jcx.util.*;
-import jcx.html.*;
-import jcx.db.*;
-import cLabel;
-import com.jacob.activeX.*;
-import com.jacob.com.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
+import com.jacob.com.ComThread;
+import com.jacob.com.Dispatch;
+
 import Farglory.util.FargloryUtil;
 import Farglory.util.MLPUtils;
+import jcx.db.talk;
+import jcx.jform.bproc;
+import jcx.util.convert;
 
 public class Sale05R192AML extends bproc {
   talk dbSale = getTalk("Sale");
@@ -27,8 +27,7 @@ public class Sale05R192AML extends bproc {
   int maxRow = 34;
 
   public String getDefaultValue(String value) throws Throwable {
-    if (!isBatchCheckOK())
-      return value;
+    if (!isBatchCheckOK()) return value;
     String[][] retSale05M080 = getSale05M080();
     if (retSale05M080.length == 0) {
       message("無收款資料 !");
@@ -64,7 +63,7 @@ public class Sale05R192AML extends bproc {
     Farglory.Excel.FargloryExcel exeFun = new Farglory.Excel.FargloryExcel(8, 34, mainList.size(), 1);
 
     // 吃sample檔路徑
-//    String stringPrintExcel = "G:\\kyleTest\\Excel\\Sale05R192_MLP.xls";
+    // String stringPrintExcel = "G:\\資訊室\\Excel\\Sale05R192.xls" ;
     String stringPrintExcel = "G:\\kyleTest\\Excel\\Sale05R192_AML.xls";
     // System.out.println(stringPrintExcel);
 
@@ -165,10 +164,10 @@ public class Sale05R192AML extends bproc {
           if (retSale05M086.length > 0 && retSale05M084.length > 0) {
             for (int intSale05M084 = 0; intSale05M084 < retSale05M084.length; intSale05M084++) {
               String thisCustomNo = retSale05M084[intSale05M084][1];
-              if(lastCustomNo.equals(thisCustomNo)) {
+              if (lastCustomNo.equals(thisCustomNo)) {
                 continue;
               }
-              
+
               if (intSale05M084 != 0) {
                 customName += "\n";
                 customNo += "\n";
@@ -177,7 +176,7 @@ public class Sale05R192AML extends bproc {
               customName += retSale05M084[intSale05M084][0];
               customNo += retSale05M084[intSale05M084][1];
               riskValue += retSale05M084[intSale05M084][2].trim();
-              
+
               lastCustomNo = thisCustomNo;
             }
           }
@@ -251,8 +250,7 @@ public class Sale05R192AML extends bproc {
         String[][] arrBeneficiary = mlpUtils.getCtrlBeneficiary(thisOrderNos, customNo);
         if (mlpUtils.isCusCompany(customNo)) {
           String tmpBen = mlpUtils.getBeneficiaryCtrlYN(projectID, queryLog, arrBeneficiary, "ctrl");
-          if (!"".equals(tmpBen))
-            realBeneficiary = tmpBen;
+          if (!"".equals(tmpBen)) realBeneficiary = tmpBen;
         }
         newRow[15] = realBeneficiary;
 
@@ -430,13 +428,11 @@ public class Sale05R192AML extends bproc {
   }
 
   public String[][] getSale05M084(String[] retSale05M080, String[][] retSale05M086) throws Throwable {
-    String sql = "SELECT  distinct T84.CustomName , T91.CustomNo , T91.riskValue , T91.StatusCd " 
-               + "FROM Sale05M084 T84 ,  Sale05M091 T91 " 
-               + "WHERE DocNo = '" + retSale05M080[0] + "' "
-               + "and T84.CustomNo = T91.CustomNo "
+    String sql = "SELECT  distinct T84.CustomName , T91.CustomNo , T91.riskValue , T91.StatusCd " + "FROM Sale05M084 T84 ,  Sale05M091 T91 " + "WHERE DocNo = '" + retSale05M080[0]
+        + "' " + "and T84.CustomNo = T91.CustomNo "
 //               +"and T91.OrderNo='"+ retSale05M086[0][0] +"' and ( (ISNULL(T91.TrxDate,'')<>'' and ISNULL(T91.TrxDate,'') > '"+ getValue("ReceiveDate") +"' ) or ISNULL(T91.TrxDate,'')='' ) ";
-               + "and T91.OrderNo='" + retSale05M086[0][0] + "' " + "and ( (ISNULL(T91.STatusCd,'') = 'C' and ISNULL(T91.TrxDate,'') > '" + getValue("ReceiveDate") + "')   or   ISNULL(T91.STatusCd,'') = '' ) "
-               + "order by T91.CustomNo , T91.StatusCd desc "; 
+        + "and T91.OrderNo='" + retSale05M086[0][0] + "' " + "and ( (ISNULL(T91.STatusCd,'') = 'C' and ISNULL(T91.TrxDate,'') > '" + getValue("ReceiveDate")
+        + "')   or   ISNULL(T91.STatusCd,'') = '' ) " + "order by T91.CustomNo , T91.StatusCd desc ";
 
     String retSale05M084[][] = dbSale.queryFromPool(sql);
     return retSale05M084;

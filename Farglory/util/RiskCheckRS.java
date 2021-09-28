@@ -2,18 +2,16 @@ package Farglory.util;
 
 import java.util.List;
 
-import com.fglife.soap.cr.MainReply;
-
 /**
- * è¨ˆç®—é¢¨éšªå€¼çµæœå›è¦†
+ * ­pºâ­·ÀI­Èµ²ªG¦^ÂĞ
  * 
  * @author B04391
  *
  */
 
 public class RiskCheckRS {
-  private String rsMsg = "";          //é¢¨éšªå€¼çµæœè¨Šæ¯
-  private List sendMailList = null;   //å¯„ç™¼EMAILè³‡è¨Š
+  private String rsMsg = "";    //­·ÀI­Èµ²ªG°T®§
+  private List sendMailList = null;   //±HµoEMAIL¸ê°T
   
   public String getRsMsg() {
     return rsMsg;
@@ -27,4 +25,5 @@ public class RiskCheckRS {
   public void setSendMailList(List sendMailList) {
     this.sendMailList = sendMailList;
   }
+
 }

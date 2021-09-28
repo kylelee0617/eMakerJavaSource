@@ -26,20 +26,20 @@ public class AML extends sproc {
     TalkBean tBean = new TalkBean();
     tBean.setDb400CRM(getTalk("400CRM"));
     tBean.setDbPw0D(getTalk("pw0d"));
-    tBean.setDbSale(getTalk("Sale")); 
+    tBean.setDbSale(getTalk("Sale"));
     tBean.setDbEIP(getTalk("EIP"));
 
 //  KUtils kUtil = new KUtils();
     KSqlUtils ksUtil = new KSqlUtils(tBean);
     Result rs = new Result();
     String stringSQL = "";
-    String errMsg = ""; 
+    String errMsg = "";
     String funcName = value.trim();
     String recordType = "";
     String actionName = getValue("actionText").trim();
     String projectId = "";
     String orderNo = "";
-    String orderDate = ""; 
+    String orderDate = "";
     if(StringUtils.contains(funcName, "購屋證明單")) {
       projectId = getValue("field1").trim();
       orderNo = getValue("field3").trim();
@@ -89,7 +89,7 @@ public class AML extends sproc {
         
         RiskCustomBean cBean = new RiskCustomBean();
         cBean.setCustTitle("客戶");
-        cBean.setCustomNo(custNo);      //身分證號
+        cBean.setCustomNo(custNo);      //身分證字號
         cBean.setEngNo(engNo);
         cBean.setCustomName(custName);    //姓名
         cBean.setEngName(engName);

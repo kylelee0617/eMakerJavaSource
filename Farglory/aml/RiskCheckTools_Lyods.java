@@ -230,7 +230,7 @@ public class RiskCheckTools_Lyods extends bvalidate {
         map.put("CHGNO", empNo);                    // 異動人員員編
         map.put("RTCOD", "");                       // 回覆碼
         map.put("INSN", "");                        // 客戶編號
-        boolean a = ra.invoke(as400init, cms00c, map);
+        boolean a = ra.invoke(as400init, cms00c, map);        
 //        System.out.println("RTCODE:" + ra.getResult()[22]);
         
         //Lyods GO

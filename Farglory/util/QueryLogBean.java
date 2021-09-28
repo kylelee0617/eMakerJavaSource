@@ -5,7 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import jcx.db.talk;
 
 /**
- * è¨ˆç®—é¢¨éšªå€¼ å¯¦è³ªå—ç›Šäººç‰©ä»¶
+ * ­pºâ­·ÀI­È ¹ê½è¨ü¯q¤Hª«¥ó
  * 
  * @author B04391
  *
@@ -284,7 +284,7 @@ public class QueryLogBean {
   }
 
   /**
-   * ä»¥IDæŸ¥å°æ‡‰å§“å è‹±æ–‡ORä¸­æ–‡
+   * ¥HID¬d¹ïÀ³©m¦W ­^¤åOR¤¤¤å
    * 
    * @param chkId
    * @return
@@ -301,7 +301,7 @@ public class QueryLogBean {
   }
   
   /**
-   * ä»¥IDæŸ¥å¦ä¸€å€‹å§“å
+   * ¥HID¬d¥t¤@­Ó©m¦W
    * 
    * @param chkId
    * @return
@@ -318,7 +318,7 @@ public class QueryLogBean {
   }
 
   /**
-   * ä»¥name æŸ¥å‡ºå°æ‡‰ID
+   * ¥Hname ¬d¥X¹ïÀ³ID
    * 
    * @param chkName
    * @return
@@ -335,7 +335,7 @@ public class QueryLogBean {
   }
   
   /**
-   * ä»¥nameæŸ¥å¦ä¸€å€‹ID
+   * ¥Hname¬d¥t¤@­ÓID
    * 
    * @param chkName
    * @return
@@ -352,7 +352,7 @@ public class QueryLogBean {
   }
 
   /**
-   * ä»¥IDæŸ¥å°æ‡‰åœ‹å®¶
+   * ¥HID¬d¹ïÀ³°ê®a
    * 
    * @param chkId
    * @return
@@ -369,7 +369,7 @@ public class QueryLogBean {
   }
   
   /**
-   * ä»¥IDæŸ¥å¦ä¸€åœ‹å®¶
+   * ¥HID¬d¥t¤@°ê®a
    * 
    * @param chkId
    * @return
@@ -386,7 +386,7 @@ public class QueryLogBean {
   }
   
   /**
-   * åœ‹åˆ¥æ˜¯å¦æœ‰å‘½ä¸­å…¶ä¸€
+   * °ê§O¬O§_¦³©R¤¤¨ä¤@
    * 
    * @param chkNtCode
    * @return

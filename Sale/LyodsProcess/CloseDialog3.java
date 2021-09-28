@@ -7,9 +7,11 @@ import jcx.jform.bproc;
 public class CloseDialog3 extends bproc {
   public String getDefaultValue(String value) throws Throwable {
 
-    JFrame jd = (JFrame) get("JD");
+    JFrame jd = (JFrame) get("JD3");
     System.out.println(">>>JD32:" + jd);
     jd.setVisible(false);
+	
+	
 
     return value;
   }

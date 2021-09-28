@@ -1,7 +1,7 @@
 package Farglory.util;
 
 /**
- * å…§å»ºå¯„ç™¼Emailç‰©ä»¶
+ * ¤º«Ø±HµoEmailª«¥ó
  * 
  * @author B04391
  *

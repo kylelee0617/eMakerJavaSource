@@ -49,7 +49,7 @@ public class CheckRiskNew extends jcx.jform.sproc {
     tBean.setDbPw0D(dbPw0d);
     KUtils kUtil = new KUtils(tBean);
     KSqlUtils kSqlUtil = new KSqlUtils(tBean);
-
+    
     String funcName = value;
     String recordType = "客戶風險值計算";
     String projectId = "";
@@ -75,8 +75,8 @@ public class CheckRiskNew extends jcx.jform.sproc {
       orderDate = kUtil.getOrderDateByOrderNo(orderNo);
       actionText = getValue("actionText").trim();
     }
-
-    // 建立AMLyodsBean物件
+    
+    //建立AMLyodsBean物件
     AMLyodsBean aBean = new AMLyodsBean();
     aBean.setProjectID1(projectId);
     aBean.setOrderNo(orderNo);
@@ -106,19 +106,42 @@ public class CheckRiskNew extends jcx.jform.sproc {
 
     // DB取出主要客戶名單
     RiskCustomBean[] cBeans = kSqlUtil.getCustomBean(projectId, orderNo);
-
-    // 建立風險值檢核物件
+/*    
+    String sql = "select CustomNo, CustomName, Birthday, ZIP, City, Town, Address, Tel, Tel2, CountryName, PositionName "
+        + "from Sale05M091 where orderNo = '" + orderNo + "' and ISNULL(statusCd, '') != 'C' ";
+    String[][] retCustom = dbSale.queryFromPool(sql);
+    RiskCustomBean[] cBeans = new RiskCustomBean[retCustom.length];
+    for (int ii = 0; ii < retCustom.length; ii++) {
+      String custNo = retCustom[ii][0].trim();
+      RiskCustomBean cBean = new RiskCustomBean();
+      QueryLogBean qBean = kUtil.getQueryLogByCustNoProjectId(projectId, custNo);
+      cBean.setCustomNo(custNo);
+      cBean.setCustomName(retCustom[ii][1].trim());
+      cBean.setBirthday(retCustom[ii][2].trim());
+      cBean.setZip(retCustom[ii][3].trim());
+      cBean.setCity(retCustom[ii][4].trim());
+      cBean.setTown(retCustom[ii][5].trim());
+      cBean.setAddress(retCustom[ii][6].trim());
+      cBean.setTel(retCustom[ii][7].trim());
+      cBean.setTel2(retCustom[ii][8].trim());
+      cBean.setCountryName(retCustom[ii][9].trim());
+      cBean.setPositionName(retCustom[ii][10].trim());
+      cBean.setqBean(qBean);
+      cBeans[ii] = cBean;
+    }
+*/  
+    //建立風險值檢核物件
     RiskCheckTools_Lyods risk = new RiskCheckTools_Lyods(aBean);
-
+    
     // 執行結果
     Result rs = risk.processRisk(cBeans);
     String[] rsStatus = rs.getRsStatus();
     System.out.println("執行結果>>>" + rsStatus[3]);
-    if (!StringUtils.equals(rs.getRsStatus()[3], ResultStatus.SUCCESS[3])) {
+    if( !StringUtils.equals(rs.getRsStatus()[3], ResultStatus.SUCCESS[3]) ) {
       System.out.println("發生錯誤了，賽鴿快推阿!!");
       return value;
     }
-
+    
     RiskCheckRS rcRs = (RiskCheckRS) rs.getData();
     System.out.println("萊斯執行結果>>>" + rcRs.getRsMsg());
 

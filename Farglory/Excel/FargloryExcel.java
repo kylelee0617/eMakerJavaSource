@@ -1102,12 +1102,10 @@ public  class  FargloryExcel {
 	// 保護工作表 B3774
 	public  void  setProtect(String  stringPassword,  Dispatch  objectSheet){
 		if(stringPassword.length() == 0){
-			Dispatch.invoke(objectSheet, "Protect", Dispatch.Method, new Object[] { new Variant("Farglory"), new Variant(true), new Variant(true), new Variant(true)}, new int[1]);	
+			stringPassword = "Farglory";
 		}
-		else {
-			Object objPassword = stringPassword;		
-			Dispatch.invoke(objectSheet, "Protect", Dispatch.Method, new Object[] { new Variant(objPassword), new Variant(true), new Variant(true), new Variant(true)}, new int[1]);	
-		}
+		Object objPassword = stringPassword;
+		Dispatch.invoke(objectSheet, "Protect", Dispatch.Method, new Object[] { new Variant(objPassword), new Variant(true), new Variant(true), new Variant(true)}, new int[1]);
 
 	}
   	//字加刪除線

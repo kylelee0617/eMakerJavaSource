@@ -191,7 +191,7 @@ public class RiskCheckTool extends bvalidate {
         }
 
         // 忽略已被換名的 (或需要忽略的資料，給C)
-        if ("C".equals(retCustom[i][23].trim())) continue;
+        if ("C".equals(retCustom[i][23].trim()))  continue;
         
         //210114 Kyle : 行業別
         String industryCode = retCustom[i][24] != null? retCustom[i][23].toString().trim():"";
@@ -202,7 +202,7 @@ public class RiskCheckTool extends bvalidate {
           if(retMajor.length  > 0) industryCode = retMajor[0][0] != null? retMajor[0][0].trim():"";
         }
         
-        sqltopmanager = " SELECT TOP 1 PositionCD, PName, ChairMan From A_Position  WHERE PName = '" + retCustom[i][10] + "' ORDER BY PositionCD DESC ";
+        sqltopmanager = " SELECT TOP 1 PositionCD, PName, ChairMan From A_Position " + " WHERE PName = '" + retCustom[i][10] + "'" + " ORDER BY PositionCD DESC ";
         String retPosition2[][] = dbSale.queryFromPool(sqltopmanager);
         String isManager = "N";
         if (retPosition2.length > 0) {

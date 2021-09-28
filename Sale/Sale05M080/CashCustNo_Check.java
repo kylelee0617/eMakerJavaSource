@@ -1,9 +1,11 @@
 package Sale.Sale05M080;
 
+import javax.swing.JTable;
 import org.apache.commons.lang.StringUtils;
 
 import Farglory.util.KSqlUtils;
 import Farglory.util.QueryLogBean;
+import jcx.db.talk;
 import jcx.jform.bvalidate;
 
 public class CashCustNo_Check extends bvalidate {

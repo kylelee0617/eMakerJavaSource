@@ -5,7 +5,7 @@ import java.util.*;
 import jcx.db.talk;
 
 /**
- * è¨ˆç®—é¢¨éšªå€¼è³‡æ–™ç‰©ä»¶ 210107 Kyle : æƒ³æŠŠå®¢æˆ¶è·Ÿå¯¦å—äººè³‡æ–™ç”¨ç‰©ä»¶å‚³éï¼Œä½†æœ‰é»æ‡¶å¾—å…¨æ”¹ï¼Œä¹‹å¾Œå†èªªå§....
+ * ­pºâ­·ÀI­È¸ê®Æª«¥ó 210107 Kyle : ·Q§â«È¤á¸ò¹ê¨ü¤H¸ê®Æ¥Îª«¥ó¶Ç»¼¡A¦ı¦³ÂIÃi±o¥ş§ï¡A¤§«á¦A»¡§a....
  * 
  * @author B04391
  *
@@ -25,9 +25,9 @@ public class RiskCheckBean {
 	private String orderNo = "";
 	private String orderDate = "";
 	private String contractNo = "";
-	private String actionText = ""; // æ–°å¢ã€å¯«å…¥ã€å­˜æª”...ç­‰ç­‰
-	private String func = ""; // åŠŸèƒ½ (è³¼å±‹è­‰æ˜å–®ã€æ”¶æ¬¾ã€åˆç´„æœƒå¯©ã€æ›å...ç­‰ç­‰)
-	private String recordType = ""; // ç”šéº¼è³‡æ–™ (å®¢æˆ¶è³‡æ–™ã€ä»£ç†äººè³‡æ–™ã€é¢¨éšªè¨ˆç®—...ETC)
+	private String actionText = ""; // ·s¼W¡B¼g¤J¡B¦sÀÉ...µ¥µ¥
+	private String func = ""; // ¥\¯à (ÁÊ«ÎÃÒ©ú³æ¡B¦¬´Ú¡B¦X¬ù·|¼f¡B´«¦W...µ¥µ¥)
+	private String recordType = ""; // ¬Æ»ò¸ê®Æ («È¤á¸ê®Æ¡B¥N²z¤H¸ê®Æ¡B­·ÀI­pºâ...ETC)
 
 	private boolean updSale05M091 = false;
 	private boolean updSale05M277 = false;

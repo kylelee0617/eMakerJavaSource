@@ -12,6 +12,8 @@ public class FuncAfterMod extends bNotify{
   public void actionPerformed(String value)throws Throwable{
     // 當執行完 Transaction 時,會執行本段程式
     //可用以寄發Email通知或是自動再處理自定Transaction
+	
+	showWait();
     
     //"購屋證明單-同步-行銷(Sale02M030)"-------------------------------------
     System.out.println("修改後------------------------------------S") ;
@@ -68,10 +70,11 @@ public class FuncAfterMod extends bNotify{
     }
     //存至風險客戶名單
 
+	
     System.out.println("洗錢防治相關-------------------------------------S") ;
     //21-05 Kyle : 更新主要客戶與關聯人
     getButton("RenewRelated").doClick();
-    
+	
     //21-05 Kyle : 查詢客戶風險值
     getButton("CheckRisk").doClick();
     
@@ -339,6 +342,8 @@ public class FuncAfterMod extends bNotify{
        // 2015/10/15 B3018 END
     }
     message("OK!");
+	
+	stopWait();
 
     System.out.println("修改後------------------------------------E") ;
     return;

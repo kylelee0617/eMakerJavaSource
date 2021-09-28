@@ -24,6 +24,7 @@ public class Table27CheckNo extends bvalidate {
     if (!"".equals(value)) {
       String tmpMsg = "";
       String errMsg = "";
+      String amlRsMix = getValue("AMLRsMix").trim();
       QueryLogBean qBean = kUtil.getQueryLogByCustNoProjectId(projectId, value);
       if (qBean != null) {
         String bstatus = qBean.getbStatus();
@@ -51,7 +52,7 @@ public class Table27CheckNo extends bvalidate {
         // 黑名單 + 控管名單
         if ("Y".equals(bstatus) || "Y".equals(cstatus)) {
           tmpMsg = "被委託人" + qName + "為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。\n";
-          errMsg += tmpMsg; 
+          errMsg += tmpMsg;
         }
 
         // 利關人

@@ -27,7 +27,7 @@ public class RiskCheck extends sproc {
   String strCar = "";
 
   public String processRisk() throws Throwable {
-    String sysType = "RYB";// ä¸å‹•ç”¢è¡ŒéŠ·B éŠ·å”®C
+    String sysType = "RYB";// ¤£°Ê²£¦æ¾PB ¾P°âC
     String[][] retCustom = this.bean.getRetCustom();
     String[][] retSBen = this.bean.getRetSBen();
     String strProjectID1 = this.bean.getProjectID1();
@@ -38,7 +38,7 @@ public class RiskCheck extends sproc {
     System.out.println("strProjectID1=====>" + strProjectID1);
     System.out.println("strOrderDate=====>" + strOrderDate);
 
-    System.out.println("å­˜å…¥é¢¨éšªè¨ˆç®—å—ç›Šäººè³‡æ–™-----------------------------------S");
+    System.out.println("¦s¤J­·ÀI­pºâ¨ü¯q¤H¸ê®Æ-----------------------------------S");
     for (int i = 0; i < retSBen.length; i++) {
       boolean isNew = true;
       String[][] retBen = null;
@@ -54,9 +54,9 @@ public class RiskCheck extends sproc {
         isNew = false;
       }
 
-      String ono = "";    //è¨‚å–®ç·¨è™Ÿ
-      String oid = "";    //æ³•äººID
-      String oname = "";  //æ³•äººNAME
+      String ono = "";    //­q³æ½s¸¹
+      String oid = "";    //ªk¤HID
+      String oname = "";  //ªk¤HNAME
       ono = retSBen[i][0];
       oid = retSBen[i][1];
       System.out.println("ono:" + ono);
@@ -99,9 +99,9 @@ public class RiskCheck extends sproc {
         e.printStackTrace();
       }
     }
-    System.out.println("å­˜å…¥é¢¨éšªè¨ˆç®—å—ç›Šäººè³‡æ–™-----------------------------------E");
+    System.out.println("¦s¤J­·ÀI­pºâ¨ü¯q¤H¸ê®Æ-----------------------------------E");
     
-    System.out.println("å­˜å…¥é¢¨éšªè¨ˆç®—å®¢æˆ¶è³‡æ–™-----------------------------------S");
+    System.out.println("¦s¤J­·ÀI­pºâ«È¤á¸ê®Æ-----------------------------------S");
     ResourceBundle resource = ResourceBundle.getBundle("sale");
     String as400ip = resource.getString("AS400.IP");
     String as400account = resource.getString("AS400.ACCOUNT");
@@ -127,8 +127,8 @@ public class RiskCheck extends sproc {
       String msgboxtext = "";
       String tmpMsgText = "";
       
-      for (int i = 0; i < retCustom.length; i++) {  //start å®¢æˆ¶for
-        // 20200319 kyle : éæ¿¾å·²è¢«æ›åçš„å®¢æˆ¶(ä¸æª¢æ ¸é¢¨éšªå€¼)
+      for (int i = 0; i < retCustom.length; i++) {  //start «È¤áfor
+        // 20200319 kyle : ¹LÂo¤w³Q´«¦Wªº«È¤á(¤£ÀË®Ö­·ÀI­È)
         if ("C".equals(retCustom[i][23].trim())) continue;
 
         String strpositionCd = "8";
@@ -145,23 +145,23 @@ public class RiskCheck extends sproc {
         String sex = "";
 
         if (retCustom[i][5].trim().length() == 8) {
-          type = "C";// N: å€‹äºº C: å…¬å¸ F: å¤–åœ‹äºº
+          type = "C";// N: ­Ó¤H C: ¤½¥q F: ¥~°ê¤H
         } else {
-          // å¤–åœ‹äºº(ä»¥åœ‹åˆ¥åˆ¤æ–·)
-          if (!"ä¸­è¯æ°‘åœ‹".equals(retCustom[i][4].trim())) {
+          // ¥~°ê¤H(¥H°ê§O§PÂ_)
+          if (!"¤¤µØ¥Á°ê".equals(retCustom[i][4].trim())) {
             type = "F";
           }
-          // æ€§åˆ¥
+          // ©Ê§O
           if (retCustom[i][5].charAt(1) == '1') {
             sex = "M";
           } else if (retCustom[i][5].charAt(1) == '2') {
             sex = "F";
           }
         }
-        // åœ‹ç±è½‰ç¢¼(è‹¥ç©ºé è¨­TWN)
+        // °êÄyÂà½X(­YªÅ¹w³]TWN)
         String strCZ09 = "";
         if ("".equals(retCustom[i][4].trim())) {
-          strCZ09 = "ä¸­è¯æ°‘åœ‹";
+          strCZ09 = "¤¤µØ¥Á°ê";
         } else {
           strCZ09 = retCustom[i][4].trim();
         }
@@ -170,47 +170,47 @@ public class RiskCheck extends sproc {
         String cnyCode = retCNYCode[0][0].trim();
         System.out.println("cnyCode=====> :" + cnyCode);
         LinkedHashMap map = new LinkedHashMap();
-        map.put("INAME", retCustom[i][6]); // å®¢æˆ¶å§“å
-        map.put("IDATE", retCustom[i][8].replace("/", ""));// ç”Ÿæ—¥
+        map.put("INAME", retCustom[i][6]); // «È¤á©m¦W
+        map.put("IDATE", retCustom[i][8].replace("/", ""));// ¥Í¤é
         System.out.println("IDATE=====> :" + retCustom[i][8].replace("/", ""));
-        map.put("ID", retCustom[i][5]); // èº«ä»½è­‰è™Ÿ
-        map.put("IAD1", retCustom[i][11]);// åœ°å€ 1
-        map.put("IAD2", retCustom[i][12]);// åœ°å€ 2
-        map.put("IAD3", retCustom[i][13]);// åœ°å€ 3
-        map.put("IADD", retCustom[i][12].trim() + retCustom[i][13].trim() + retCustom[i][14].trim());// é•·åœ°å€
-        map.put("IZIP", retCustom[i][11]);// éƒµéå€è™Ÿ
-        map.put("ITELO", retCustom[i][16]);// å…¬å¸é›»è©±
-        map.put("ITELH", retCustom[i][17]);// ä½å®¶é›»è©±
-        map.put("TYPE", type);// N: å€‹äºº C: å…¬å¸
-        map.put("SEX", sex);// æ€§åˆ¥ M,F
-        map.put("CNY", cnyCode);// åœ‹ç±
-        map.put("JOB", "");// è·æ¥­ä»£ç¢¼
-        map.put("VOC", "");// è¡Œæ¥­åˆ¥
-        map.put("CUST", " ");// ç›£è­·å®£å‘Š
-        map.put("IESTD", " "); // è¨­å®šæ—¥æœŸ
-        map.put("IEXEC", isManager);// é«˜éšç®¡ç†äºº Y/N
-        map.put("CNY2", " ");// åœ‹ç± 2
-        map.put("CNY3", " ");// åœ‹ç± 3
-        map.put("ICHGD", "");// è®Šæ›´ç™»è¨˜æ—¥æœŸ
-        map.put("CHGNO", empNo);// ç•°å‹•äººå“¡å“¡ç·¨
-        map.put("RTCOD", "");// å›è¦†ç¢¼
-        map.put("INSN", "");// å®¢æˆ¶ç·¨è™Ÿ
+        map.put("ID", retCustom[i][5]); // ¨­¥÷ÃÒ¸¹
+        map.put("IAD1", retCustom[i][11]);// ¦a§} 1
+        map.put("IAD2", retCustom[i][12]);// ¦a§} 2
+        map.put("IAD3", retCustom[i][13]);// ¦a§} 3
+        map.put("IADD", retCustom[i][12].trim() + retCustom[i][13].trim() + retCustom[i][14].trim());// ªø¦a§}
+        map.put("IZIP", retCustom[i][11]);// ¶l»¼°Ï¸¹
+        map.put("ITELO", retCustom[i][16]);// ¤½¥q¹q¸Ü
+        map.put("ITELH", retCustom[i][17]);// ¦í®a¹q¸Ü
+        map.put("TYPE", type);// N: ­Ó¤H C: ¤½¥q
+        map.put("SEX", sex);// ©Ê§O M,F
+        map.put("CNY", cnyCode);// °êÄy
+        map.put("JOB", "");// Â¾·~¥N½X
+        map.put("VOC", "");// ¦æ·~§O
+        map.put("CUST", " ");// ºÊÅ@«Å§i
+        map.put("IESTD", " "); // ³]©w¤é´Á
+        map.put("IEXEC", isManager);// °ª¶¥ºŞ²z¤H Y/N
+        map.put("CNY2", " ");// °êÄy 2
+        map.put("CNY3", " ");// °êÄy 3
+        map.put("ICHGD", "");// ÅÜ§óµn°O¤é´Á
+        map.put("CHGNO", empNo);// ²§°Ê¤H­û­û½s
+        map.put("RTCOD", "");// ¦^ÂĞ½X
+        map.put("INSN", "");// «È¤á½s¸¹
 
         LinkedHashMap mapb = new LinkedHashMap();
-        mapb.put("INSID", retCustom[i][5]); // èº«ä»½è­‰è™Ÿ
-        mapb.put("SYSTEM", sysType); // ç³»çµ±åˆ¥
-        mapb.put("CHGNO", empNo);// ç•°å‹•äººå“¡å“¡ç·¨
-        mapb.put("CAPTION", strOrderNo);// èªªæ˜
-        mapb.put("STRDATE", "0");// èµ·å§‹æ—¥
-        mapb.put("ENDDATE", "0");// çµ‚æ­¢æ—¥
-        mapb.put("RTCOD", "");// å›è¦†ç¢¼
+        mapb.put("INSID", retCustom[i][5]); // ¨­¥÷ÃÒ¸¹
+        mapb.put("SYSTEM", sysType); // ¨t²Î§O
+        mapb.put("CHGNO", empNo);// ²§°Ê¤H­û­û½s
+        mapb.put("CAPTION", strOrderNo);// »¡©ú
+        mapb.put("STRDATE", "0");// °_©l¤é
+        mapb.put("ENDDATE", "0");// ²×¤î¤é
+        mapb.put("RTCOD", "");// ¦^ÂĞ½X
 
         LinkedHashMap mapc = new LinkedHashMap();
-        mapc.put("RI0201", retCustom[i][5]); // èº«ä»½è­‰è™Ÿ
-        mapc.put("RI0202", "RY");// ç³»çµ±åˆ¥
+        mapc.put("RI0201", retCustom[i][5]); // ¨­¥÷ÃÒ¸¹
+        mapc.put("RI0202", "RY");// ¨t²Î§O
         mapc.put("RI0203", "Y");
         mapc.put("RIPOLN", "");
-        mapc.put("RIFILE", strOrderNo);// ä¾†æºæ¡ˆè™Ÿ
+        mapc.put("RIFILE", strOrderNo);// ¨Ó·½®×¸¹
         mapc.put("RI0204", "");//
         mapc.put("RI0205", "");//
         mapc.put("RI0206", "");//
@@ -230,7 +230,7 @@ public class RiskCheck extends sproc {
         mapc.put("RO0211", "");//
         mapc.put("RO0212", "");//
         mapc.put("RO0213", "");//
-        mapc.put("RTNR02", "");// å›è¦†ç¢¼
+        mapc.put("RTNR02", "");// ¦^ÂĞ½X
 
         boolean a = ra.invoke(as400init, cms00c, map);
         System.out.println("RTCODE:" + ra.getResult()[22]);
@@ -241,31 +241,29 @@ public class RiskCheck extends sproc {
         // RA ERROR MSG
         String resultMsg = "";
         if ("1".equals(ra.getResult()[22])) {
-          resultMsg = "é¡åˆ¥é™Næˆ–C";
+          resultMsg = "Ãş§O­­N©ÎC";
         } else if ("2".equals(ra.getResult()[22])) {
-          resultMsg = "é¡åˆ¥ç‚ºNèº«ä»½è­‰ï¼©ï¼¤æª¢æ ¸æœ‰èª¤æˆ–èº«ä»½è­‰ä¸å¯ç©ºç™½";
+          resultMsg = "Ãş§O¬°N¨­¥÷ÃÒ¢×¢ÒÀË®Ö¦³»~©Î¨­¥÷ÃÒ¤£¥iªÅ¥Õ";
         } else if ("3".equals(ra.getResult()[22])) {
-          resultMsg = "é¡åˆ¥ç‚ºNç”Ÿæ—¥ä¸å¯ç‚º0";
+          resultMsg = "Ãş§O¬°N¥Í¤é¤£¥i¬°0";
         } else if ("4".equals(ra.getResult()[22])) {
-          resultMsg = "é¡åˆ¥ç‚ºNæ—¥æœŸæ ¼å¼æœ‰èª¤";
+          resultMsg = "Ãş§O¬°N¤é´Á®æ¦¡¦³»~";
         } else if ("5".equals(ra.getResult()[22])) {
-          resultMsg = "å§“åä¸å¯ç©ºç™½";
+          resultMsg = "©m¦W¤£¥iªÅ¥Õ";
         } else if ("6".equals(ra.getResult()[22])) {
-          resultMsg = "åœ°å€æª¢æ ¸éƒµå€ä¸ç¬¦åˆ";
+          resultMsg = "¦a§}ÀË®Ö¶l°Ï¤£²Å¦X";
         } else {
           resultMsg = "" + rc.getResult()[20];
         }
 
-        System.out.println("19æ´—éŒ¢é¢¨éšªå€¼ :" + rc.getResult()[19]);
-        System.out.println("20æ´—éŒ¢é¢¨éšªç­‰ç´š :" + rc.getResult()[20]);
+        System.out.println("19¬~¿ú­·ÀI­È :" + rc.getResult()[19]);
+        System.out.println("20¬~¿ú­·ÀIµ¥¯Å :" + rc.getResult()[20]);
 
         riskPoint = rc.getResult()[19].toString().trim();
         riskValue = rc.getResult()[20].toString().trim();
         System.out.println("RiskValue=====>" + riskValue);
-        msgboxtext += "å®¢æˆ¶ " + retCustom[i][6] + " æ´—éŒ¢é¢¨éšªç­‰ç´š :" + resultMsg + "\n";
-        tmpMsgText += retCustom[i][6] + "\t" + resultMsg.trim() + "\t" + riskPoint.trim() + "\t" 
-                   + rc.getResult()[11].toString().trim() + "\t" + rc.getResult()[13].toString().trim() + "\t" 
-                   + rc.getResult()[15].toString().trim() + "\t" + rc.getResult()[17].toString().trim() + "\n";
+        msgboxtext += "«È¤á " + retCustom[i][6] + " ¬~¿ú­·ÀIµ¥¯Å :" + resultMsg + "\n";
+        tmpMsgText += retCustom[i][6] + "  " + resultMsg.trim() + "\n";
 
         HashMap m = new HashMap();
         m.put("p01", strProjectID1);
@@ -275,14 +273,14 @@ public class RiskCheck extends sproc {
         m.put("p035", retCustom[i][5]);
         m.put("p04", strOrderDate);
         m.put("p05", riskPoint);
-        m.put("p06", riskValue.replace("é¢¨éšª", ""));
+        m.put("p06", riskValue.replace("­·ÀI", ""));
         m.put("riskValue", riskValue);
         list.add(m);
         
-      } //End å®¢æˆ¶for
+      } //End «È¤áfor
       ra.disconnect();
       
-      //æ›´æ–°å®¢æˆ¶é¢¨éšªå€¼
+      //§ó·s«È¤á­·ÀI­È
       if(this.bean.isUpdSale05M091()) {
         this.updSaleM091(list);
       }
@@ -293,12 +291,12 @@ public class RiskCheck extends sproc {
       e.printStackTrace();
       ra.disconnect();
     }
-    System.out.println("å­˜å…¥é¢¨éšªè¨ˆç®—å®¢æˆ¶è³‡æ–™-----------------------------------E");
+    System.out.println("¦s¤J­·ÀI­pºâ«È¤á¸ê®Æ-----------------------------------E");
 
     //TODO: insert into Sale05M070
     this.insSale05M070(list);
     
-    //TODO: ç™¼é€MAIL
+    //TODO: µo°eMAIL
     if(bean.isSendMail()) {
       this.sendMail(list);
     }
@@ -306,7 +304,7 @@ public class RiskCheck extends sproc {
     return "0";
   }
   
-  //å–empNo
+  //¨úempNo
   public void getEMPNO() throws Throwable {
     stringSQL = "SELECT EMPNO FROM FGEMPMAP where FGEMPNO ='" + this.userNo + "'";
     String[][] retEip = dbEIP.queryFromPool(stringSQL);
@@ -316,7 +314,7 @@ public class RiskCheck extends sproc {
     System.out.println("empNo>>>" + this.empNo);
   }
 
-  //ç³»çµ±æ—¥æœŸæ™‚é–“
+  //¨t²Î¤é´Á®É¶¡
   public void getDateTime() throws Throwable {
     sysdate = new SimpleDateFormat("yyyyMMdd").format(getDate());
     systime = new SimpleDateFormat("HHmmss").format(getDate());
@@ -333,7 +331,7 @@ public class RiskCheck extends sproc {
     System.out.println("strActionNo>>>" + this.actionNo);
   }
   
-  //æ£Ÿæ¨“åˆ¥
+  //´É¼Ó§O
   public void getHouseCar() throws Throwable {
     String sql092 = "SELECT HouseCar,Position FROM  Sale05M092 WHERE OrderNo = '" + this.bean.getOrderNo() + "' ORDER BY RecordNo";
     String[][] retPosition = dbSale.queryFromPool(sql092);
@@ -358,14 +356,14 @@ public class RiskCheck extends sproc {
   
   
   /**
-   * å›å¯«Sale05M091 å®¢æˆ¶é¢¨éšªå€¼
+   * ¦^¼gSale05M091 «È¤á­·ÀI­È
    * 
    * @param customList
    * @return
    * @throws Throwable
    */
   public String updSaleM091(List customList) throws Throwable {
-    System.out.println("å›å¯«05M091è³‡æ–™----------" + customList.size() + "------------------S");
+    System.out.println("¦^¼g05M091¸ê®Æ----------" + customList.size() + "------------------S");
     
     Transaction trans = new Transaction();
     for(int ii=0 ; ii<customList.size() ; ii++) {
@@ -377,21 +375,21 @@ public class RiskCheck extends sproc {
     trans.close();
     dbSale.execFromPool(trans.getString());
     
-    System.out.println("å›å¯«05M091è³‡æ–™----------" + customList.size() + "------------------E");
+    System.out.println("¦^¼g05M091¸ê®Æ----------" + customList.size() + "------------------E");
     return "0";
   }
   
   /**
-   * å¯«å…¥Sale05M070
+   * ¼g¤JSale05M070
    * 
    * @param customList
    * @return
    * @throws Throwable
    */
   public String insSale05M070(List customList) throws Throwable {
-    System.out.println("å­˜å…¥05M070è³‡æ–™-----------------------------------S");
+    System.out.println("¦s¤J05M070¸ê®Æ-----------------------------------S");
     
-    // åºè™Ÿ
+    // §Ç¸¹
     int intRecordNo = 1;
     String[][] ret05M070;
     stringSQL = "SELECT MAX(RecordNo) AS MaxNo FROM Sale05M070 WHERE OrderNo ='" + this.bean.getOrderNo() + "'";
@@ -408,21 +406,21 @@ public class RiskCheck extends sproc {
       String strCustomName = data.get("p03").toString().trim();
       String riskValue = data.get("riskValue").toString().trim();
       stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97, SHB98, SHB99) VALUES ('"
-          + this.bean.getOrderNo() + "','" + this.bean.getProjectID1() + "','" + intRecordNo + "','" + actionNo + "','è³¼å±‹è­‰æ˜å–®','é¢¨éšªè¨ˆç®—å—ç›Šäººè³‡æ–™','" + this.bean.getActionText() + "','é¢¨éšªå€¼:" + riskValue + "','" + strCustomNo
-          + "','" + strCustomName + "','" + this.bean.getOrderDate() + "','RY','773','022','é¢¨éšªå€¼:" + riskValue + "','" + empNo + "'," + this.sysdate + "," + this.systime + ")";
+          + this.bean.getOrderNo() + "','" + this.bean.getProjectID1() + "','" + intRecordNo + "','" + actionNo + "','ÁÊ«ÎÃÒ©ú³æ','­·ÀI­pºâ¨ü¯q¤H¸ê®Æ','" + this.bean.getActionText() + "','­·ÀI­È:" + riskValue + "','" + strCustomNo
+          + "','" + strCustomName + "','" + this.bean.getOrderDate() + "','RY','773','022','­·ÀI­È:" + riskValue + "','" + empNo + "'," + this.sysdate + "," + this.systime + ")";
       trans.append(stringSQL);
       intRecordNo++;
     }
     trans.close();
     dbSale.execFromPool(trans.getString());
 
-    System.out.println("å­˜å…¥05M070è³‡æ–™-----------------------------------E");
+    System.out.println("¦s¤J05M070¸ê®Æ-----------------------------------E");
     return "0";
   }
   
-  //ç™¼MAIL
+  //µoMAIL
   public String sendMail(List customList) throws Throwable {
-    System.out.println("ç™¼é€EMAIL-----------------------------------S");
+    System.out.println("µo°eEMAIL-----------------------------------S");
     String userEmail = "";
     String userEmail2 = "";
     String DPCode = "";
@@ -490,11 +488,11 @@ public class RiskCheck extends sproc {
 
     // send email
     boolean hilitgt = false;
-    String table1 = "<table style='text-align:center;' border=1><tr><td>æ¡ˆåˆ¥</td><td>æ£Ÿæ¨“åˆ¥</td><td>è»Šä½åˆ¥</td><td>å®¢æˆ¶åç¨±</td><td>ä»˜è¨‚æ—¥æœŸ</td><td>é¢¨éšªç¶œåˆå€¼</td><td>å®¢æˆ¶é¢¨éšªç­‰ç´š</td><td>èªªæ˜</td></tr>";
+    String table1 = "<table style='text-align:center;' border=1><tr><td>®×§O</td><td>´É¼Ó§O</td><td>¨®¦ì§O</td><td>«È¤á¦WºÙ</td><td>¥I­q¤é´Á</td><td>­·ÀIºî¦X­È</td><td>«È¤á­·ÀIµ¥¯Å</td><td>»¡©ú</td></tr>";
     String tail = "</table>";
     String contextsample = "<tr><td>${p01}</td><td>${p02}</td><td>${p025}</td><td>${p03}</td><td>${p04}</td><td>${p05}</td><td>${p06}</td><td align='left' valign='center'>${p07}</td></tr>";
     String cbottom = "</body></html>";
-    String context = this.bean.getProjectID1() + "æ¡ˆ" + strHouse + "ä¸å‹•ç”¢è¨‚è³¼å®¢æˆ¶é¢¨éšªç­‰ç´šè©•ä¼°çµæœé€šçŸ¥" + testFlag + "<BR>";
+    String context = this.bean.getProjectID1() + "®×" + strHouse + "¤£°Ê²£­qÁÊ«È¤á­·ÀIµ¥¯Åµû¦ôµ²ªG³qª¾" + testFlag + "<BR>";
 
     context = table1;
     for (int i = 0; i < customList.size(); i++) {
@@ -511,19 +509,19 @@ public class RiskCheck extends sproc {
       l1 = l1.replace("${p06}", (String) cm.get("p06"));
       String tempPo6 = "" + cm.get("p06");
       tempPo6 = tempPo6.trim();
-      if ("é«˜".equals(tempPo6.trim())) {
-        l1 = l1.replace("${p07}", "æ´—éŒ¢åŠè³‡æé¢¨éšªè©•ä¼°ç‚º" + tempPo6 + "é¢¨éšªå®¢æˆ¶ï¼Œè«‹ä¾æ´—éŒ¢é˜²åˆ¶ä½œæ¥­è¦å®šï¼ŒåŸ·è¡ŒåŠ å¼·å¼ç®¡æ§æªæ–½");
+      if ("°ª".equals(tempPo6.trim())) {
+        l1 = l1.replace("${p07}", "¬~¿ú¤Î¸ê®£­·ÀIµû¦ô¬°" + tempPo6 + "­·ÀI«È¤á¡A½Ğ¨Ì¬~¿ú¨¾¨î§@·~³W©w¡A°õ¦æ¥[±j¦¡ºŞ±±±¹¬I");
         hilitgt = true;
       } else {
-        l1 = l1.replace("${p07}", "æ´—éŒ¢åŠè³‡æé¢¨éšªè©•ä¼°ç‚º" + tempPo6 + "é¢¨éšªå®¢æˆ¶");
+        l1 = l1.replace("${p07}", "¬~¿ú¤Î¸ê®£­·ÀIµû¦ô¬°" + tempPo6 + "­·ÀI«È¤á");
       }
 
       context = context + l1;
     }
     context = context + tail + cbottom;
 
-    // å¯„ç™¼é€šçŸ¥ä¿¡ä»¶
-    String subject = this.bean.getProjectID1() + "æ¡ˆ" + strHouse + "ä¸å‹•ç”¢è¨‚è³¼å®¢æˆ¶é¢¨éšªç­‰ç´šè©•ä¼°çµæœé€šçŸ¥" + testFlag;
+    // ±Hµo³qª¾«H¥ó
+    String subject = this.bean.getProjectID1() + "®×" + strHouse + "¤£°Ê²£­qÁÊ«È¤á­·ÀIµ¥¯Åµû¦ôµ²ªG³qª¾" + testFlag;
     if (hilitgt) {
       String[] arrayUser = { "Kyle_Lee@fglife.com.tw", userEmail, DPeMail, PNMail };
       String sendRS = sendMailbcc("ex.fglife.com.tw", "Emaker-Invoice@fglife.com.tw", arrayUser, subject, context, null, "", "text/html");
@@ -533,11 +531,11 @@ public class RiskCheck extends sproc {
       String sendRS = sendMailbcc("ex.fglife.com.tw", "Emaker-Invoice@fglife.com.tw", arrayUser, subject, context, null, "", "text/html");
       System.out.println("sendRS===>" + sendRS);
     }
-    System.out.println("ç™¼é€EMAIL-----------------------------------E");
+    System.out.println("µo°eEMAIL-----------------------------------E");
     return "0";
   }
   
-  //æ˜¯æ•¸å­—å›å‚³ trueï¼Œå¦å‰‡å›å‚³ falseã€‚
+  //¬O¼Æ¦r¦^¶Ç true¡A§_«h¦^¶Ç false¡C
   public boolean check(String value) throws Throwable {
     return false;
   }
@@ -552,37 +550,14 @@ public class RiskCheck extends sproc {
         "select DISTINCT OrderNo,RecordNo,auditorship,Nationality,CountryName,CustomNo,CustomName,Percentage,Birthday,MajorName,PositionName,ZIP,City,Town,Address,Cellphone,Tel,Tel2,eMail,IsLinked,IsControlList,IsBlackList,TrxDate,StatusCd "
         +"from Sale05M091 sm where CustomNo In " 
         +"('A101517596','A220187841','F127714465','A129744788','L122338290','G122045000','E220217946','L221318741','F260094259','A201415482','C220278876','E122986371','L223519675','E221386968','G120260563','F223715333','A101375221','P102423728','F225591573','F127679756','F226015349','U121517026','A122373316','A123268403','F127683330','W100358879','F125849965','A130608042','F228314014','F126459072','U121231567','A203111656','A124000594','F226136610','C220238809','F227859505','E123712562','F222111760','A210218839','F227855276','D200215392','S101951726','Q222046560','A226873686','Q222984636','A120252298','A226403095','N123911839','E121300591','A121263419','N222460077','B222025032','AC01152051','F127171880','H122111215','L220268519','Z100010446','A121670245','F224152821','F228128616','A125412445','F128142650','E220588977','T220367194','A224382897','L123308867','H220931088','F221245007','E121862283','A222332497','F226909499','K222640635','E223024907','A202598622','G120195132','H220418133','N121827067','C220922940','F290159281','A127222163','L221860259','L223307424','F123659212','A126229275','A123673299','A123236643','A127862818','H223174343','A128949805','A225154093','T121248150','W200042378','R222171694','A127283237','A122734337','M221575256','N224470508','S221669230','F227079605','A103034269','K121533157','U220584052','F123852142','F220437127','G220869282','P220440587','N223726038','F224210784','N222937895','A132672166','A129214981','F125991964','E223412407','A127824907','89829333','U120603989','U220601772','K01909784','T223683659','K345858(A)','T221613453','A127242290')";
-//    String[][] retCustom = dbSale.queryFromPool(sqlCustom);
-    
-    String[][] retCustom = {
-        {"16697953","1","","1","","16697953","æºªç¦å»ºè¨­è‚¡ä»½æœ‰é™å…¬å¸","","19981118","","","239","","","æ–°åŒ—å¸‚é¶¯æ­Œå€ä¸­æ­£ä¸‰è·¯5å··66è™Ÿ","","0229602107","","","","","","",""}, 
-        {"23533942","1","","1","","23533942","å¨åŠ›åœ‹éš›é–‹ç™¼è‚¡ä»½æœ‰é™å…¬å¸","","19891222","","","104","","","å°åŒ—å¸‚ä¸­å±±å€æ°‘ç”Ÿæ±è·¯3æ®µ51è™Ÿ8æ¨“","","0225000808","","","","","","",""},
-        {"23641822","1","","1","","23641822","é„‰æ—å»ºè¨­äº‹æ¥­è‚¡ä»½æœ‰é™å…¬å¸","","19900529","","","403","","","å°ä¸­å¸‚è¥¿å€å¿ æ˜é‡Œå°ç£å¤§é“äºŒæ®µ408è™Ÿ1æ¨“","","","","","","","","",""},
-        {"24227169","1","","1","","24227169","æ†ç¾å»ºè¨­è‚¡ä»½æœ‰é™å…¬å¸","","20080901","","","110","","","å°åŒ—å¸‚ä¿¡ç¾©å€æ¾å¾·è·¯171è™Ÿ8æ¨“ä¹‹4","","0289645899","","","","","","",""},
-        {"70543787","1","","1","","70543787","å›ºé‚¦è‚¡ä»½æœ‰é™å…¬å¸","","20000401","","","110","","","å°åŒ—å¸‚ä¿¡ç¾©å€å¿ å­æ±è·¯å››æ®µ555è™Ÿ19æ¨“","","","","","","","","",""},
-        {"97290286","1","","1","","97290286","æ¼¢ç¥è³¼ç‰©ä¸­å¿ƒè‚¡ä»½æœ‰é™å…¬å¸","","19961107","","","10478","","","å°åŒ—å¸‚ä¸­å±±å€æ°‘ç”Ÿæ±è·¯ä¸‰æ®µ51è™Ÿ16æ¨“","","0225000808","","","","","","",""},
-        {"A221271422","1","","1","","A221271422","è¶™èŠæ•","","19690925","","","","","","å°åŒ—å¸‚æ¾å±±å€æ•¦åŒ–åŒ—è·¯ï¼‘ï¼™ï¼™å··ï¼‘ï¼–å¼„ï¼“ï¼”è™Ÿ","","0287122351","","","","","","",""},
-        {"F101580861","1","","1","","F101580861","æŸ¯æ–‡è²´","","19550907","","","242","","","æ–°åŒ—å¸‚æ–°èŠå€è£•æ°‘é‡Œ5é„°è£•æ°‘è¡—9è™Ÿ","","0229060545","","","","","","",""},
-        {"E220430501","1","","1","","E220430501","ç‹çœŸçœŸ","","19631107","","","116","","","å°åŒ—å¸‚æ–‡å±±å€è‚²è‹±è·¯ï¼•ï¼—å··ï¼’ï¼’ä¹‹ï¼‘è™Ÿï¼‘æ¨“","0910146859","0223967677","","","","","","",""},
-        {"F223919822","1","","1","","F223919822","é™³è©©å©‰","","19740710","","","220","","","æ–°åŒ—å¸‚æ¿æ©‹å€å¤§è§€è·¯ä¸€æ®µ29å··157è™Ÿ","","0222724646","","","","","","",""},
-        {"R203082289","1","","1","","R203082289","é»ƒç¾éœ","","19550724","","","220","","","æ–°åŒ—å¸‚æ¿æ©‹å€æ°‘ç”Ÿè·¯ä¸€æ®µ1è™Ÿ13æ¨“","","0222991561","","","","","","",""}
-        };
-
+    String[][] retCustom = dbSale.queryFromPool(sqlCustom);
     
     String sqlCustomBen = 
         "select OrderNo,CustomNo,RecordNo,BenName,BCustomNo,Birthday,CountryName,HoldType,IsBlackList,IsControlList,IsLinked,TrxDate,StatusCd " + 
         "from Sale05M091Ben smb where CustomNo In " + 
         "('A101517596','A220187841','F127714465','A129744788','L122338290','G122045000','E220217946','L221318741','F260094259','A201415482','C220278876','E122986371','L223519675','E221386968','G120260563','F223715333','A101375221','P102423728','F225591573','F127679756','F226015349','U121517026','A122373316','A123268403','F127683330','W100358879','F125849965','A130608042','F228314014','F126459072','U121231567','A203111656','A124000594','F226136610','C220238809','F227859505','E123712562','F222111760','A210218839','F227855276','D200215392','S101951726','Q222046560','A226873686','Q222984636','A120252298','A226403095','N123911839','E121300591','A121263419','N222460077','B222025032','AC01152051','F127171880','H122111215','L220268519','Z100010446','A121670245','F224152821','F228128616','A125412445','F128142650','E220588977','T220367194','A224382897','L123308867','H220931088','F221245007','E121862283','A222332497','F226909499','K222640635','E223024907','A202598622','G120195132','H220418133','N121827067','C220922940','F290159281','A127222163','L221860259','L223307424','F123659212','A126229275','A123673299','A123236643','A127862818','H223174343','A128949805','A225154093','T121248150','W200042378','R222171694','A127283237','A122734337','M221575256','N224470508','S221669230','F227079605','A103034269','K121533157','U220584052','F123852142','F220437127','G220869282','P220440587','N223726038','F224210784','N222937895','A132672166','A129214981','F125991964','E223412407','A127824907','89829333','U120603989','U220601772','K01909784','T223683659','K345858(A)','T221613453','A127242290')";
-//    String[][] retSBen = dbSale.queryFromPool(sqlCustomBen);
-    String[][] retSBen = {
-        {"16697953","16697953","1","æ—å®¶æ…¶","F124363402","19780207","ä¸­è¯æ°‘åœ‹","","","","","",""}, 
-        {"23533942","23533942","1","ä½©å‹³","A104481093","19541231","ä¸­è¯æ°‘åœ‹","","","","","",""},
-        {"23641822","23641822","1","è³´æ­£é°","P120844216","19580405","ä¸­è¯æ°‘åœ‹","","","","","",""},
-        {"24227169","24227169","1","ä½•æ˜“è’¼","F125305137","19810531","ä¸­è¯æ°‘åœ‹","","","","","",""},
-        {"70543787","70543787","1","ææ–‡è³¢","Q120076988","","ä¸­è¯æ°‘åœ‹","","","","","",""},
-        {"97290286","97290286","1","æ—å­å¯¬","B120781777","19560821","ä¸­è¯æ°‘åœ‹","","","","","",""}
-        };
- 
+    String[][] retSBen = dbSale.queryFromPool(sqlCustomBen);
+    
 //    String[][] retCustom = getTableData("table1");
 //    String[][] retSBen = getTableData("table6");
     String strOrderNo = getValue("field3").trim();
@@ -602,15 +577,15 @@ public class RiskCheck extends sproc {
     String serverIP = get("serverIP").toString().trim();
     isTest = serverIP.contains("172.16.14.4")? false:true;
     if(isTest) {
-      testFlag = " (æ¸¬è©¦) ";
-      System.out.println("ç’°å¢ƒ>>>" + testFlag);
+      testFlag = " (´ú¸Õ) ";
+      System.out.println("Àô¹Ò>>>" + testFlag);
     }
     
-    //Emakerå·¥è™Ÿ
+    //Emaker¤u¸¹
     this.userNo = getUser().toUpperCase().trim();
-    //FGå·¥è™Ÿ
+    //FG¤u¸¹
     this.getEMPNO();
-    //ç³»çµ±æ—¥æœŸæ™‚é–“
+    //¨t²Î¤é´Á®É¶¡
     this.getDateTime();
     //action
     this.getActionNo();

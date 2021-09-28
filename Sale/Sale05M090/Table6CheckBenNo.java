@@ -3,11 +3,13 @@ package Sale.Sale05M090;
 import javax.swing.JTable;
 
 import Farglory.util.KSqlUtils;
+import Farglory.util.KUtils;
 import Farglory.util.QueryLogBean;
 import jcx.jform.bvalidate;
 
 public class Table6CheckBenNo extends bvalidate {
   public boolean check(String value) throws Throwable {
+
     KSqlUtils ksUtil = new KSqlUtils();
     
     JTable tb6 = getTable("table6");

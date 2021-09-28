@@ -1,7 +1,7 @@
 package Farglory.util;
 
 /**
- * Sale log ç´€éŒ„
+ * Sale log ¬ö¿ý
  * 
  * @author B04391
  *

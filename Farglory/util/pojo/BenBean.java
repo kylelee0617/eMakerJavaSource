@@ -1,7 +1,7 @@
 package Farglory.util.pojo;
 
 /**
- * å¯¦è³ªå—ç›Šäººç‰©ä»¶
+ * ¹ê½è¨ü¯q¤Hª«¥ó
  * @author B04391
  *
  */

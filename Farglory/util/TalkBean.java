@@ -3,7 +3,7 @@ package Farglory.util;
 import jcx.db.talk;
 
 /**
- * è³‡æ–™åº«é€£ç·šBEAN
+ * ¸ê®Æ®w³s½uBEAN
  * 
  * @author B04391
  *

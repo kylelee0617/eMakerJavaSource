@@ -151,7 +151,7 @@ public class AMLTools_Lyods extends bvalidate {
     if (aml.getFunc().indexOf("收款") == 0 && !"".equals(aml.getDocNo())) {
       stringSQL = "SELECT MAX(RecordNo) AS MaxNo FROM Sale05M070 WHERE DocNo ='" + aml.getDocNo() + "' ";
     } else if (aml.getFunc().indexOf("合約") == 0 && !"".equals(aml.getContractNo())) {
-      stringSQL = "SELECT MAX(RecordNo) AS MaxNo FROM Sale05M070 WHERE ContractNo ='" + aml.getContractNo() + "' ";
+      stringSQL = "SELECT MAX(RecordNo) AS MaxNo FROM Sale05M070 WHERE ContractNo ='" + aml.getOrderNo() + "' ";
     } else {
       stringSQL = "SELECT MAX(RecordNo) AS MaxNo FROM Sale05M070 WHERE OrderNo ='" + aml.getOrderNo() + "' ";
     }
@@ -447,8 +447,11 @@ public class AMLTools_Lyods extends bvalidate {
     this.aml.setRiskResult("N"); // 比對 沒計算
     this.aml.setCheckAll("N"); // 只看制裁
     this.aml.setCustBean(cBean);
+    System.out.println("AML018 Test1");
     LyodsTools lyodsTools = new LyodsTools(this.aml);
+    System.out.println("AML018 Test2");
     Result result = lyodsTools.checkRisk();
+    System.out.println("AML018 Test3");
     if (result.getRsStatus()[0] != ResultStatus.SUCCESS[0]) {
       System.out.println("chkAML018_San Error>>>" + result.getExp().toString());
       return result;
@@ -599,11 +602,11 @@ public class AMLTools_Lyods extends bvalidate {
    */
   public Result renewRelated(RiskCustomBean cBean) throws Throwable {
     Result rs = new Result();
-
     aml.setCustBean(cBean);
     // Lyods GO
     LyodsTools lyodsTools = new LyodsTools(aml);
     Result result = lyodsTools.renewRelated();
+
     if (result.getExp() != null) {
       System.out.println("renewRelated Error>>>" + result.getExp().toString());
       return result;

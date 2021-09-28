@@ -4,7 +4,7 @@ import Farglory.util.QueryLogBean;
 import jcx.db.talk;
 
 /**
- * è¨ˆç®—é¢¨éšªå€¼ å®¢æˆ¶ç‰©ä»¶
+ * ­pºâ­·ÀI­È «È¤áª«¥ó
  * @author B04391
  *
  */
@@ -13,12 +13,12 @@ public class RiskCustomBean {
   private QueryLogBean qBean = null;
   private String orderNo = "";
   private String recordNo = "";
-  private String custTitle = "å®¢æˆ¶";
+  private String custTitle = "«È¤á";
   private String customNo = "";
   private String customName = "";
   private String percentage = "";
   private String agentRel = "";
-  private String custTitle2 = "å®¢æˆ¶";
+  private String custTitle2 = "«È¤á";
   private String customNo2 = "";
   private String customName2 = "";
   private String birthday = "";
