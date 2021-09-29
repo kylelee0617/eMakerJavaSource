@@ -34,18 +34,24 @@ public class SendMailAction extends bproc {
 
   public SendMailAction() {
     // 20200508 kyle Add 根據伺服器是否加測試訊息
-    String serverIP = get("serverIP").toString().trim();
-    System.out.println("serverIP>>>" + serverIP);
+//    String serverIP = get("serverIP").toString().trim();
+//    System.out.println("serverIP>>>" + serverIP);
+//
+//    if (serverIP.contains("172.16.14.4")) {
+//      testRemark = "";
+//      testPGMail = "";
+//      System.out.println(">>>正式環境<<<");
+//    }
 
-    if (serverIP.contains("172.16.14.4")) {
+    boolean isTest = "PROD".equals(get("serverType").toString().trim()) ? false : true;
+    System.out.println(">>>環境:" + testRemark);
+    if (!isTest) {
       testRemark = "";
       testPGMail = "";
-      System.out.println(">>>正式環境<<<");
     }
   }
 
   public String getDefaultValue(String value) throws Throwable {
-
     System.out.println("==============洗錢防治檢核SENDMAIL STAR====================================");
 
     this.getSendUser();
@@ -62,6 +68,7 @@ public class SendMailAction extends bproc {
       }
       System.out.println(">>>mail RS:" + rs.getReturnMsg());
     } else {
+      // 原塞巴斯人用
       // send email
       System.out.println(">>>send email old");
       // 制裁名單

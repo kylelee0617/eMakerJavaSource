@@ -17,8 +17,8 @@ public class BuyedInfo extends bproc {
   talk db400CRM = getTalk("400CRM");
 
   public String getDefaultValue(String value) throws Throwable {
-    
-    //config
+
+    // config
     Map config = (HashMap) get("config");
     boolean isTest = "PROD".equals(config.get("serverType").toString()) ? false : true;
     if (isTest) {
@@ -71,7 +71,7 @@ public class BuyedInfo extends bproc {
 
     StringBuilder qCustomNos = new StringBuilder();
     StringBuilder qCustomNames = new StringBuilder();
-    for (int i = 0; i < tb1.getRowCount() ; i++) {
+    for (int i = 0; i < tb1.getRowCount(); i++) {
       String statusCd = getValueAt("table1", i, "StatusCd").toString().trim();
       String custName = getValueAt("table1", i, "CustomName").toString().trim();
       String custNo = getValueAt("table1", i, "CustomNo").toString().trim();
@@ -80,20 +80,20 @@ public class BuyedInfo extends bproc {
       System.out.println("value>>>" + value);
 
       // 不要已被換名的
-      if ( StringUtils.equals(statusCd, "C") ) {
+      if (StringUtils.equals(statusCd, "C")) {
         System.out.println(">>>continue1");
         continue;
       }
 
       // 沒有Name不要
-      if ( StringUtils.isBlank(custName) ) {
+      if (StringUtils.isBlank(custName)) {
         System.out.println(">>>continue2");
         continue;
       }
 
       // 在欄位檢核當下，會抓不到那個欄位，從參數帶入(檢查ID)
 //      if ("userCusNo".equals(param) && "".equals(custNo)) {
-        //setValueAt("table1", value, sRow, "CustomNo");
+      // setValueAt("table1", value, sRow, "CustomNo");
 //      }
 
       qCustomNos.append("'").append(custNo).append("'").append(",");
@@ -187,8 +187,7 @@ public class BuyedInfo extends bproc {
     sql.append("from sale05m090 t090 ");
     sql.append("left join sale05m091 t091 on t090.orderNo = t091.orderNo ");
     sql.append("left join sale05m092 t092 on t090.orderNO = t092.orderNo ");
-    sql.append(
-        "left join (select t274.contractNo , t278.orderNo , t274.contractDate from sale05m274 t274, sale05m278 t278 where t274.contractNo = t278.contractNo) tContract on t090.orderNo = tContract.orderNo ");
+    sql.append("left join (select t274.contractNo , t278.orderNo , t274.contractDate from sale05m274 t274, sale05m278 t278 where t274.contractNo = t278.contractNo) tContract on t090.orderNo = tContract.orderNo ");
     sql.append("Where 1=1 ");
     sql.append("AND t091.customNo in (" + qCustomNos + ") AND ISNULL(t091.StatusCd , '') != 'C' ");
     if (!"".equals(qPositions)) {

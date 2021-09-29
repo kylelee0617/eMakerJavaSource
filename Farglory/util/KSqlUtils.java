@@ -73,6 +73,100 @@ public class KSqlUtils extends bproc {
     return tBean;
   }
   
+  /**
+   * 眔EMAILΜン虫
+   * @return
+   * @throws Throwable
+   */
+  public String[] getEMAILΜン虫(String eMakerUserNo, boolean isTest) throws Throwable{
+    String[] rs = new String[4];
+    String[][] retEip = null;
+    String[][] reteMail = null;
+    String empNo = "";
+    
+    String stringSQL = "";
+
+    // ┯快ID
+    stringSQL = "SELECT EMPNO FROM FGEMPMAP where FGEMPNO ='" + eMakerUserNo + "'";
+    retEip = dbEIP.queryFromPool(stringSQL);
+    if (retEip.length > 0) {
+      empNo = retEip[0][0];
+    }
+
+    // ┯快EMAIL
+    String DPCode = "";
+    stringSQL = "SELECT DP_CODE,PN_EMAIL1,PN_EMAIL2 FROM PERSONNEL WHERE PN_EMPNO='" + empNo + "'";
+    reteMail = dbEMail.queryFromPool(stringSQL);
+    if (reteMail.length > 0) {
+      DPCode = reteMail[0][0];
+      if (reteMail[0][1] != null && !reteMail[0][1].equals("")) {
+        rs[0] = reteMail[0][1].trim();
+      }
+      if (reteMail[0][2] != null && !reteMail[0][2].equals("")) {
+//        userEmail2 = reteMail[0][2];
+      }
+    }
+
+    // ID
+    String DPManageemNo = "";
+    stringSQL = "SELECT DP_MANAGEEMPNO FROM CATEGORY_DEPARTMENT WHERE DP_CODE='" + DPCode + "'";
+    reteMail = dbEMail.queryFromPool(stringSQL);
+    if (reteMail.length > 0) {
+      DPManageemNo = reteMail[0][0];
+    }
+
+    // MAIL
+    stringSQL = "SELECT PN_EMAIL1,PN_EMAIL2 FROM PERSONNEL WHERE PN_EMPNO='" + DPManageemNo + "'";
+    reteMail = dbEMail.queryFromPool(stringSQL);
+    if (reteMail.length > 0) {
+      if (reteMail[0][0] != null && !reteMail[0][0].equals("")) {
+        rs[1] = reteMail[0][0].trim();
+      }
+      if (reteMail[0][1] != null && !reteMail[0][1].equals("")) {
+//        DPeMail2 = reteMail[0][1];
+      }
+    }
+
+    // 场
+    String PNCode = "";
+    stringSQL = "SELECT PN_DEPTCODE FROM PERSONNEL WHERE PN_EMPNO='" + empNo + "'";
+    reteMail = dbEMail.queryFromPool(stringSQL);
+    PNCode = reteMail[0][0];
+
+    String PNManageemNo = "";
+    stringSQL = "SELECT DP_MANAGEEMPNO FROM CATEGORY_DEPARTMENT WHERE DP_CODE='" + PNCode + "'";
+    reteMail = dbEMail.queryFromPool(stringSQL);
+    PNManageemNo = reteMail[0][0];
+
+    stringSQL = "SELECT PN_EMAIL1 FROM PERSONNEL WHERE PN_EMPNO='" + PNManageemNo + "'";
+    reteMail = dbEMail.queryFromPool(stringSQL);
+    rs[2] = reteMail[0][0].trim();
+    
+    if(isTest) rs[3] = "Kyle_Lee@fglife.com.tw";
+    
+    return rs;
+  }
+  
+  
+  /**
+   * 琩高﹚兵ン┮Τ瓷加(筁耾癶め)硆腹だ筳
+   * 
+   * @param projectId 
+   * @param orderNo
+   * @return
+   * @throws Throwable
+   */
+  public String getPositions(String projectId , String orderNo) throws Throwable {
+    String rs = "<NONE>";
+    String sql = "select ISNULL( STUFF( (SELECT ',' + aa.position FROM Sale05M092 aa WHERE aa.OrderNo = a.OrderNo and ISNULL(aa.StatusCd , '') != 'D' FOR XML PATH('')) , 1, 1, '') , '') as 瓷加 "
+        + "from sale05m090 a where 1=1 ";
+    if(StringUtils.isNotBlank(projectId)) sql += "and projectId1 = '"+projectId+"' ";
+    if(StringUtils.isNotBlank(orderNo)) sql += "and orderNo = '"+orderNo+"' ";
+    String[][] ret = this.dbSale.queryFromPool(sql);
+    if(ret.length > 0) rs = ret[0][0].trim();
+    
+    return rs;
+  }
   
   /**
    * 琩高﹚兵ン┮Τㄏノ(筁耾砆传)硆腹だ筳

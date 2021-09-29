@@ -254,6 +254,7 @@ public class Save extends bproc {
           }
         }
       }
+      
       // 20191004
       // 支票 取消禁背 取消劃線
       if ("支票-取消禁背".equals(getValue("unsubscribe").trim()) || "支票-取消劃線".equals(getValue("unsubscribe").trim())) {
@@ -320,6 +321,7 @@ public class Save extends bproc {
           }
         }
       }
+      
       if (isNonList) {
         // 4.同一客戶不動產買賣，簽約前退訂取消購買，應檢核其合理性。
         stringSQL = "SELECT CustomNo, CustomName FROM Sale05M091 WHERE OrderNo = '" + getValue("field3").trim() + "'";
@@ -356,6 +358,8 @@ public class Save extends bproc {
         String allCustNames = ksUtil.getCustomNames(getValue("field1").trim(), getValue("field3").trim());
         amlDesc = amlDesc.replaceAll("<customTitle>", "客戶").replace("<customName>", allCustNames);
         errMsg += "\n" + amlDesc;
+        
+        getButton("SendMailAction2").doClick();
       }
      
       // 送出errMsg
