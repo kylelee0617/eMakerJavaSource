@@ -359,6 +359,32 @@ public class Save extends bproc {
         amlDesc = amlDesc.replaceAll("<customTitle>", "客戶").replace("<customName>", allCustNames);
         errMsg += "\n" + amlDesc;
         
+        stringSQL = "SELECT CustomNo, CustomName FROM Sale05M091 WHERE OrderNo = '" + getValue("field3").trim() + "'";
+        retSale05M091 = dbSale.queryFromPool(stringSQL);
+        if (retSale05M091.length > 0) {
+          for (int i = 0; i < retSale05M091.length; i++) {
+            String strCustomno = retSale05M091[i][0].trim();
+            String strCustomName = retSale05M091[i][1].trim();
+            // Sale05M070
+            stringSQL = "INSERT INTO Sale05M070 ( OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName,RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"
+                + getValue("field3").trim() + "','" + getValue("field1").trim() + "','" + intRecordNo + "','" + actionNo + "','退戶','退戶警示','儲存',"
+                    + "'"+amlDesc+"','" + strCustomno + "','" + strCustomName + "','" + getValue("field2").trim() + "','RY','773','023',"
+                    + "'"+amlDesc+"','" + empNo + "','" + RocNowDate + "','" + strNowTime + "')";
+            dbSale.execFromPool(stringSQL);
+            intRecordNo++;
+            // AS400
+            stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97,SHB98, SHB99) VALUES ('RY', '" + getValue("field3").trim() + "', '"
+                + RocNowDate + "', '" + retSale05M091[i][0] + "', '" + retSale05M091[i][1] + "', '773', '023', '"+amlDesc+"','" + empNo + "','" + RocNowDate + "','"
+                + strNowTime + "')";
+            dbJPSLIB.execFromPool(stringSQL);
+            if ("".equals(errMsg)) {
+              errMsg = "客戶" + strCustomName + "簽約前退訂取消交易，請依洗錢及資恐防制作業辦理。";
+            } else {
+              errMsg = errMsg + "\n客戶" + strCustomName + "簽約前退訂取消交易，請依洗錢及資恐防制作業辦理。";
+            }
+          }
+        }
+        
         getButton("SendMailAction2").doClick();
       }
      
