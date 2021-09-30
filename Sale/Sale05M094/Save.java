@@ -3,6 +3,7 @@ package Sale.Sale05M094;
 import java.text.SimpleDateFormat;
 import java.util.Random;
 
+import Farglory.aml.RiskCustomBean;
 import Farglory.util.KSqlUtils;
 import jcx.db.talk;
 import jcx.jform.bproc;
@@ -24,11 +25,11 @@ public class Save extends bproc {
     boolean flag2 = false;
     String stringCustomName = "";
     String[][] retSale05M091 = null;
-    
+
     StringBuilder sblog = new StringBuilder();
     sblog.append("退戶存檔");
     ksUtil.setSaleLog(this.getFunctionName(), value, this.getUser(), sblog.toString() + " : Start");
-    
+
     if (getValue("field1").trim().length() == 0) {
       message("案別不可空白");
       return value;
@@ -114,10 +115,10 @@ public class Save extends bproc {
         }
       }
       String stringToday = datetime.getToday("YYYY/mm/dd"); // 2015-05-13 B3018
-      stringSQL = " INSERT INTO Sale05M094 ( " + "ProjectID1," + " OrderNo," + " TrxDate," + " BItemCd," + " MItemCd," + " SItemCd," + " DItemCd," + " LastYMD,"
-          + " unsubscribe " + " ) " + " VALUES " + " ( " + "'" + getValue("field1").trim() + "'," + "'" + getValue("field3").trim() + "'," + "'" + getValue("field2").trim() + "',"
-          + "'" + getValue("BItemCd").trim() + "'," + "'" + getValue("MItemCd").trim() + "'," + "'" + getValue("SItemCd").trim() + "'," + "'" + getValue("DItemCd").trim() + "', "
-          + "'" + stringToday + "', " + "'" + getValue("unsubscribe").trim() + "' " + " ) ";
+      stringSQL = " INSERT INTO Sale05M094 ( " + "ProjectID1," + " OrderNo," + " TrxDate," + " BItemCd," + " MItemCd," + " SItemCd," + " DItemCd," + " LastYMD," + " unsubscribe "
+          + " ) " + " VALUES " + " ( " + "'" + getValue("field1").trim() + "'," + "'" + getValue("field3").trim() + "'," + "'" + getValue("field2").trim() + "'," + "'"
+          + getValue("BItemCd").trim() + "'," + "'" + getValue("MItemCd").trim() + "'," + "'" + getValue("SItemCd").trim() + "'," + "'" + getValue("DItemCd").trim() + "', " + "'"
+          + stringToday + "', " + "'" + getValue("unsubscribe").trim() + "' " + " ) ";
       dbSale.execFromPool(stringSQL);
       // 系統疑似洗錢態樣
       // 洗錢追蹤流水號
@@ -254,7 +255,7 @@ public class Save extends bproc {
           }
         }
       }
-      
+
       // 20191004
       // 支票 取消禁背 取消劃線
       if ("支票-取消禁背".equals(getValue("unsubscribe").trim()) || "支票-取消劃線".equals(getValue("unsubscribe").trim())) {
@@ -321,73 +322,65 @@ public class Save extends bproc {
           }
         }
       }
-      
+
+      RiskCustomBean[] cBeans = ksUtil.getCustom("", getValue("field3").trim(), true);
       if (isNonList) {
         // 4.同一客戶不動產買賣，簽約前退訂取消購買，應檢核其合理性。
-        stringSQL = "SELECT CustomNo, CustomName FROM Sale05M091 WHERE OrderNo = '" + getValue("field3").trim() + "'";
-        retSale05M091 = dbSale.queryFromPool(stringSQL);
-        if (retSale05M091.length > 0) {
-          for (int i = 0; i < retSale05M091.length; i++) {
-            String strCustomno = retSale05M091[i][0].trim();
-            String strCustomName = retSale05M091[i][1].trim();
-            // Sale05M070
-            stringSQL = "INSERT INTO Sale05M070 ( OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName,RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"
-                + getValue("field3").trim() + "','" + getValue("field1").trim() + "','" + intRecordNo + "','" + actionNo + "','退戶','退戶警示','儲存','客戶" + strCustomName
-                + "簽約前退訂取消交易，請依洗錢及資恐防制作業辦理。','" + strCustomno + "','" + strCustomName + "','" + getValue("field2").trim() + "','RY','773','006','客戶" + strCustomName
-                + "簽約前退訂取消交易，請依洗錢及資恐防制作業辦理。','" + empNo + "','" + RocNowDate + "','" + strNowTime + "')";
-            dbSale.execFromPool(stringSQL);
-            intRecordNo++;
-            // AS400
-            stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97,SHB98, SHB99) VALUES ('RY', '" + getValue("field3").trim() + "', '"
-                + RocNowDate + "', '" + retSale05M091[i][0] + "', '" + retSale05M091[i][1] + "', '773', '006', '同一客戶不動產買賣，簽約前退訂取消購買警示。','" + empNo + "','" + RocNowDate + "','"
-                + strNowTime + "')";
-            dbJPSLIB.execFromPool(stringSQL);
-            if ("".equals(errMsg)) {
-              errMsg = "客戶" + strCustomName + "簽約前退訂取消交易，請依洗錢及資恐防制作業辦理。";
-            } else {
-              errMsg = errMsg + "\n客戶" + strCustomName + "簽約前退訂取消交易，請依洗錢及資恐防制作業辦理。";
-            }
+        for (int i = 0; i < cBeans.length; i++) {
+          RiskCustomBean cBean = cBeans[i];
+          String strCustomNo = cBean.getCustomNo();
+          String strCustomName = cBean.getCustomName();
+          // Sale05M070
+          stringSQL = "INSERT INTO Sale05M070 ( OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName,RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"
+              + getValue("field3").trim() + "','" + getValue("field1").trim() + "','" + intRecordNo + "','" + actionNo + "','退戶','退戶警示','儲存','客戶" + strCustomName
+              + "簽約前退訂取消交易，請依洗錢及資恐防制作業辦理。','" + strCustomNo + "','" + strCustomName + "','" + getValue("field2").trim() + "','RY','773','006','客戶" + strCustomName
+              + "簽約前退訂取消交易，請依洗錢及資恐防制作業辦理。','" + empNo + "','" + RocNowDate + "','" + strNowTime + "')";
+          dbSale.execFromPool(stringSQL);
+          intRecordNo++;
+          // AS400
+          stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97,SHB98, SHB99) VALUES ('RY', '" + getValue("field3").trim() + "', '"
+              + RocNowDate + "', '" + strCustomNo + "', '" + strCustomName + "', '773', '006', '同一客戶不動產買賣，簽約前退訂取消購買警示。','" + empNo + "','" + RocNowDate + "','" + strNowTime + "')";
+          dbJPSLIB.execFromPool(stringSQL);
+          if ("".equals(errMsg)) {
+            errMsg = "客戶" + strCustomName + "簽約前退訂取消交易，請依洗錢及資恐防制作業辦理。";
+          } else {
+            errMsg = errMsg + "\n客戶" + strCustomName + "簽約前退訂取消交易，請依洗錢及資恐防制作業辦理。";
           }
         }
       }
-      
-      //TODO: rule23
+
+      // TODO: rule23
       String rule23 = getValue("AMLRule231").trim();
       if ("B".equals(rule23)) {
         String amlDesc = ksUtil.getAMLDescOne("023");
         String allCustNames = ksUtil.getCustomNames(getValue("field1").trim(), getValue("field3").trim());
         amlDesc = amlDesc.replaceAll("<customTitle>", "客戶").replace("<customName>", allCustNames);
         errMsg += "\n" + amlDesc;
-        
-        stringSQL = "SELECT CustomNo, CustomName FROM Sale05M091 WHERE OrderNo = '" + getValue("field3").trim() + "'";
-        retSale05M091 = dbSale.queryFromPool(stringSQL);
-        if (retSale05M091.length > 0) {
-          for (int i = 0; i < retSale05M091.length; i++) {
-            String strCustomno = retSale05M091[i][0].trim();
-            String strCustomName = retSale05M091[i][1].trim();
-            // Sale05M070
-            stringSQL = "INSERT INTO Sale05M070 ( OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName,RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"
-                + getValue("field3").trim() + "','" + getValue("field1").trim() + "','" + intRecordNo + "','" + actionNo + "','退戶','退戶警示','儲存',"
-                    + "'"+amlDesc+"','" + strCustomno + "','" + strCustomName + "','" + getValue("field2").trim() + "','RY','773','023',"
-                    + "'"+amlDesc+"','" + empNo + "','" + RocNowDate + "','" + strNowTime + "')";
-            dbSale.execFromPool(stringSQL);
-            intRecordNo++;
-            // AS400
-            stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97,SHB98, SHB99) VALUES ('RY', '" + getValue("field3").trim() + "', '"
-                + RocNowDate + "', '" + retSale05M091[i][0] + "', '" + retSale05M091[i][1] + "', '773', '023', '"+amlDesc+"','" + empNo + "','" + RocNowDate + "','"
-                + strNowTime + "')";
-            dbJPSLIB.execFromPool(stringSQL);
-            if ("".equals(errMsg)) {
-              errMsg = "客戶" + strCustomName + "簽約前退訂取消交易，請依洗錢及資恐防制作業辦理。";
-            } else {
-              errMsg = errMsg + "\n客戶" + strCustomName + "簽約前退訂取消交易，請依洗錢及資恐防制作業辦理。";
-            }
+
+        for (int i = 0; i < cBeans.length; i++) {
+          RiskCustomBean cBean = cBeans[i];
+          String strCustomNo = cBean.getCustomNo();
+          String strCustomName = cBean.getCustomName();
+          // Sale05M070
+          stringSQL = "INSERT INTO Sale05M070 ( OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName,RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"
+              + getValue("field3").trim() + "','" + getValue("field1").trim() + "','" + intRecordNo + "','" + actionNo + "','退戶','退戶警示','儲存'," + "'" + amlDesc + "','" + strCustomNo
+              + "','" + strCustomName + "','" + getValue("field2").trim() + "','RY','773','023'," + "'" + amlDesc + "','" + empNo + "','" + RocNowDate + "','" + strNowTime + "')";
+          dbSale.execFromPool(stringSQL);
+          intRecordNo++;
+          // AS400
+          stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97,SHB98, SHB99) VALUES ('RY', '" + getValue("field3").trim() + "', '"
+              + RocNowDate + "', '" + strCustomNo + "', '" + strCustomName + "', '773', '023', '" + amlDesc + "','" + empNo + "','" + RocNowDate + "','" + strNowTime + "')";
+          dbJPSLIB.execFromPool(stringSQL);
+          if ("".equals(errMsg)) {
+            errMsg = "客戶" + strCustomName + "簽約前退訂取消交易，請依洗錢及資恐防制作業辦理。";
+          } else {
+            errMsg = errMsg + "\n客戶" + strCustomName + "簽約前退訂取消交易，請依洗錢及資恐防制作業辦理。";
           }
         }
-        
+
         getButton("SendMailAction2").doClick();
       }
-     
+
       // 送出errMsg
       if (!"".equals(errMsg)) {
         setValue("errMsgBoxText", errMsg);
@@ -402,7 +395,7 @@ public class Save extends bproc {
       getButton("RenewRelated").doClick();
 
       message("退戶存檔成功。");
-      
+
       ksUtil.setSaleLog(this.getFunctionName(), value, this.getUser(), sblog.toString() + " : End");
     }
     return value;

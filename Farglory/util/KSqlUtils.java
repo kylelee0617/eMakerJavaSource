@@ -167,9 +167,9 @@ public class KSqlUtils extends bproc {
     
     return rs;
   }
-  
+
   /**
-   * 琩高﹚兵ン┮Τㄏノ(筁耾砆传)硆腹だ筳
+   * 琩高﹚兵ン┮Τ璶め(筁耾砆传)硆腹だ筳
    * 
    * @param projectId 
    * @param orderNo
@@ -283,8 +283,9 @@ public class KSqlUtils extends bproc {
   public RiskCustomBean[] getCustom(String projectId, String orderNo, boolean isWork) throws Throwable {
     String sql = "SELECT OrderNo, RecordNo, CustomNo, CustomName, Percentage, ZIP, City, Town, Address, Cellphone, Tel, Tel2, eMail, auditorship, IsLinked, IsControlList, IsBlackList, "
                + "TrxDate, StatusCd, Nationality, TrxDateDown, PositionName, Birthday, MajorName, "
-               + "CountryName, RiskValue, IndustryCode, CountryName2, EngName, EngNo "
-               + "FROM Sale05M091 "
+               + "CountryName, RiskValue, IndustryCode, CountryName2, EngName, EngNo, "
+               + "(select top 1 ProjectID1 from Sale05M090 a where a.orderNo = b.orderNo) "
+               + "FROM Sale05M091 b "
                + "WHERE OrderNo='"+orderNo+"' ";
     if(isWork) sql += "AND ISNULL(StatusCd, '') != 'C' ";
     String[][] retCustom = dbSale.queryFromPool(sql);
@@ -292,9 +293,10 @@ public class KSqlUtils extends bproc {
     for (int ii = 0; ii < retCustom.length; ii++) {
       String custNo = retCustom[ii][2].trim();
       String engNo = retCustom[ii][29].trim();
+      String projectId1 = retCustom[ii][30].trim();
       
       String custNo3 = kUtil.getCustNo3(custNo, engNo);
-      QueryLogBean qBean = this.getQueryLogByCustNoProjectId(projectId, custNo3);
+      QueryLogBean qBean = this.getQueryLogByCustNoProjectId(projectId1, custNo3);
       
       RiskCustomBean cBean = new RiskCustomBean();
       cBean.setqBean(qBean);
