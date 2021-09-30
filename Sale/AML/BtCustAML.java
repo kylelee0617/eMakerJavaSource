@@ -137,12 +137,12 @@ public class BtCustAML extends jcx.jform.sproc {
       AMLTools_Lyods aml = new AMLTools_Lyods(aBean);
       result = aml.chkAML018_San(cBean);
       if(ResultStatus.SUCCESS[0].equals(result.getRsStatus()[0]) ) {
-        rsMsg += result.getData().toString().trim() + "\n";
+        rsMsg += result.getData().toString().trim().replaceAll("<br>", "\n");
       }
       // PEPS
       result = aml.chkAML021_PEPS(cBean);
       if(ResultStatus.SUCCESS[0].equals(result.getRsStatus()[0]) ) {
-        rsMsg += result.getData().toString().trim() + "\n";
+        rsMsg += result.getData().toString().trim().replaceAll("<br>", "\n");
       }
 //      rsMsg += aml.getLyodsHits(cBean);  //看命中甚麼
       
@@ -151,7 +151,7 @@ public class BtCustAML extends jcx.jform.sproc {
       AMLTools_Lyods aml = new AMLTools_Lyods(aBean);
       result = aml.chkAML018_San(cBean);
       if(ResultStatus.SUCCESS[0].equals(result.getRsStatus()[0]) ) {
-        rsMsg += result.getData().toString().trim() + "\n";
+        rsMsg += result.getData().toString().trim().replaceAll("<br>", "\n");
       }
       System.out.println(">>>query18 rsMsg:" + rsMsg);
       
@@ -160,7 +160,7 @@ public class BtCustAML extends jcx.jform.sproc {
       result = aml.renewRelated(cBean);
       if(ResultStatus.SUCCESS[0].equals(result.getRsStatus()[0]) ) {
         RenewRelatedReply related = (RenewRelatedReply) result.getData(); 
-        rsMsg += related.getResult().toString().trim() + "\n";
+        rsMsg += related.getResult().toString().trim().replaceAll("<br>", "\n");
       }
       
     }else if( "deleteRelated".equals(processType) ) {  //註銷關聯人
@@ -170,7 +170,7 @@ public class BtCustAML extends jcx.jform.sproc {
       result = aml.renewRelated(cBean);
       if(ResultStatus.SUCCESS[0].equals(result.getRsStatus()[0]) ) {
         RenewRelatedReply related = (RenewRelatedReply) result.getData(); 
-        rsMsg += related.getResult().toString().trim() + "\n";
+        rsMsg += related.getResult().toString().trim().replaceAll("<br>", "\n");
       }
     }
     

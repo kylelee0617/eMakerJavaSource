@@ -31,8 +31,12 @@ public class Query extends bproc {
     talk dbSale = getTalk("Sale");
     KSqlUtils ksUtil = new KSqlUtils();
     String[][] ret91s = ksUtil.getCustom4Sale093Query(projectId, orderNo);
+    String[][] ret91s2 = ksUtil.getCustom4Sale093Query(projectId, orderNo);
+    
+    //我的媽呀，竟然用同一個變數裝的資料會相通，所以talbe1 table2 不能用同一個ret91s
+    
     setTableData("table1", ret91s);
-    setTableData("table2", ret91s);
+    setTableData("table2", ret91s2);
     setValue("nonAgent2", "1"); // 預設值無代理人
     setEditable("ProjectID1", false);
     setEditable("OrderNo", false);
