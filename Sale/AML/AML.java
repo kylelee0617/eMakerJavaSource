@@ -251,8 +251,11 @@ public class AML extends sproc {
     System.out.println("============================");
 
     // °e¥XerrMsg
+    String errMsgText = getValue("errMsgBoxText").trim();
     if (StringUtils.isNotBlank(errMsg)) {
+      System.out.println(">>>" + this.getFunctionName() + value + " msg:" + errMsg);
       messagebox(errMsg);
+      setValue("errMsgBoxText", errMsgText + errMsg);
     }
     System.out.println("==============¬~¿ú¨¾ªvÀË®ÖLOG END====================================");
     return value;

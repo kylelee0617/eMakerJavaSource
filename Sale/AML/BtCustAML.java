@@ -137,12 +137,12 @@ public class BtCustAML extends jcx.jform.sproc {
       AMLTools_Lyods aml = new AMLTools_Lyods(aBean);
       result = aml.chkAML018_San(cBean);
       if(ResultStatus.SUCCESS[0].equals(result.getRsStatus()[0]) ) {
-        rsMsg += result.getData().toString().trim().replaceAll("<br>", "\n");
+        rsMsg += result.getData().toString().trim();
       }
       // PEPS
       result = aml.chkAML021_PEPS(cBean);
       if(ResultStatus.SUCCESS[0].equals(result.getRsStatus()[0]) ) {
-        rsMsg += result.getData().toString().trim().replaceAll("<br>", "\n");
+        rsMsg += result.getData().toString().trim();
       }
 //      rsMsg += aml.getLyodsHits(cBean);  //看命中甚麼
       

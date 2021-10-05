@@ -106,30 +106,7 @@ public class CheckRiskNew extends jcx.jform.sproc {
 
     // DB取出主要客戶名單
     RiskCustomBean[] cBeans = kSqlUtil.getCustomBean(projectId, orderNo);
-/*    
-    String sql = "select CustomNo, CustomName, Birthday, ZIP, City, Town, Address, Tel, Tel2, CountryName, PositionName "
-        + "from Sale05M091 where orderNo = '" + orderNo + "' and ISNULL(statusCd, '') != 'C' ";
-    String[][] retCustom = dbSale.queryFromPool(sql);
-    RiskCustomBean[] cBeans = new RiskCustomBean[retCustom.length];
-    for (int ii = 0; ii < retCustom.length; ii++) {
-      String custNo = retCustom[ii][0].trim();
-      RiskCustomBean cBean = new RiskCustomBean();
-      QueryLogBean qBean = kUtil.getQueryLogByCustNoProjectId(projectId, custNo);
-      cBean.setCustomNo(custNo);
-      cBean.setCustomName(retCustom[ii][1].trim());
-      cBean.setBirthday(retCustom[ii][2].trim());
-      cBean.setZip(retCustom[ii][3].trim());
-      cBean.setCity(retCustom[ii][4].trim());
-      cBean.setTown(retCustom[ii][5].trim());
-      cBean.setAddress(retCustom[ii][6].trim());
-      cBean.setTel(retCustom[ii][7].trim());
-      cBean.setTel2(retCustom[ii][8].trim());
-      cBean.setCountryName(retCustom[ii][9].trim());
-      cBean.setPositionName(retCustom[ii][10].trim());
-      cBean.setqBean(qBean);
-      cBeans[ii] = cBean;
-    }
-*/  
+
     //建立風險值檢核物件
     RiskCheckTools_Lyods risk = new RiskCheckTools_Lyods(aBean);
     
@@ -154,7 +131,7 @@ public class CheckRiskNew extends jcx.jform.sproc {
       messagebox(rsMsg);
 
       // 寄發Email
-      if ("PROD".equals(get("serverType").toString().trim())) {
+      if ( !isTest ) {
         List rsSendMailList = (List) rcRs.getSendMailList();
         for (int ii = 0; ii < rsSendMailList.size(); ii++) {
           SendMailBean smbean = (SendMailBean) rsSendMailList.get(ii);

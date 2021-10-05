@@ -268,13 +268,12 @@ public class FuncMod extends bTransaction {
       amlCount++;
     }
 
-    // ¬~¿úÀË®Ö >> °õ¦æ
+    // ¨îµôÀË®Ö¡Aªý¾×¡A³æ¿WµoMAIL
     setTableData("TableCheckAML", arrAMLs);
-
     getButton("ArrCheckAML").doClick();
     errMsg = getValue("AMLText").toString().trim();
     if (StringUtils.isNotBlank(errMsg)) {
-      System.out.println(">>>msg:" + errMsg);
+      System.out.println(">>>" + this.getFunctionName() + value + " msg:" + errMsg);
       messagebox(errMsg);
       getButton("sendMail").doClick();
       return false;

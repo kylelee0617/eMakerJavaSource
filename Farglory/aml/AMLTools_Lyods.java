@@ -447,11 +447,8 @@ public class AMLTools_Lyods extends bvalidate {
     this.aml.setRiskResult("N"); // 比對 沒計算
     this.aml.setCheckAll("N"); // 只看制裁
     this.aml.setCustBean(cBean);
-    System.out.println("AML018 Test1");
     LyodsTools lyodsTools = new LyodsTools(this.aml);
-    System.out.println("AML018 Test2");
     Result result = lyodsTools.checkRisk();
-    System.out.println("AML018 Test3");
     if (result.getRsStatus()[0] != ResultStatus.SUCCESS[0]) {
       System.out.println("chkAML018_San Error>>>" + result.getExp().toString());
       return result;

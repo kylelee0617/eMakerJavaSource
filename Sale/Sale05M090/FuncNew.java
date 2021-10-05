@@ -273,13 +273,12 @@ public class FuncNew extends bTransaction {
     System.out.println(">>>amlCount:" + amlCount);
     System.out.println(">>>arr length:" + arrAMLs.length);
 
-    // 洗錢檢核 >> 執行
+    // 制裁檢核，阻擋，單獨發MAIL
     setTableData("TableCheckAML", arrAMLs);
-
     getButton("ArrCheckAML").doClick();
     errMsg = getValue("AMLText").toString().trim();
     if (StringUtils.isNotBlank(errMsg)) {
-      System.out.println(">>>msg:" + errMsg);
+      System.out.println(">>>" + this.getFunctionName() + value + " msg:" + errMsg);
       messagebox(errMsg);
       getButton("sendMail").doClick();
       return false;
@@ -576,7 +575,7 @@ public class FuncNew extends bTransaction {
     // 更新實質受益人表
     put("UpdBen_RS", "N");
     getButton("updateBen").doClick();
-    if ( !StringUtils.equals(get("UpdBen_RS").toString().trim(), "Y") ) return false;
+    if (!StringUtils.equals(get("UpdBen_RS").toString().trim(), "Y")) return false;
     System.out.println("updateBen=====> Done");
     // 更新受益人資訊 end
 
@@ -589,15 +588,15 @@ public class FuncNew extends bTransaction {
 
     for (int idx1 = 0; idx1 < customs.getRowCount(); idx1++) {
       String cNo = getValueAt(custTable, idx1, "CustomNo").toString().trim();
-      if(StringUtils.isBlank(cNo)) {
+      if (StringUtils.isBlank(cNo)) {
         cNo = getValueAt(custTable, idx1, "EngNo").toString().trim();
       }
-      
+
       String cName = getValueAt(custTable, idx1, "CustomName").toString().trim();
-      if(StringUtils.isBlank(cName)) {
+      if (StringUtils.isBlank(cName)) {
         cName = getValueAt(custTable, idx1, "EngName").toString().trim();
       }
-      
+
       String cStatus = getValueAt(custTable, idx1, "StatusCd").toString().trim();
       if (kUtil.isCusCompany(cNo) && !"C".equals(cStatus)) {
         // System.out.println(">>>法人!!<<<") ;

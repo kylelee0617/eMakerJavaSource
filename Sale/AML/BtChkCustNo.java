@@ -76,7 +76,7 @@ public class BtChkCustNo extends bproc{
         + "," + countryName2 + "," + engName + "," + processType;
     setValue("AMLText", amlText);
     getButton("BtCustAML").doClick();
-    errMsg += getValue("AMLText").trim();
+    errMsg += getValue("AMLText").trim().replaceAll("<br>", "\n").replaceAll("客戶", "代繳款人");
 
     // 19. 利害關係人
     if ("Y".equals(rStatus)) {
@@ -92,6 +92,7 @@ public class BtChkCustNo extends bproc{
     }
 
     if (!"".equals(errMsg)) {
+      System.out.println(">>>" + this.getFunctionName() + value + " reeMsg:" + errMsg);
       messagebox(errMsg);
     }
 

@@ -33,22 +33,12 @@ public class SendMailAction extends bproc {
   String errMsgText = "";
 
   public SendMailAction() {
-    // 20200508 kyle Add 根據伺服器是否加測試訊息
-//    String serverIP = get("serverIP").toString().trim();
-//    System.out.println("serverIP>>>" + serverIP);
-//
-//    if (serverIP.contains("172.16.14.4")) {
-//      testRemark = "";
-//      testPGMail = "";
-//      System.out.println(">>>正式環境<<<");
-//    }
-
     boolean isTest = "PROD".equals(get("serverType").toString().trim()) ? false : true;
-    System.out.println(">>>環境:" + testRemark);
     if (!isTest) {
       testRemark = "";
       testPGMail = "";
     }
+    System.out.println(">>>環境:" + testRemark);
   }
 
   public String getDefaultValue(String value) throws Throwable {
@@ -78,7 +68,7 @@ public class SendMailAction extends bproc {
         msg2 = msg2.replace("\n", "<BR>");
 
         String subject2 = strProjectID1 + "案" + strPosition + "不動產交易符合疑似洗錢或資恐態樣系統通知" + testRemark;
-        String[] arrayUser2 = { "Justin_Lin@fglife.com.tw", userEmail, DPeMail, PNMail };
+        String[] arrayUser2 = { "Kyle_Lee@fglife.com.tw", userEmail, DPeMail, PNMail };
         String sendRS2 = sendMailbcc("ex.fglife.com.tw", "Emaker-Invoice@fglife.com.tw", arrayUser2, subject2, msg2, null, "", "text/html");
 
         System.out.println("sendRS2===>" + sendRS2);
@@ -87,7 +77,8 @@ public class SendMailAction extends bproc {
             + strOrderDate + "</u>&emsp;5. 購屋証明單日期：<u>" + strOrderDate + "</u><BR><BR>二、符合疑似洗錢態樣通知：<BR><BR>" + errMsgText;
         msg = msg.replace("\n", "<BR>");
         String subject = strProjectID1 + "案" + strPosition + "不動產交易符合疑似洗錢或資恐態樣系統通知" + testRemark;
-        String[] arrayUser = { "Justin_Lin@fglife.com.tw", userEmail };
+        String[] arrayUser = { "Kyle_Lee@fglife.com.tw", userEmail };
+//        String[] arrayUser = { "Kyle_Lee@fglife.com.tw"};
         String sendRS = sendMailbcc("ex.fglife.com.tw", "Emaker-Invoice@fglife.com.tw", arrayUser, subject, msg, null, "", "text/html");
 
         System.out.println("sendRS===>" + sendRS);

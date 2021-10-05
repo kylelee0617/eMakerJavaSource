@@ -8,6 +8,8 @@ import jcx.html.*;
 import jcx.db.*;
 import javax.swing.*;
 
+import org.apache.commons.lang.StringUtils;
+
 public class FuncAfterMod extends bNotify{
   public void actionPerformed(String value)throws Throwable{
     // 當執行完 Transaction 時,會執行本段程式
@@ -83,7 +85,8 @@ public class FuncAfterMod extends bNotify{
     getButton("AML").doClick();
     
     //執行寄發MAIL
-    getButton("sendMail").doClick();
+    String errMsgText = getValue("errMsgBoxText").trim();
+    if (StringUtils.isNotBlank(errMsgText)) getButton("sendMail").doClick();
     
     System.out.println("洗錢防治相關-------------------------------------E") ;
 

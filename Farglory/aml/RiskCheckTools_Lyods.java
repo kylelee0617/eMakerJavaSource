@@ -624,7 +624,7 @@ public class RiskCheckTools_Lyods extends bvalidate {
     } // customList for End
     context = context + tail + cbottom;
  
-    String subject = this.aml.getProjectID1() + "案" + strHouse + "不動產" + this.aml.getFunc() + this.aml.getRecordType() + "通知" + testFlag;
+    String subject = this.aml.getProjectID1() + "案" + strHouse + "不動產訂購客戶風險等級評估結果通知" + testFlag;
     SendMailBean send = new SendMailBean();
     send.setColm1("ex.fglife.com.tw");
     send.setColm2("Emaker-Invoice@fglife.com.tw");
