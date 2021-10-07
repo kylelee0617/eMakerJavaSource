@@ -347,7 +347,7 @@ public class KSqlUtils extends bproc {
    * @throws Throwable
    */
   public RiskCustomBean[] getCustomBean(String projectId, String orderNo) throws Throwable {
-    String sql = "select CustomNo, CustomName, Birthday, ZIP, City, Town, Address, Tel, Tel2, CountryName, PositionName, CountryName2, EngNo, EngName "
+    String sql = "select CustomNo, CustomName, Birthday, ZIP, City, Town, Address, Tel, Tel2, CountryName, PositionName, CountryName2, EngNo, EngName, MajorName, IndustryCode "
         + "from Sale05M091 where orderNo = '" + orderNo + "' and ISNULL(statusCd, '') != 'C' ";
     String[][] retCustom = dbSale.queryFromPool(sql);
     RiskCustomBean[] cBeans = new RiskCustomBean[retCustom.length];
@@ -376,6 +376,8 @@ public class KSqlUtils extends bproc {
       cBean.setCountryName2(retCustom[ii][11].trim());
       cBean.setEngNo(retCustom[ii][12].trim());
       cBean.setEngName(retCustom[ii][13].trim());
+      cBean.setMajorName(retCustom[ii][14].trim());
+      cBean.setIndustryCode(retCustom[ii][15].trim());
       cBean.setqBean(qBean);
       cBeans[ii] = cBean;
     }
@@ -392,6 +394,23 @@ public class KSqlUtils extends bproc {
    */
   public String getOrderNoByDocNo(String docNo) throws Throwable {
     String sql = "select top 1 OrderNo FROM Sale05M086 WHERE DocNo = '" + docNo + "' ";
+    String ret[][] = dbSale.queryFromPool(sql);
+    if (ret.length > 0 && StringUtils.isNotBlank(ret[0][0].trim())) return ret[0][0].trim();
+
+    return "";
+  }
+  
+  /**
+   * 由合約編號取得訂單編號
+   * 
+   * @param contractNo
+   * @return
+   * @throws Throwable
+   */
+  public String getOrderNoByProjectIdAndPosition(String projectId, String position) throws Throwable {
+    String sql = "select top 1 OrderNo from Sale05M090 a , sale05M092 c where a.OrderNo = c.OrderNo "
+               + "and a.ProjectID1 = '"+projectId+"' and c.[Position] = '"+position+"' "
+               + "and ISNULL(c.StatusCd, '') != 'D' order by OrderDate desc";
     String ret[][] = dbSale.queryFromPool(sql);
     if (ret.length > 0 && StringUtils.isNotBlank(ret[0][0].trim())) return ret[0][0].trim();
 

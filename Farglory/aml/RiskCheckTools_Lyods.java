@@ -268,6 +268,9 @@ public class RiskCheckTools_Lyods extends bvalidate {
               riskValue = "禁止往來";
             }
             
+            //過濾0 & .00
+            riskPoint = StringUtils.substring(riskPoint, 0, StringUtils.lastIndexOf(riskPoint, "."));
+            riskPoint = Integer.toString((Integer.parseInt(riskPoint)));
             System.out.println("19洗錢風險值 : " + riskPoint);
             System.out.println("20洗錢風險等級 : " + riskValue);            
           }
@@ -596,7 +599,7 @@ public class RiskCheckTools_Lyods extends bvalidate {
     String tail = "</table>";
     String contextsample = "<tr><td>${p01}</td><td>${p02}</td><td>${p025}</td><td>${p03}</td><td>${p04}</td><td>${p05}</td><td>${p06}</td><td align='left' valign='center'>${p07}</td></tr>";
     String cbottom = "</body></html>";
-    String context = this.aml.getProjectID1() + "案" + strHouse + "不動產訂購客戶風險等級評估結果通知" + testFlag + "<BR>";
+    String context = "";
 
     context = table1;
     for (int i = 0; i < customList.size(); i++) {
@@ -617,7 +620,7 @@ public class RiskCheckTools_Lyods extends bvalidate {
         l1 = l1.replace("${p07}", "洗錢及資恐風險評估為" + tempPo6 + "風險客戶，請依洗錢防制作業規定，執行加強式管控措施");
         hilitgt = true;
       } else {
-        l1 = l1.replace("${p07}", "洗錢及資恐風險評估為" + tempPo6 + "風險客戶");
+        l1 = l1.replace("${p07}", "洗錢及資恐風險評估為" + tempPo6 + "風險客戶!");
       }
 
       context = context + l1;
