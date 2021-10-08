@@ -31,7 +31,7 @@ public class RiskCheckTools_Lyods extends bvalidate {
   String serverIP, serverName; // 伺服器IP , NAME
   talk dbSale, dbEMail, dbBen, dbEIP = null;
   KUtils kUtil;
-  KSqlUtils kSqlUtil;
+  KSqlUtils ksUtil;
   String sysType = "RYB";// 不動產行銷B 銷售C
   String strProjectID1 = "";
   String strOrderNo = "";
@@ -82,13 +82,13 @@ public class RiskCheckTools_Lyods extends bvalidate {
     tBean.setDb400CRM(dbBen);
     tBean.setDbEIP(dbEIP);
     kUtil = new KUtils(tBean);
-    kSqlUtil = new KSqlUtils(tBean);
+    ksUtil = new KSqlUtils(tBean);
 
     // Emaker工號
     this.userNo = abean.getEmakerUserNo();
     
     // FG工號
-    this.empNo = kSqlUtil.getEmpNo(this.userNo);
+    this.empNo = ksUtil.getEmpNo(this.userNo);
     
     // 系統日期時間
     this.getDateTime();
@@ -123,7 +123,7 @@ public class RiskCheckTools_Lyods extends bvalidate {
     RiskCheckRS rcRS = new RiskCheckRS();
     
     // start 更新實質受益人
-    List bens = kSqlUtil.getBeanListByOrderNo(strOrderNo, "");
+    List bens = ksUtil.getBeanListByOrderNo(strOrderNo, "");
     String usedOid = "";
     for(int i=0 ; i<bens.size() ; i++) {
       BenBean ben = (BenBean)bens.get(i);
@@ -133,7 +133,7 @@ public class RiskCheckTools_Lyods extends bvalidate {
       String oid = ben.getCustomNo();     // 法人ID
       String oname = ben.getCustomName(); // 法人NAME
       String fileType = ben.getHoldType();
-      String nationCode = kSqlUtil.getNationCodeByName(ben.getCountryName());
+      String nationCode = ksUtil.getNationCodeByName(ben.getCountryName());
       String bdate = ben.getBirthday().replace("/", "");
       if ("".equals(bdate)) {
         bdate = "0";
@@ -202,7 +202,7 @@ public class RiskCheckTools_Lyods extends bvalidate {
         }
 
         String idnCode = StringUtils.isNotBlank(qBean.getJobType())? qBean.getJobType():"X";
-        String managerFlag = kSqlUtil.isManager(cBean.getPositionName());
+        String managerFlag = ksUtil.isManager(cBean.getPositionName());
         System.out.println("高階經理人:" + managerFlag);
 
         LinkedHashMap map = new LinkedHashMap();
@@ -269,8 +269,11 @@ public class RiskCheckTools_Lyods extends bvalidate {
             }
             
             //過濾0 & .00
-            riskPoint = StringUtils.substring(riskPoint, 0, StringUtils.lastIndexOf(riskPoint, "."));
-            riskPoint = Integer.toString((Integer.parseInt(riskPoint)));
+            if( StringUtils.isNotBlank(riskPoint) ) {
+              riskPoint = StringUtils.substring(riskPoint, 0, StringUtils.lastIndexOf(riskPoint, "."));
+              riskPoint = Integer.toString((Integer.parseInt(riskPoint)));
+            }
+            
             System.out.println("19洗錢風險值 : " + riskPoint);
             System.out.println("20洗錢風險等級 : " + riskValue);            
           }
@@ -527,71 +530,6 @@ public class RiskCheckTools_Lyods extends bvalidate {
   // 發MAIL
   public SendMailBean sendMail(List customList) throws Throwable {
     System.out.println("組成 EMAIL-----------------------------------S");
-    String userEmail = "";
-    String userEmail2 = "";
-    String DPCode = "";
-    String DPManageemNo = "";
-    String DPeMail = "";
-    String DPeMail2 = "";
-    String[][] reteMail = null;
-
-    ////////////////
-    String sql = "SELECT DP_CODE,PN_EMAIL1,PN_EMAIL2 FROM PERSONNEL WHERE PN_EMPNO='" + empNo + "'";
-    reteMail = dbEMail.queryFromPool(sql);
-    if (reteMail.length > 0) {
-      DPCode = reteMail[0][0];
-      if (reteMail[0][1] != null && !reteMail[0][1].equals("")) {
-        userEmail = reteMail[0][1];
-      }
-      if (reteMail[0][2] != null && !reteMail[0][2].equals("")) {
-        userEmail2 = reteMail[0][2];
-      }
-    }
-    System.out.println("DPCode===>" + DPCode);
-    System.out.println("userEmail===>" + userEmail);
-    System.out.println("userEmail2===>" + userEmail2);
-    
-    /////////////////////////////////////////////////
-    sql = "SELECT DP_MANAGEEMPNO FROM CATEGORY_DEPARTMENT WHERE DP_CODE='" + DPCode + "'";
-    reteMail = dbEMail.queryFromPool(sql);
-    if (reteMail.length > 0) {
-      DPManageemNo = reteMail[0][0];
-    }
-    System.out.println("DPManageemNo===>" + DPManageemNo);
-    
-    /////////////////////////////////////////////////
-    sql = "SELECT PN_EMAIL1,PN_EMAIL2 FROM PERSONNEL WHERE PN_EMPNO='" + DPManageemNo + "'";
-    reteMail = dbEMail.queryFromPool(sql);
-    if (reteMail.length > 0) {
-      if (reteMail[0][0] != null && !reteMail[0][0].equals("")) {
-        DPeMail = reteMail[0][0];
-      }
-      if (reteMail[0][1] != null && !reteMail[0][1].equals("")) {
-        DPeMail2 = reteMail[0][1];
-      }
-    }
-    System.out.println("DPeMail===>" + DPeMail);
-    System.out.println("DPeMail2===>" + DPeMail2);
-    
-    /////////////////////////////////////////////////////////
-    String PNCode = "";
-    String PNManageemNo = "";
-    String PNMail = "";
-    sql = "SELECT PN_DEPTCODE FROM PERSONNEL WHERE PN_EMPNO='" + empNo + "'";
-    reteMail = dbEMail.queryFromPool(sql);
-    PNCode = reteMail[0][0];
-    System.out.println("PNCode===>" + PNCode);
-    
-    sql = "SELECT DP_MANAGEEMPNO FROM CATEGORY_DEPARTMENT WHERE DP_CODE='" + PNCode + "'";
-    reteMail = dbEMail.queryFromPool(sql);
-    PNManageemNo = reteMail[0][0];
-    System.out.println("PNManageemNo===>" + PNManageemNo);
-    
-    sql = "SELECT PN_EMAIL1 FROM PERSONNEL WHERE PN_EMPNO='" + PNManageemNo + "'";
-    reteMail = dbEMail.queryFromPool(sql);
-    PNMail = reteMail[0][0];
-    System.out.println("PNMail===>" + PNMail);
-    ////////////////////////////////////////////////////////////////////////////////////////
 
     // send email
     boolean hilitgt = false;
@@ -620,7 +558,7 @@ public class RiskCheckTools_Lyods extends bvalidate {
         l1 = l1.replace("${p07}", "洗錢及資恐風險評估為" + tempPo6 + "風險客戶，請依洗錢防制作業規定，執行加強式管控措施");
         hilitgt = true;
       } else {
-        l1 = l1.replace("${p07}", "洗錢及資恐風險評估為" + tempPo6 + "風險客戶!");
+        l1 = l1.replace("${p07}", "洗錢及資恐風險評估為" + tempPo6 + "風險客戶");
       }
 
       context = context + l1;
@@ -638,10 +576,12 @@ public class RiskCheckTools_Lyods extends bvalidate {
     send.setColm8("text/html");
 
     if (hilitgt) {
-      String[] arrayUser = { "Kyle_Lee@fglife.com.tw", userEmail, DPeMail, PNMail };
+//      String[] arrayUser = { "Kyle_Lee@fglife.com.tw", userEmail, DPeMail, PNMail };
+      String[] arrayUser = ksUtil.getEMAIL收件者名單(this.getUser(), true);
       send.setArrayUser(arrayUser);
     } else {
-      String[] arrayUser = { "Kyle_Lee@fglife.com.tw", userEmail };
+//      String[] arrayUser = { "Kyle_Lee@fglife.com.tw", userEmail };
+      String[] arrayUser = ksUtil.getEMAIL收件者名單(this.getUser(), false);
       send.setArrayUser(arrayUser);
     }
     System.out.println("組成 EMAIL-----------------------------------E");

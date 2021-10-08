@@ -277,11 +277,11 @@ public class AMLTools_Lyods extends bvalidate {
     String agentRel = cBean.getAgentRel();
     aml.setAMLNo("005");
 
-    String amlDesc = mapAMLMsg.get(aml.getAMLNo()).toString().trim();
-    rsMsg = amlDesc.replaceAll("<customName>", cBean.getCustomName()).replaceAll("<customTitle>", cBean.getCustTitle()).replaceAll("<customName2>", cBean.getCustomName2())
-        .replaceAll("<customTitle2>", cBean.getCustTitle2());
-
     if (StringUtils.equals(agentRel, "ªB¤Í") || StringUtils.equals(agentRel, "¨ä¥L")) {
+      String amlDesc = mapAMLMsg.get(aml.getAMLNo()).toString().trim();
+      rsMsg = amlDesc.replaceAll("<customName>", cBean.getCustomName()).replaceAll("<customTitle>", cBean.getCustTitle()).replaceAll("<customName2>", cBean.getCustomName2())
+          .replaceAll("<customTitle2>", cBean.getCustTitle2());
+      
       aml.setErrMsg(rsMsg);
       this.insCR400(cBean);
     } else {

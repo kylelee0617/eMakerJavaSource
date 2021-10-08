@@ -1,5 +1,6 @@
 package Sale.util;
 
+import Farglory.util.KSqlUtils;
 import Farglory.util.Result;
 import jcx.db.talk;
 import jcx.jform.bproc;
@@ -23,6 +24,7 @@ public class SendMailAction extends bproc {
   String PNMail = "";
   String testRemark = "(測試)"; // 在測試環境要加註測試字樣
   String testPGMail = "Kyle_Lee@fglife.com.tw"; // 測試環境寄送測試mail
+  KSqlUtils ksUtil;
 
   // 畫面值
   String strProjectID1 = ""; // 案別代碼
@@ -33,6 +35,7 @@ public class SendMailAction extends bproc {
   String errMsgText = "";
 
   public SendMailAction() {
+    ksUtil = new KSqlUtils();
     boolean isTest = "PROD".equals(get("serverType").toString().trim()) ? false : true;
     if (!isTest) {
       testRemark = "";
@@ -63,7 +66,7 @@ public class SendMailAction extends bproc {
       System.out.println(">>>send email old");
       // 制裁名單
       if (errMsgText.indexOf("制裁名單") >= 0) {
-        String msg2 = "一、不動產交易資訊：<BR><BR>1. 案    別：<u>" + strProjectID1 + "</u>&emsp;2. 棟樓別：<u>" + strPosition + "</u>&emsp;3. 客戶姓名：<u>" + strCustomName + "</u>&emsp;4. 付訂日期：<u>"
+        String msg2 = "一、不動產交易資訊：<BR><BR>1. 案    別：<u>" + strProjectID1 + "</u>&emsp;2. 棟樓別：<u>" + strPosition + "</u>&emsp;3. 客戶姓名：<u>" + strCustomName + "</u>&emsp;4. 交易日期：<u>"
             + strOrderDate + "</u>&emsp;5. 購屋証明單日期：<u>" + strOrderDate + "</u><BR><BR>二、符合疑似洗錢態樣通知：<BR><BR>客戶" + strCustomName + "為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。";
         msg2 = msg2.replace("\n", "<BR>");
 
@@ -73,7 +76,7 @@ public class SendMailAction extends bproc {
 
         System.out.println("sendRS2===>" + sendRS2);
       } else {
-        String msg = "一、不動產交易資訊：<BR><BR>1. 案    別：<u>" + strProjectID1 + "</u>&emsp;2. 棟樓別：<u>" + strPosition + "</u>&emsp;3. 客戶姓名：<u>" + strCustomName + "</u>&emsp;4. 付訂日期：<u>"
+        String msg = "一、不動產交易資訊：<BR><BR>1. 案    別：<u>" + strProjectID1 + "</u>&emsp;2. 棟樓別：<u>" + strPosition + "</u>&emsp;3. 客戶姓名：<u>" + strCustomName + "</u>&emsp;4. 交易日期：<u>"
             + strOrderDate + "</u>&emsp;5. 購屋証明單日期：<u>" + strOrderDate + "</u><BR><BR>二、符合疑似洗錢態樣通知：<BR><BR>" + errMsgText;
         msg = msg.replace("\n", "<BR>");
         String subject = strProjectID1 + "案" + strPosition + "不動產交易符合疑似洗錢或資恐態樣系統通知" + testRemark;
@@ -181,7 +184,8 @@ public class SendMailAction extends bproc {
     errMsgText = getValue("errMsgBoxText").trim();
 
     strPosition = getTableData("table2")[0][3].toString().trim();
-    strCustomName = getTableData("table1")[0][6].toString().trim();
+//    strCustomName = getTableData("table1")[0][6].toString().trim();
+    strCustomName = ksUtil.getCustomNames(strProjectID1, strOrderNo);
   }
 
   public String getInformation() {
