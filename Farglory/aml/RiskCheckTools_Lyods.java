@@ -577,11 +577,11 @@ public class RiskCheckTools_Lyods extends bvalidate {
 
     if (hilitgt) {
 //      String[] arrayUser = { "Kyle_Lee@fglife.com.tw", userEmail, DPeMail, PNMail };
-      String[] arrayUser = ksUtil.getEMAIL收件者名單(this.getUser(), true);
+      String[] arrayUser = ksUtil.getEMAIL收件者名單(this.userNo, true);
       send.setArrayUser(arrayUser);
     } else {
 //      String[] arrayUser = { "Kyle_Lee@fglife.com.tw", userEmail };
-      String[] arrayUser = ksUtil.getEMAIL收件者名單(this.getUser(), false);
+      String[] arrayUser = ksUtil.getEMAIL收件者名單(this.userNo, false);
       send.setArrayUser(arrayUser);
     }
     System.out.println("組成 EMAIL-----------------------------------E");
