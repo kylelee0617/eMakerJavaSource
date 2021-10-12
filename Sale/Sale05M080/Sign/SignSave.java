@@ -1959,7 +1959,7 @@ public class SignSave extends bproc {
 
     // 依照2020/12/11電子發票會議紀錄:
     // 1.若發票日非開立當日，則開立時間加 addHour 小時
-    // 2.若加一小時後大於等於24點，則以23點計
+    // 2.若加 addHour 後大於等於24點，以23點計
     int addHour = 4;
     if (!stringDateTime.split(" ")[0].trim().equals(stringEDate)) {
       String[] arrTmpTime = strInvoiceTime.split(":");
