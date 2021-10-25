@@ -3,10 +3,12 @@ package Sale.Sale05M093;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
+
 import javax.swing.JTable;
+
 import org.apache.commons.lang.StringUtils;
-import Farglory.util.KUtils;
-import Farglory.util.MLPUtils;
+
+import Farglory.util.KSqlUtils;
 import jcx.db.talk;
 import jcx.jform.bproc;
 import jcx.util.check;
@@ -16,14 +18,15 @@ import jcx.util.operation;
 
 public class ChgNameSave extends bproc {
   public String getDefaultValue(String value) throws Throwable {
-    System.out.println("chk==>" + getUser() + " , value==>換戶存檔");
+    KSqlUtils ksUtil = new KSqlUtils();
     if (getUser() != null && getUser().toUpperCase().equals("B9999")) {
       messagebox("換戶存檔權限不允許!!!");
       return value;
     }
+    
+    String logText = "換名存檔";
+    ksUtil.setSaleLog(this.getFunctionName(), value, this.getUser(), logText + ":Start");
 
-    MLPUtils mlpUtils = new MLPUtils();
-    KUtils kUtil = new KUtils();
     talk dbSale = getTalk("Sale");
     int RecordNo = 0;
     String stringSQL = "";
@@ -168,8 +171,8 @@ public class ChgNameSave extends bproc {
 
         // TODO: 萊斯
         // 萊斯Start
-        String orderDate = kUtil.getOrderDateByOrderNo(stringOrderNo);
-        String indCode = kUtil.getIndustryCodeByMajorName(strMajorName);
+        String orderDate = ksUtil.getOrderDateByOrderNo(stringOrderNo);
+        String indCode = ksUtil.getIndustryCodeByMajorName(strMajorName);
         String funcName = getFunctionName();
         String recordType = "客戶資料";
         String processType = "query18";
@@ -538,6 +541,8 @@ public class ChgNameSave extends bproc {
     System.out.println("洗錢防治相關-------------------------------------E");
 
     messagebox("換名成功");
+    
+    ksUtil.setSaleLog(this.getFunctionName(), value, this.getUser(), logText + ": End");
 
     return value;
   }

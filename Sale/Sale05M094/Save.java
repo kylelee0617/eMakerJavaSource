@@ -25,10 +25,8 @@ public class Save extends bproc {
     boolean flag2 = false;
     String stringCustomName = "";
     String[][] retSale05M091 = null;
-
     StringBuilder sblog = new StringBuilder();
-    sblog.append("退戶存檔");
-    ksUtil.setSaleLog(this.getFunctionName(), value, this.getUser(), sblog.toString() + " : Start");
+    ksUtil.setSaleLog(this.getFunctionName(), value, this.getUser(), ">>>Start");
 
     if (getValue("field1").trim().length() == 0) {
       message("案別不可空白");
@@ -74,6 +72,7 @@ public class Save extends bproc {
       return value;
     }
     // End
+    
     for (int i = 0; i < tb2_string.length; i++) {
       System.out.println("tb2_string" + tb2_string[i][0] + "");
       if (tb2_string[i][0].equals("1")) {
@@ -84,6 +83,7 @@ public class Save extends bproc {
     if (flag1 == false) {
       message("請至少勾選一筆退戶");
     } else {
+      ksUtil.setSaleLog(this.getFunctionName(), value, this.getUser(), ">>>orderNo:" + getValue("field3").trim());
       stringSQL = "select max(RecordNo) from Sale05M091 " + " WHERE OrderNo = '" + getValue("field3") + "'";
       retSale05M091 = dbSale.queryFromPool(stringSQL);
       int RecordNo = Integer.parseInt(retSale05M091[0][0]) + 1;

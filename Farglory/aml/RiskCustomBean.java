@@ -50,8 +50,15 @@ public class RiskCustomBean {
   private String engNo = "";
   private String engName = "";
   private String riskValue;
+  private String orderDate;
   
   
+  public String getOrderDate() {
+    return orderDate;
+  }
+  public void setOrderDate(String orderDate) {
+    this.orderDate = orderDate;
+  }
   public String getRecordNo() {
     return recordNo;
   }

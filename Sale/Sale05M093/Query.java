@@ -8,6 +8,10 @@ import jcx.jform.bproc;
 
 public class Query extends bproc {
   public String getDefaultValue(String value) throws Throwable {
+    KSqlUtils ksUtil = new KSqlUtils();
+    String logText = "換名前查詢";
+    ksUtil.setSaleLog(this.getFunctionName(), value, this.getUser(), logText + ":Start");
+    
     setEditable("nonAgent", false);
     getButton("button2").setVisible(false);
     getButton("button3").setVisible(false);
@@ -29,11 +33,10 @@ public class Query extends bproc {
     }
 
     talk dbSale = getTalk("Sale");
-    KSqlUtils ksUtil = new KSqlUtils();
-    String[][] ret91s = ksUtil.getCustom4Sale093Query(projectId, orderNo);
-    String[][] ret91s2 = ksUtil.getCustom4Sale093Query(projectId, orderNo);
+    String[][] ret91s = ksUtil.getCustom4Sale093Query(orderNo);
+    String[][] ret91s2 = ksUtil.getCustom4Sale093Query(orderNo);
     
-    //我的媽呀，竟然用同一個變數裝的資料會相通，所以talbe1 table2 不能用同一個ret91s
+    //踩了EMAKER的坑，竟然用同一個變數裝的資料會相通，所以talbe1 table2 不能用同一個ret91s
     
     setTableData("table1", ret91s);
     setTableData("table2", ret91s2);
@@ -94,6 +97,8 @@ public class Query extends bproc {
 //      setTableData("table6",ret6);
 //      setValue("nonAgent2","0");
 //    }
+    
+    ksUtil.setSaleLog(this.getFunctionName(), value, this.getUser(), logText + ":End");
 
     return value;
   }

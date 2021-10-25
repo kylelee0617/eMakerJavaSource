@@ -28,11 +28,11 @@ public class SendMailAction2 extends bproc {
   public SendMailAction2() {
     // 20200508 kyle Add 根據伺服器是否加測試訊息
     isTest = "PROD".equals(get("serverType").toString().trim()) ? false : true;
-    System.out.println(">>>環境:" + testRemark);
     if (!isTest) {
       testRemark = "";
       testPGMail = "";
     }
+    System.out.println(">>>環境:" + testRemark);
     dbSale = getTalk("Sale");
     dbEIP = getTalk("EIP");
     dbEMail = getTalk("eMail");

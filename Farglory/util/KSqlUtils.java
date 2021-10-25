@@ -260,16 +260,15 @@ public class KSqlUtils extends bproc {
   /**
    * 眔め
    * 
-   * @param projectId 
    * @param orderNo   ㄏノ絪腹
-   * @param isWork    琩高Τめ? true:度琩高Τめ , false:琩高┮Τめ传
    * @return
    * @throws Throwable
    */
-  public String[][] getCustom4Sale093Query(String projectId, String orderNo) throws Throwable {
+  public String[][] getCustom4Sale093Query(String orderNo) throws Throwable {
     String sql = "SELECT OrderNo, RecordNo, '', Nationality, CountryName2, EngNo, EngName, CountryName, CustomNo,  CustomName, Percentage, "
-        + "Birthday, MajorName, PositionName, ZIP, City, Town, Address, Cellphone, Tel, Tel2, eMail, IsBlackList, IsControlList, IsLinked " + "FROM Sale05M091 " + "WHERE OrderNo='"
-        + orderNo + "' ";
+        + "Birthday, MajorName, PositionName, ZIP, City, Town, Address, Cellphone, Tel, Tel2, eMail, IsBlackList, IsControlList, IsLinked "
+        + "FROM Sale05M091 "
+        + "WHERE OrderNo='"+ orderNo + "' ";
     sql += "AND ISNULL(StatusCd, '') != 'C' ";
     String[][] retCustom = dbSale.queryFromPool(sql);
 
@@ -281,15 +280,32 @@ public class KSqlUtils extends bproc {
    * 
    * @param projectId 
    * @param orderNo   ㄏノ絪腹
+   * @param startDate 璹虫ら START
+   * @param endDate   璹虫ら END
    * @param isWork    琩高Τめ? true:度琩高Τめ , false:琩高┮Τめ传
    * @return
    * @throws Throwable
    */
-  public RiskCustomBean[] getCustom(String projectId, String orderNo, boolean isWork) throws Throwable {
-    String sql = "SELECT OrderNo, RecordNo, CustomNo, CustomName, Percentage, ZIP, City, Town, Address, Cellphone, Tel, Tel2, eMail, auditorship, IsLinked, IsControlList, IsBlackList, "
-        + "TrxDate, StatusCd, Nationality, TrxDateDown, PositionName, Birthday, MajorName, " + "CountryName, RiskValue, IndustryCode, CountryName2, EngName, EngNo, "
-        + "(select top 1 ProjectID1 from Sale05M090 a where a.orderNo = b.orderNo) " + "FROM Sale05M091 b " + "WHERE OrderNo='" + orderNo + "' ";
-    if (isWork) sql += "AND ISNULL(StatusCd, '') != 'C' ";
+  public RiskCustomBean[] getCustoms(String projectId, String orderNo, String startDate, String endDate, boolean isWork) throws Throwable {
+    String sql = "select DISTINCT "
+        + "b.OrderNo, b.RecordNo, b.CustomNo, b.CustomName, b.Percentage, b.ZIP, b.City, b.Town, b.Address, b.Cellphone, b.Tel, b.Tel2, b.eMail, b.auditorship, "
+        + "b.IsLinked, b.IsControlList, b.IsBlackList, b.TrxDate, b.StatusCd, b.Nationality, b.TrxDateDown, b.PositionName, b.Birthday, b.MajorName, b.CountryName, b.RiskValue, "
+        + "b.IndustryCode, b.CountryName2, b.EngName, b.EngNo, a.ProjectID1, a.orderDate "
+        + "from sale05m090 a "
+        + "left join Sale05M091 b on a.OrderNo = b.OrderNo " 
+        + "left join Sale05M094 c on a.OrderNo = c.OrderNo " 
+        + "left join Sale05M092 d on a.OrderNo = d.OrderNo " 
+        + "where 1=1 ";
+    if (StringUtils.isNotBlank(orderNo)) sql += "and b.OrderNo='" + orderNo + "' ";
+    if (StringUtils.isNotBlank(projectId)) sql += "and a.ProjectID1 ='" + projectId + "' ";
+    if (StringUtils.isNotBlank(startDate)) sql += "AND a.orderDate >= '"+startDate+"' ";
+    if (StringUtils.isNotBlank(endDate)) sql += "AND a.orderDate <= '" + endDate + "' ";
+    if (isWork) {
+      sql += "AND ISNULL(b.StatusCd, '') != 'C'";
+      sql += "AND ISNULL(c.OrderNo, '') = ''";
+      sql += "AND ISNULL(d.StatusCd , '') != 'D'";
+    }
+    
     String[][] retCustom = dbSale.queryFromPool(sql);
     RiskCustomBean[] cBeans = new RiskCustomBean[retCustom.length];
     for (int ii = 0; ii < retCustom.length; ii++) {
@@ -303,7 +319,82 @@ public class KSqlUtils extends bproc {
       RiskCustomBean cBean = new RiskCustomBean();
       cBean.setqBean(qBean);
       cBean.setOrderNo(retCustom[ii][0].trim());
-      cBean.setOrderNo(retCustom[ii][1].trim());
+      cBean.setRecordNo(retCustom[ii][1].trim());
+      cBean.setCustomNo(custNo);
+      cBean.setCustomName(retCustom[ii][3].trim());
+      cBean.setPercentage(retCustom[ii][4].trim());
+      cBean.setZip(retCustom[ii][5].trim());
+      cBean.setCity(retCustom[ii][6].trim());
+      cBean.setTown(retCustom[ii][7].trim());
+      cBean.setAddress(retCustom[ii][8].trim());
+      cBean.setCellphone(retCustom[ii][9].trim());
+      cBean.setTel(retCustom[ii][10].trim());
+      cBean.setTel2(retCustom[ii][11].trim());
+      cBean.setEmail(retCustom[ii][12].trim());
+      cBean.setAuditorship(retCustom[ii][13].trim());
+      cBean.setrStatus(retCustom[ii][14].trim());
+      cBean.setcStatus(retCustom[ii][15].trim());
+      cBean.setbStatus(retCustom[ii][16].trim());
+      cBean.setTrxDate(retCustom[ii][17].trim());
+      cBean.setStatusCd(retCustom[ii][18].trim());
+      cBean.setNationality(retCustom[ii][19].trim());
+      cBean.setTrxDateDown(retCustom[ii][20].trim());
+      cBean.setPositionName(retCustom[ii][21].trim());
+      cBean.setBirthday(retCustom[ii][22].trim());
+      cBean.setMajorName(retCustom[ii][23].trim());
+      cBean.setCountryName(retCustom[ii][24].trim());
+      cBean.setRiskValue(retCustom[ii][25].trim());
+      cBean.setIndustryCode(retCustom[ii][26].trim());
+      cBean.setCountryName2(retCustom[ii][27].trim());
+      cBean.setEngName(retCustom[ii][28].trim());
+      cBean.setEngNo(engNo);
+      cBean.setOrderDate(retCustom[ii][31].trim());
+      cBeans[ii] = cBean;
+    }
+
+    return cBeans;
+  }
+
+  /**
+   * 眔め
+   * 
+   * @param projectId 
+   * @param orderNo   ㄏノ絪腹
+   * @param isWork    琩高Τめ? true:度琩高Τめ , false:琩高┮Τめ传
+   * @return
+   * @throws Throwable
+   */
+  public RiskCustomBean[] getCustom(String projectId, String orderNo, boolean isWork) throws Throwable {
+    String sql = "SELECT distinct b.OrderNo, b.RecordNo, b.CustomNo, b.CustomName, b.Percentage, b.ZIP, b.City, b.Town, b.Address, b.Cellphone, b.Tel, b.Tel2, b.eMail, b.auditorship, "
+        + "b.IsLinked, b.IsControlList, b.IsBlackList, b.TrxDate, b.StatusCd, b.Nationality, b.TrxDateDown, b.PositionName, b.Birthday, b.MajorName, b.CountryName, b.RiskValue, "
+        + "b.IndustryCode, b.CountryName2, b.EngName, b.EngNo, a.ProjectID1 " 
+        + "FROM Sale05M091 b "
+        + "left join Sale05M094 c on b.orderNo = c.orderNo "
+        + "left join Sale05M090 a on b.orderNo = a.orderNo "
+        + "left join Sale05M092 d on b.orderNo = d.orderNo "
+        + "WHERE 1=1 ";
+    if (StringUtils.isNotBlank(orderNo)) sql += "and b.OrderNo='" + orderNo + "' ";
+    if (StringUtils.isNotBlank(projectId)) sql += "and a.ProjectID1 ='" + projectId + "' ";
+    if (isWork) {
+      sql += "AND ISNULL(b.StatusCd, '') != 'C' ";
+      sql += "AND ISNULL(c.orderNo, '') = '' ";
+      sql += "AND ISNULL(d.StatusCd , '') != 'D' ";
+    }
+    
+    String[][] retCustom = dbSale.queryFromPool(sql);
+    RiskCustomBean[] cBeans = new RiskCustomBean[retCustom.length];
+    for (int ii = 0; ii < retCustom.length; ii++) {
+      String custNo = retCustom[ii][2].trim();
+      String engNo = retCustom[ii][29].trim();
+      String projectId1 = retCustom[ii][30].trim();
+
+      String custNo3 = kUtil.getCustNo3(custNo, engNo);
+      QueryLogBean qBean = this.getQueryLogByCustNoProjectId(projectId1, custNo3);
+
+      RiskCustomBean cBean = new RiskCustomBean();
+      cBean.setqBean(qBean);
+      cBean.setOrderNo(retCustom[ii][0].trim());
+      cBean.setRecordNo(retCustom[ii][1].trim());
       cBean.setCustomNo(custNo);
       cBean.setCustomName(retCustom[ii][3].trim());
       cBean.setPercentage(retCustom[ii][4].trim());
