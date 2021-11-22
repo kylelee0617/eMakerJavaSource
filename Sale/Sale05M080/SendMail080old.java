@@ -131,7 +131,7 @@ public class SendMail080old extends bproc {
       String msg = "一、不動產交易資訊：<BR><BR>1. 案    別：<u>" + strProjectID1 + "</u>&emsp;2. 棟樓別：<u>" + strPosition + "</u>&emsp;3. 客戶姓名：<u>" + strCustomName + "</u>&emsp;4. 付訂日期：<u>"
           + strOrderDate + "</u>&emsp;5. 收款單日期：<u>" + strEDate + "</u><BR><BR>二、符合疑似洗錢態樣通知：<BR><BR>" + errMsgText;
       msg = msg.replace("\n", "<BR>");
-      String subject = strProjectID1 + "案" + strPosition + "不動產簽約客戶風險等級評估結果通知";
+      String subject = strProjectID1 + "案" + strPosition + "不動產交易符合疑似洗錢或資恐態樣系統通知";
       String[] arrayUser = { "Kyle_Lee@fglife.com.tw", userEmail };
       String sendRS = sendMailbcc("ex.fglife.com.tw", "Emaker-Invoice@fglife.com.tw", arrayUser, subject, msg, null, "", "text/html");
 
@@ -144,7 +144,7 @@ public class SendMail080old extends bproc {
       String msg2 = "一、不動產交易資訊：<BR><BR>1. 案    別：<u>" + strProjectID1 + "</u>&emsp;2. 棟樓別：<u>" + strPosition + "</u>&emsp;3. 客戶姓名：<u>" + strCustomName + "</u>&emsp;4. 付訂日期：<u>"
           + strOrderDate + "</u>&emsp;5. 收款單日期：<u>" + strEDate + "</u><BR><BR>二、符合疑似洗錢態樣通知：<BR><BR>客戶" + strCustomName + "為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。";
       msg2 = msg2.replace("\n", "<BR>");
-      String subject2 = strProjectID1 + "案" + strPosition + "不動產簽約客戶風險等級評估結果通知";
+      String subject2 = strProjectID1 + "案" + strPosition + "不動產交易符合疑似洗錢或資恐態樣系統通知";
       String[] arrayUser2 = { "Kyle_Lee@fglife.com.tw", DPeMail, PNMail };
       String sendRS2 = sendMailbcc("ex.fglife.com.tw", "Emaker-Invoice@fglife.com.tw", arrayUser2, subject2, msg2, null, "", "text/html");
 

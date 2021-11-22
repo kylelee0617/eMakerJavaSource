@@ -15854,7 +15854,7 @@ public class Doc2M010 extends bTransaction {
     String stringKindDay = "";
     String[][] retDoc1M010 = null;
     //
-    stringSql = " SELECT  KindDay " + " FROM  Doc1M011 " + " WHERE  KindNo  =  '" + stringKindNo + "' ";
+    stringSql = " SELECT  KindDay FROM  Doc1M011 WHERE  KindNo  =  '" + stringKindNo + "' ";
     retDoc1M010 = dbDoc.queryFromPool(stringSql);
     if (retDoc1M010.length != 0) {
       stringKindDay = retDoc1M010[0][0].trim();

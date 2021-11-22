@@ -73,6 +73,45 @@ public class KSqlUtils extends bproc {
   public TalkBean getTBean() {
     return tBean;
   }
+  
+  
+  /**
+   * 是否控管名單
+   * 
+   * @param cBean
+   * @return
+   * @throws Throwable
+   */
+  public boolean chkIsCStatus(String custNo, String custName, String birthday) throws Throwable {
+    //設定控管名單編號
+    //1.7.1國內政治敏感人物
+    //1.8.1制裁名單
+    //1.9.1洗錢防制黑名單
+    //2.0.1重大犯罪
+    //2.1.1疑似洗錢通報對象－外部
+    //2.2.1疑似洗錢通報對象－內部
+    String[] CSTATUSNO = {"X171","X181","X191","X201","X211","X221"};
+    StringBuilder sb1 = new StringBuilder();
+    for(int i=0 ; i<CSTATUSNO.length ; i++) {
+      if(i > 0) sb1.append(",");
+      sb1.append("'").append(CSTATUSNO[i].trim()).append("'");
+    }
+    
+    Date date = new Date();
+    SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+    String today = format.format(date);
+    System.out.println(">>>chkIsCStatus today:" + today);
+
+    String sql = "SELECT A.ISREMOVE,C.CONTROLCLASSIFICATIONCODE,TO_CHAR(C.REMOVEDDATE,'YYYY/MM/DD') AS REMOVEDDATE,L.CONTROLCLASSIFICATIONNAME " 
+               + "FROM CRCLNAPF A, CRCLNCPF C, CRCLCLPF L "
+               + "WHERE A.CONTROLLISTNAMECODE=C.CONTROLLISTNAMECODE AND C.CONTROLCLASSIFICATIONCODE=L.CONTROLCLASSIFICATIONCODE " 
+               + "AND (A.CUSTOMERID = '"+custNo+"' OR (A.CUSTOMERNAME LIKE '%"+custName+"%' AND A.BIRTHDAY = '" + birthday.replaceAll("/", "-") + "')) "
+               + "AND C.CONTROLCLASSIFICATIONCODE in ("+sb1.toString()+") AND A.ISREMOVE = 'N' AND TO_CHAR(C.REMOVEDDATE,'YYYY/MM/DD') >= '"+today+"' ";
+    String[][] ret = db400.queryFromPool(sql);
+    if(ret != null && ret.length > 0) return true;
+    
+    return false;
+  }
 
 
   /**

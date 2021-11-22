@@ -1,40 +1,46 @@
 package Sale.Sale05M274;
 
 import javax.swing.JTable;
-import Farglory.util.KUtils;
+
+import Farglory.util.KSqlUtils;
 import Farglory.util.QueryLogBean;
 import jcx.jform.bvalidate;
 
 public class Table27CheckNo extends bvalidate {
   public boolean check(String value) throws Throwable {
-    KUtils kUtil = new KUtils();
+    KSqlUtils ksUtil = new KSqlUtils();
     JTable tbTurst = getTable("table27");
     int tbTurstRow = tbTurst.getSelectedRow();
     String projectId = getValue("ProjectID1").trim();
     String orderNo = "";
     String orderDate = "";
-    
+
     String tbOrderName = "table1";
     JTable tbOrder = this.getTable(tbOrderName);
-    if(tbOrder.getRowCount() > 0) {
+    if (tbOrder.getRowCount() > 0) {
       orderNo = this.getValueAt(tbOrderName, 0, "OrderNo").toString().trim();
-      orderDate = kUtil.getOrderDateByOrderNo(orderNo);
+      orderDate = ksUtil.getOrderDateByOrderNo(orderNo);
     }
 
     if (!"".equals(value)) {
       String tmpMsg = "";
       String errMsg = "";
-      String amlRsMix = getValue("AMLRsMix").trim();
-      QueryLogBean qBean = kUtil.getQueryLogByCustNoProjectId(projectId, value);
+      QueryLogBean qBean = ksUtil.getQueryLogByCustNoProjectId(projectId, value);
       if (qBean != null) {
-        String bstatus = qBean.getbStatus();
-        String cstatus = qBean.getcStatus();
-        String rstatus = qBean.getrStatus();
-        String qName = qBean.getName();
+        String qName = qBean.getRealName(value);
+        String qName2 = qBean.getOtherName(value);
+//        String showCountryName = ksUtil.getCountryNameByNationCode(qBean.getRealNtCode(value));
+        String countryName = ksUtil.getCountryNameByNationCode(qBean.getNtCode());
+        String countryName2 = ksUtil.getCountryNameByNationCode(qBean.getNtCode2());
         String birthday = qBean.getBirthday();
         String indCode = qBean.getJobType();
         String funcName = getFunctionName().trim();
-        String recordType = "客戶資料";
+        String bstatus = qBean.getbStatus();
+        String cstatus = ksUtil.chkIsCStatus(value, qName, birthday) ? "Y" : "N";
+        String rstatus = qBean.getrStatus();
+        String recordType = "被委託人";
+        String processType = "query1821";
+
         setValueAt("table27", qName, tbTurstRow, "TrusteeName");
         setValueAt("table27", bstatus, tbTurstRow, "Blacklist");
         setValueAt("table27", cstatus, tbTurstRow, "Controllist");
@@ -42,7 +48,8 @@ public class Table27CheckNo extends bvalidate {
 
         // 萊斯Start
         String amlText = projectId + "," + orderNo + "," + orderDate + "," + funcName + "," + recordType + "," + value + "," + qName + "," + birthday + "," + indCode + ","
-                       + "query1821";
+            + countryName + "," + countryName2 + "," + qName2 + "," + processType;
+
         setValue("AMLText", amlText);
         getButton("BtCustAML").doClick();
         tmpMsg = getValue("AMLText").trim();
@@ -61,7 +68,7 @@ public class Table27CheckNo extends bvalidate {
           errMsg += tmpMsg;
         }
 
-        //顯示
+        // 顯示
         if (!"".equals(errMsg)) {
           messagebox(errMsg);
         }

@@ -9,7 +9,7 @@ import jcx.jform.bvalidate;
 public class Table10CheckAgentNo extends bvalidate {
   public boolean check(String value) throws Throwable {
     KSqlUtils ksUtil = new KSqlUtils();
-    
+
     JTable tb10 = getTable("table10");
     int sRow = tb10.getSelectedRow();
     String projectId = getValue("field1").trim();
@@ -23,9 +23,6 @@ public class Table10CheckAgentNo extends bvalidate {
       String errMsg = "";
       QueryLogBean qBean = ksUtil.getQueryLogByCustNoProjectId(projectId, value);
       if (qBean != null) {
-        String bstatus = qBean.getbStatus();
-        String cstatus = qBean.getcStatus();
-        String rstatus = qBean.getrStatus();
         String qName = qBean.getRealName(value);
         String qName2 = qBean.getOtherName(value);
         String birthday = qBean.getBirthday();
@@ -33,6 +30,9 @@ public class Table10CheckAgentNo extends bvalidate {
         String funcName = getFunctionName().trim();
         String countryName = ksUtil.getCountryNameByNationCode(qBean.getNtCode());
         String countryName2 = ksUtil.getCountryNameByNationCode(qBean.getNtCode2());
+        String bstatus = qBean.getbStatus();
+        String cstatus = ksUtil.chkIsCStatus(value, qName, birthday)? "Y":"N";
+        String rstatus = qBean.getrStatus();
         setValueAt("table10", qName, sRow, "AgentName");
         setValueAt("table10", ksUtil.getCountryNameByNationCode(qBean.getRealNtCode(value)), sRow, "CountryName");
         setValueAt("table10", bstatus, sRow, "IsBlackList");
@@ -40,8 +40,8 @@ public class Table10CheckAgentNo extends bvalidate {
         setValueAt("table10", rstatus, sRow, "IsLinked");
 
         // 萊斯Start
-        String amlText = projectId + "," + orderNo + "," + orderDate + "," + funcName + "," + recordType + "," + value + "," + qName + "," 
-            + birthday + "," + indCode + "," + countryName + "," + countryName2 + "," + qName2 + "," + processType;
+        String amlText = projectId + "," + orderNo + "," + orderDate + "," + funcName + "," + recordType + "," + value + "," + qName + "," + birthday + "," + indCode + ","
+            + countryName + "," + countryName2 + "," + qName2 + "," + processType;
         setValue("AMLText", amlText);
         getButton("BtCustAML").doClick();
         tmpMsg = getValue("AMLText").trim();
@@ -60,7 +60,7 @@ public class Table10CheckAgentNo extends bvalidate {
           errMsg += tmpMsg;
         }
 
-        //顯示
+        // 顯示
         if (!"".equals(errMsg)) {
           messagebox(errMsg);
         }

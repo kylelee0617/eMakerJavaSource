@@ -263,7 +263,8 @@ public class AMLTools_Lyods extends bvalidate {
     rs.setRsStatus(ResultStatus.SUCCESS);
     return rs;
   }
-
+  
+  
   /**
    * 5.代理人非二等親
    * 

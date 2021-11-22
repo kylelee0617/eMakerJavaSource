@@ -11,7 +11,7 @@ public class Table6CheckBenNo extends bvalidate {
   public boolean check(String value) throws Throwable {
 
     KSqlUtils ksUtil = new KSqlUtils();
-    
+
     JTable tb6 = getTable("table6");
     int sRow = tb6.getSelectedRow();
     String projectId = getValue("field1").trim();
@@ -25,9 +25,6 @@ public class Table6CheckBenNo extends bvalidate {
       String errMsg = "";
       QueryLogBean qBean = ksUtil.getQueryLogByCustNoProjectId(projectId, value);
       if (qBean != null) {
-        String bstatus = qBean.getbStatus();
-        String cstatus = qBean.getcStatus();
-        String rstatus = qBean.getrStatus();
         String qName = qBean.getRealName(value);
         String qName2 = qBean.getOtherName(value);
         String birthday = qBean.getBirthday();
@@ -35,6 +32,9 @@ public class Table6CheckBenNo extends bvalidate {
         String funcName = getFunctionName().trim();
         String countryName = ksUtil.getCountryNameByNationCode(qBean.getNtCode());
         String countryName2 = ksUtil.getCountryNameByNationCode(qBean.getNtCode2());
+        String bstatus = qBean.getbStatus();
+        String cstatus = ksUtil.chkIsCStatus(value, qName, birthday)? "Y":"N";
+        String rstatus = qBean.getrStatus();
         setValueAt("table6", qName, sRow, "BenName");
         setValueAt("table6", ksUtil.getCountryNameByNationCode(qBean.getRealNtCode(value)), sRow, "CountryName");
         setValueAt("table6", birthday, sRow, "Birthday");
@@ -43,8 +43,8 @@ public class Table6CheckBenNo extends bvalidate {
         setValueAt("table6", rstatus, sRow, "IsLinked");
 
         // µÜ´µStart
-        String amlText = projectId + "," + orderNo + "," + orderDate + "," + funcName + "," + recordType + "," + value + "," + qName + "," 
-                       + birthday + "," + indCode + "," + countryName + "," + countryName2 + "," + qName2 + "," + processType;
+        String amlText = projectId + "," + orderNo + "," + orderDate + "," + funcName + "," + recordType + "," + value + "," + qName + "," + birthday + "," + indCode + ","
+            + countryName + "," + countryName2 + "," + qName2 + "," + processType;
         setValue("AMLText", amlText);
         getButton("BtCustAML").doClick();
         tmpMsg = getValue("AMLText").trim();

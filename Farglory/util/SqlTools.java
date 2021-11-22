@@ -54,61 +54,50 @@ public class SqlTools extends bproc {
     }
     talk dbTalk = getTalk(database);
 
-    //
-    String column = StringUtils.substring(script, script.indexOf(" "), script.indexOf("from")).replaceAll("distinct", "").replaceAll("top", "").trim();
-    System.out.println("column0:" + column);
-    String tmpCut1 = StringUtils.substring(column, 0, column.indexOf(" ")).trim();
-    if(column.indexOf(" ") > 0 && StringUtils.isNumeric(tmpCut1)) column = StringUtils.substring(column, column.indexOf(" ")).trim(); //top N 筁耾计矪瞶
-    System.out.println("column1:" + column);
-
-    String[] tableH = null;
-    List listH = new ArrayList();
-    if (StringUtils.equals(column, "*")) {
-      String table = StringUtils.substring(script, script.indexOf("from")).replaceAll("from", "").trim();
-      System.out.println("table1:" + table);
-
-      if (StringUtils.indexOf(table, " ") > 0) table = StringUtils.substring(table, 0, StringUtils.indexOf(table, " ")).trim();
-      System.out.println("table2:" + table);
-
-      String[][] head = dbTalk.getColumnsFromPool(table);
-      for (int i = 0; i < head.length; i++) {
-        listH.add(head[i][0].trim());
-      }
-      tableH = (String[]) listH.toArray(new String[listH.size()]);
-    } else {
-      String[] tmpTableH = column.split(",");
-      tableH = new String[tmpTableH.length];
-      for(int i=0 ; i<tmpTableH.length ; i++) {
-        String tmpH = tmpTableH[i];
-        if(StringUtils.contains(tmpH, " as ")) tmpH = StringUtils.substring(tmpH, tmpH.indexOf(" as ")).replaceAll("as", "").trim();
-        tableH[i] = tmpH;
-      }
-//      tableH = column.split(",");
-    }
-    JTable tb1 = getTable("ResultTable");
-    tb1.setName("SQL琩高挡狦");
-    this.setTableHeader("ResultTable", tableH);
-
+    // start
     StringBuilder sb = new StringBuilder();
     String[][] retTable = null;
-    if (StringUtils.indexOf(script.toLowerCase(), "select") == 0) { // 琩高
-      retTable = dbTalk.queryFromPool(script);
-      for (int i = 0; i < retTable.length; i++) {
-        String[] row1 = retTable[i];
-        for (int j = 0; j < row1.length; j++) {
-          sb.append(row1[j]).append(" / ");
-        }
-        sb.append("\n");
-      }
+    if (StringUtils.equals(action, "select") ) { // 琩高
+      String column = StringUtils.substring(script, script.indexOf(" "), script.indexOf("from")).replaceAll("distinct", "").replaceAll("top", "").trim();
+//      System.out.println("column0:" + column);
+      String tmpCut1 = StringUtils.substring(column, 0, column.indexOf(" ")).trim();
+      if (column.indexOf(" ") > 0 && StringUtils.isNumeric(tmpCut1)) column = StringUtils.substring(column, column.indexOf(" ")).trim(); // top N 筁耾计矪瞶
+//      System.out.println("column1:" + column);
 
+      String[] tableH = null;
+      List listH = new ArrayList();
+      if (StringUtils.equals(column, "*")) {
+        String table = StringUtils.substring(script, script.indexOf("from")).replaceAll("from", "").trim();
+//        System.out.println("table1:" + table);
+
+        if (StringUtils.indexOf(table, " ") > 0) table = StringUtils.substring(table, 0, StringUtils.indexOf(table, " ")).trim();
+//        System.out.println("table2:" + table);
+
+        String[][] head = dbTalk.getColumnsFromPool(table);
+        for (int i = 0; i < head.length; i++) {
+          listH.add(head[i][0].trim());
+        }
+        tableH = (String[]) listH.toArray(new String[listH.size()]);
+      } else {
+        String[] tmpTableH = column.split(",");
+        tableH = new String[tmpTableH.length];
+        for (int i = 0; i < tmpTableH.length; i++) {
+          String tmpH = tmpTableH[i];
+          if (StringUtils.contains(tmpH, " as ")) tmpH = StringUtils.substring(tmpH, tmpH.indexOf(" as ")).replaceAll("as", "").trim();
+          tableH[i] = tmpH;
+        }
+      }
+      JTable tb1 = getTable("ResultTable");
+      tb1.setName("SQL琩高挡狦");
+      this.setTableHeader("ResultTable", tableH);
+
+      retTable = dbTalk.queryFromPool(script);
       this.setTableData("ResultTable", retTable);
-      setValue("sqlResult", sb.toString());
-    } else if (StringUtils.indexOf(script.toLowerCase(), "update") == 0 || StringUtils.indexOf(script.toLowerCase(), "delete") == 0) { // update
+    } else if (StringUtils.equals(action, "update") || StringUtils.equals(action, "delete") || StringUtils.equals(action, "insert")) { // update
       retTable = new String[1][1];
       String rs = dbTalk.execFromPool(script);
       sb.append(rs);
       retTable[0][0] = rs;
-
       setValue("sqlResult", sb.toString());
     }
 
