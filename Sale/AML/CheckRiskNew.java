@@ -47,7 +47,7 @@ public class CheckRiskNew extends jcx.jform.sproc {
     tBean.setDb400CRM(db400CRM);
     tBean.setDbEIP(dbEIP);
     tBean.setDbPw0D(dbPw0d);
-    KUtils kUtil = new KUtils(tBean);
+//    KUtils kUtil = new KUtils(tBean);
     KSqlUtils kSqlUtil = new KSqlUtils(tBean);
     
     String funcName = value;
@@ -67,12 +67,12 @@ public class CheckRiskNew extends jcx.jform.sproc {
     } else if (StringUtils.contains(funcName, "´«¦W")) {
       projectId = getValue("ProjectID1").trim();
       orderNo = getValue("OrderNo").trim();
-      orderDate = kUtil.getOrderDateByOrderNo(orderNo);
+      orderDate = kSqlUtil.getOrderDateByOrderNo(orderNo);
       actionText = getValue("actionText").trim();
     } else if (StringUtils.contains(funcName, "°h¤á")) {
       projectId = getValue("field1").trim();
       orderNo = getValue("field3").trim();
-      orderDate = kUtil.getOrderDateByOrderNo(orderNo);
+      orderDate = kSqlUtil.getOrderDateByOrderNo(orderNo);
       actionText = getValue("actionText").trim();
     }
     

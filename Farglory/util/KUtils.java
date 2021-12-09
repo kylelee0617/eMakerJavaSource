@@ -34,20 +34,20 @@ public class KUtils extends bproc {
    */
   public KUtils() {
     System.err.println("KUtils init 0");
-    dbSale = getTalk("Sale");
-    dbPW0D = getTalk("pw0d");
-    db400 = getTalk("400CRM");
-    dbEIP = getTalk("EIP");
-    dbEMail = getTalk("eMail");
-    dbDoc = getTalk("Doc");
-    TalkBean tBean = new TalkBean();
-    tBean.setDbSale(dbSale);
-    tBean.setDbPw0D(dbPW0D);
-    tBean.setDb400CRM(db400);
-    tBean.setDbEIP(dbEIP);
-    tBean.setDbEMail(dbEMail);
-    tBean.setDbDOC(dbDoc);
-    this.tBean = tBean;
+//    dbSale = getTalk("Sale");
+//    dbPW0D = getTalk("pw0d");
+//    db400 = getTalk("400CRM");
+//    dbEIP = getTalk("EIP");
+//    dbEMail = getTalk("eMail");
+//    dbDoc = getTalk("Doc");
+//    TalkBean tBean = new TalkBean();
+//    tBean.setDbSale(dbSale);
+//    tBean.setDbPw0D(dbPW0D);
+//    tBean.setDb400CRM(db400);
+//    tBean.setDbEIP(dbEIP);
+//    tBean.setDbEMail(dbEMail);
+//    tBean.setDbDOC(dbDoc);
+//    this.tBean = tBean;
   }
 
   /**
@@ -57,16 +57,25 @@ public class KUtils extends bproc {
    */
   public KUtils(TalkBean tBean) {
     System.err.println("KUtils init 1");
-    dbSale = tBean.getDbSale();
-    dbPW0D = tBean.getDbPw0D();
-    db400 = tBean.getDb400CRM();
-    dbEIP = tBean.getDbEIP();
-    dbEMail = tBean.getDbEMail();
-    this.tBean = tBean;
+//    dbSale = tBean.getDbSale();
+//    dbPW0D = tBean.getDbPw0D();
+//    db400 = tBean.getDb400CRM();
+//    dbEIP = tBean.getDbEIP();
+//    dbEMail = tBean.getDbEMail();
+//    this.tBean = tBean;
   }
 
   public TalkBean getTBean() {
     return tBean;
+  }
+  
+  /**
+   * log info
+   * @param o
+   */
+  public static void info(Object o) {
+    System.out.print(">>>info...");
+    System.out.println(o);
   }
 
   /**
@@ -117,249 +126,6 @@ public class KUtils extends bproc {
     if (StringUtils.trimToEmpty(id).length() == 8 && !(sp1.matches("[A-Z]+"))) userType = "C";
 
     return userType;
-  }
-
-  /**
-   * 取得 郵遞區號 - 縣市 - 鄉鎮
-   * 
-   * @return
-   * @throws Throwable
-   */
-  public String[] getCityTownZipName(String cityCode, String townCode) throws Throwable {
-    String[] rs = new String[3];
-    if (StringUtils.isBlank(cityCode)) return rs; // 沒city就不用玩了，直接回家吧
-
-    // city
-    String sql = "select CounName FROM City where 1=1 ";
-    if (StringUtils.isNotBlank(cityCode)) sql += "and Coun = '" + cityCode + "' ";
-    String[][] ret = dbDoc.queryFromPool(sql);
-    if (ret.length == 0) return rs;
-    rs[1] = ret[0][0].trim();
-
-    // town & zip
-    sql = "select TownName, zip FROM Town where 1=1 ";
-    if (StringUtils.isNotBlank(townCode)) sql += "and Coun = '" + cityCode + "' and Town = '" + townCode + "' ";
-    ret = dbDoc.queryFromPool(sql);
-    if (ret.length == 0) return rs;
-    rs[2] = ret[0][0].trim();
-    rs[0] = ret[0][1].trim();
-
-    return rs;
-  }
-
-  /**
-   * 取得洗錢態樣
-   * 
-   * @return
-   * @throws Throwable
-   */
-  public Map getAMLDesc() throws Throwable {
-    String sql = "select * from saleRY773 where AMLType = 'AML' order by AMLNo asc";
-    String[][] retAML = dbSale.queryFromPool(sql);
-    Map mapAMLMsg = new HashMap();
-    for (int i = 0; i < retAML.length; i++) {
-      String[] retAML1 = retAML[i];
-      mapAMLMsg.put(retAML1[1], retAML1[2]);
-    }
-    return mapAMLMsg;
-  }
-
-  /**
-   * 行業別 中文 to 代碼
-   * 
-   * @param majorName
-   * @return
-   * @throws Throwable
-   */
-  public String getIndustryCodeByMajorName(String majorName) throws Throwable {
-    String sql = "SELECT CZ02,CZ09 FROM PDCZPF WHERE CZ01='INDUSTRY' And CZ09 = '" + majorName + "'";
-    String[][] retMajor = db400.queryFromPool(sql);
-    String ind = "";
-    if (retMajor.length > 0) ind = retMajor[0][0] != null ? retMajor[0][0].trim() : "";
-
-    return ind;
-  }
-
-  /**
-   * 行業別 代碼 to 中文
-   * 
-   * @param majorName
-   * @return
-   * @throws Throwable
-   */
-  public String getNameByIndCode(String indCode) throws Throwable {
-    String sql = "SELECT CZ09 FROM PDCZPF WHERE CZ01='INDUSTRY' And CZ02 = '" + indCode + "'";
-    String[][] ret = db400.queryFromPool(sql);
-    String code = "";
-    if (ret.length > 0) code = ret[0][0] != null ? ret[0][0].trim() : "";
-
-    return code;
-  }
-
-  /**
-   * 國別 - 代碼 to 中文
-   * 
-   * @param nationCode
-   * @return
-   * @throws Throwable
-   */
-  public String getCountryNameByNationCode(String nationCode) throws Throwable {
-    String sql = "SELECT CZ09 FROM PDCZPF WHERE CZ01='NATIONCODE' AND CZ02='" + nationCode + "' ";
-    String[][] ret = db400.queryFromPool(sql);
-    String name = "";
-    if (ret.length > 0) name = ret[0][0] != null ? ret[0][0].trim() : "";
-
-    return name;
-  }
-
-  /**
-   * 
-   * 用orderNo 取 orderDate
-   * 
-   * @param projectId
-   * @param custNo
-   * @return
-   * @throws Throwable
-   */
-  public String getOrderDateByOrderNo(String orderNo) throws Throwable {
-    return dbSale.queryFromPool("select top 1 orderDate from Sale05M090 where orderNo = '" + orderNo + "' ")[0][0].trim();
-  }
-
-  /**
-   * 取得QueryLog
-   * 
-   * @param projectId
-   * @param custNo
-   * @return
-   * @throws Throwable
-   */
-  public QueryLogBean getQueryLogByCustNoProjectId(String projectId, String custNo) throws Throwable {
-    QueryLogBean bean = null;
-    String sql = "select top 1 * from query_log a where a.PROJECT_ID = '" + projectId + "' and a.query_id = '" + custNo + "' order by CREATE_DATE desc , CREATE_TIME desc ";
-    String[][] ret = dbPW0D.queryFromPool(sql);
-    if (ret.length > 0) {
-      bean = new QueryLogBean();
-      bean.setQid(ret[0][0].toString().trim());
-      bean.setReason(ret[0][1].toString().trim());
-      bean.setProjectId(ret[0][2].toString().trim());
-      bean.setNationalId(ret[0][3].toString().trim());
-      bean.setQueryType(ret[0][4].toString().trim());
-      bean.setNtCode(ret[0][5].toString().trim());
-      bean.setName(ret[0][6].toString().trim());
-      bean.setQueryId(ret[0][7].toString().trim());
-      bean.setBirthday(ret[0][8].toString().trim());
-      bean.setSex(ret[0][9].toString().trim());
-      bean.setJobType(ret[0][10].toString().trim());
-      bean.setCity(ret[0][11].toString().trim());
-      bean.setTown(ret[0][12].toString().trim());
-      bean.setAddress(ret[0][13].toString().trim());
-      bean.setbStatus(ret[0][14].toString().trim());
-      bean.setcStatus(ret[0][15].toString().trim());
-      bean.setrStatus(ret[0][16].toString().trim());
-      bean.setStatus(ret[0][17].toString().trim());
-      bean.setContents(ret[0][18].toString().trim());
-      bean.setPcontents(ret[0][19].toString().trim());
-      bean.setEmpNo(ret[0][20].toString().trim());
-      bean.setIp4(ret[0][21].toString().trim());
-      bean.setCreateDate(ret[0][22].toString().trim());
-      bean.setCreateTime(ret[0][23].toString().trim());
-      bean.setUpdateDate(ret[0][24].toString().trim());
-      bean.setUpdateTime(ret[0][25].toString().trim());
-    }
-
-    return bean;
-  }
-
-  /**
-   * 取得QueryLog by projectId
-   * 
-   * @param projectId
-   * @return Map
-   * @throws Throwable
-   */
-  public Map getMapQueryLogByProjectId(String projectId) throws Throwable {
-    String sql = "select * from query_log where a.PROJECT_ID = '" + projectId + "' ";
-    String[][] ret = dbPW0D.queryFromPool(sql);
-
-    Map rs = new HashMap();
-    for (int i = 0; i < ret.length; i++) {
-      QueryLogBean bean = new QueryLogBean();
-      bean.setQid(ret[i][0].toString().trim());
-      bean.setReason(ret[i][1].toString().trim());
-      bean.setProjectId(ret[i][2].toString().trim());
-      bean.setNationalId(ret[i][3].toString().trim());
-      bean.setQueryType(ret[i][4].toString().trim());
-      bean.setNtCode(ret[i][5].toString().trim());
-      bean.setName(ret[i][6].toString().trim());
-      bean.setQueryId(ret[i][7].toString().trim());
-      bean.setBirthday(ret[i][8].toString().trim());
-      bean.setSex(ret[i][9].toString().trim());
-      bean.setJobType(ret[i][10].toString().trim());
-      bean.setCity(ret[i][11].toString().trim());
-      bean.setTown(ret[i][12].toString().trim());
-      bean.setAddress(ret[i][13].toString().trim());
-      bean.setbStatus(ret[i][14].toString().trim());
-      bean.setcStatus(ret[i][15].toString().trim());
-      bean.setrStatus(ret[i][16].toString().trim());
-      bean.setStatus(ret[i][17].toString().trim());
-      bean.setContents(ret[i][18].toString().trim());
-      bean.setPcontents(ret[i][19].toString().trim());
-      bean.setEmpNo(ret[i][20].toString().trim());
-      bean.setIp4(ret[i][21].toString().trim());
-      bean.setCreateDate(ret[i][22].toString().trim());
-      bean.setCreateTime(ret[i][23].toString().trim());
-      bean.setUpdateDate(ret[i][24].toString().trim());
-      bean.setUpdateTime(ret[i][25].toString().trim());
-      rs.put(ret[i][7].toString().trim(), bean);
-    }
-
-    return rs;
-  }
-
-  /**
-   * 取得QueryLog by projectId
-   * 
-   * @param projectId
-   * @return Array
-   * @throws Throwable
-   */
-  public QueryLogBean[] getArrQueryLogByProjectId(String projectId) throws Throwable {
-    String sql = "select * from query_log where a.PROJECT_ID = '" + projectId + "' ";
-    String[][] ret = dbPW0D.queryFromPool(sql);
-
-    QueryLogBean[] rs = new QueryLogBean[ret.length];
-    for (int i = 0; i < ret.length; i++) {
-      QueryLogBean bean = new QueryLogBean();
-      bean.setQid(ret[i][0].toString().trim());
-      bean.setReason(ret[i][1].toString().trim());
-      bean.setProjectId(ret[i][2].toString().trim());
-      bean.setNationalId(ret[i][3].toString().trim());
-      bean.setQueryType(ret[i][4].toString().trim());
-      bean.setNtCode(ret[i][5].toString().trim());
-      bean.setName(ret[i][6].toString().trim());
-      bean.setQueryId(ret[i][7].toString().trim());
-      bean.setBirthday(ret[i][8].toString().trim());
-      bean.setSex(ret[i][9].toString().trim());
-      bean.setJobType(ret[i][10].toString().trim());
-      bean.setCity(ret[i][11].toString().trim());
-      bean.setTown(ret[i][12].toString().trim());
-      bean.setAddress(ret[i][13].toString().trim());
-      bean.setbStatus(ret[i][14].toString().trim());
-      bean.setcStatus(ret[i][15].toString().trim());
-      bean.setrStatus(ret[i][16].toString().trim());
-      bean.setStatus(ret[i][17].toString().trim());
-      bean.setContents(ret[i][18].toString().trim());
-      bean.setPcontents(ret[i][19].toString().trim());
-      bean.setEmpNo(ret[i][20].toString().trim());
-      bean.setIp4(ret[i][21].toString().trim());
-      bean.setCreateDate(ret[i][22].toString().trim());
-      bean.setCreateTime(ret[i][23].toString().trim());
-      bean.setUpdateDate(ret[i][24].toString().trim());
-      bean.setUpdateTime(ret[i][25].toString().trim());
-      rs[i] = bean;
-    }
-
-    return rs;
   }
 
   /**

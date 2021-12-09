@@ -92,7 +92,7 @@ public class CheckRiskNew2021 extends jcx.jform.sproc {
       for (int ii = 0; ii < retM356.length; ii++) {
         String desNo = retM356[ii][0].toString().trim();
         String desName = retM356[ii][1].toString().trim();
-        QueryLogBean qBean = kUtil.getQueryLogByCustNoProjectId(projectId, desNo);
+        QueryLogBean qBean = kSqlUtil.getQueryLogByCustNoProjectId(projectId, desNo);
         if (qBean == null) {
           rsMsg += "指定第三人" + desName + "查無黑名單資料，請先執行黑名單查詢 \n";
           continue;
@@ -129,7 +129,7 @@ public class CheckRiskNew2021 extends jcx.jform.sproc {
       for (int ii = 0; ii < retCustom.length; ii++) {
         String custNo = retCustom[ii][0].trim();
         RiskCustomBean cBean = new RiskCustomBean();
-        QueryLogBean qBean = kUtil.getQueryLogByCustNoProjectId(projectId, custNo);
+        QueryLogBean qBean = kSqlUtil.getQueryLogByCustNoProjectId(projectId, custNo);
         cBean.setCustomNo(custNo);
         cBean.setCustomName(retCustom[ii][1].trim());
         cBean.setBirthday(retCustom[ii][2].trim());

@@ -1355,6 +1355,6 @@ public  class  Sale05M040N  extends  bproc{
       }
     //
     public String getInformation(){
-      return "---------------button1(ÂàÀÉ).defaultValue()----------------";
-    }
+    return "---------------button1(ÂàÀÉ).defaultValue()----------------";
+  }
 }

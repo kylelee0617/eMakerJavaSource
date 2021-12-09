@@ -3,6 +3,8 @@ package Sale.AML;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.lang.StringUtils;
+
+import Farglory.util.KSqlUtils;
 import Farglory.util.KUtils;
 import jcx.db.talk;
 import jcx.jform.bproc;
@@ -11,7 +13,7 @@ public class RenewRelated extends bproc {
   public String getDefaultValue(String value) throws Throwable {
     System.out.println(">>>更新關聯人>>> Start"); 
     
-    KUtils kUtil = new KUtils();
+    KSqlUtils ksUtil = new KSqlUtils();
     String errMsg = "";
     String funcName = value.trim();
     String recordType = "更新主要客戶與他們的關聯人";
@@ -31,15 +33,15 @@ public class RenewRelated extends bproc {
     }else if(StringUtils.contains(funcName, "換名")) {
       projectId = getValue("ProjectID1").trim();
       orderNo = getValue("OrderNo").trim();
-      orderDate = kUtil.getOrderDateByOrderNo(orderNo);
+      orderDate = ksUtil.getOrderDateByOrderNo(orderNo);
     }else if(StringUtils.contains(funcName, "合約會審")) {
       projectId = getValue("ProjectID1").trim();
       orderNo = this.getValueAt("table1", 0, "OrderNo").toString().trim();
-      orderDate = kUtil.getOrderDateByOrderNo(orderNo);
+      orderDate = ksUtil.getOrderDateByOrderNo(orderNo);
     }else if(StringUtils.contains(funcName, "退戶")) {
       projectId = getValue("field1").trim();
       orderNo = getValue("field3").trim();
-      orderDate = kUtil.getOrderDateByOrderNo(orderNo);
+      orderDate = ksUtil.getOrderDateByOrderNo(orderNo);
       processType = "deleteRelated";
     }
     

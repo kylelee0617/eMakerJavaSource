@@ -1,20 +1,33 @@
 package Sale.Sale05M040;
 
-import javax.swing.*;
-import jcx.jform.bproc;
-import java.io.*;
-import java.util.*;
-import jcx.util.*;
-import jcx.html.*;
-import jcx.db.*;
-import com.jacob.com.*;
-import com.jacob.activeX.*;
+import java.io.File;
+import java.util.Vector;
+
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.jacob.activeX.ActiveXComponent;
+import com.jacob.com.ComThread;
+import com.jacob.com.Dispatch;
+import com.jacob.com.Variant;
+
 import Farglory.util.FargloryUtil;
+import Farglory.util.KUtils;
+import jcx.db.talk;
+import jcx.jform.bproc;
+import jcx.util.convert;
+import jcx.util.datetime;
 
 public class Sale05M040N extends bproc {
+  boolean isSaleLock;
+  StringBuilder sbMessage = new StringBuilder();
+
   public String getDefaultValue(String value) throws Throwable {
     // 201808check BEGIN
     System.out.println("chk==>" + getUser() + " , value==>" + value.trim());
+    
     if (getUser() != null && getUser().toUpperCase().equals("B9999")) {
       messagebox("轉檔權限不允許!!!");
       return value;
@@ -34,15 +47,26 @@ public class Sale05M040N extends bproc {
     } else {
       return value;
     }
+
     //
     if (!isBatchCheckOK(exeUtil)) return value;
+
+    //已售保護
+    String strSaleLock = this.getValue("IsSaleLock").trim();
+    isSaleLock = StringUtils.equals(strSaleLock, "1") ? true : false;
+
     boolean booleanOK = doUpdate(exeUtil);
     if (booleanOK) {
       JOptionPane.showMessageDialog(null, "價目表轉檔成功。", "訊息", JOptionPane.ERROR_MESSAGE);
+      if(isSaleLock && sbMessage.length() > 0) {
+        String msg = sbMessage.toString();
+        if( sbMessage.toString().split(",").length > 20 ) msg = "太多了列出來會爆炸";
+        JOptionPane.showMessageDialog(null, "已售保護戶:" + msg, "訊息", JOptionPane.ERROR_MESSAGE);
+      }
     } else {
       JOptionPane.showMessageDialog(null, "價目表轉檔失敗。", "訊息", JOptionPane.ERROR_MESSAGE);
     }
-    // message("11111") ;
+    
     return value;
   }
 
@@ -81,6 +105,7 @@ public class Sale05M040N extends bproc {
     Object object3A1 = retVector.get(7);
     Object object4A1 = retVector.get(8);
     // 2012-11-05 B3018 修改 E
+
     // 車位
     // Dispatch.call(object1A1, "Select");
     System.out.println("stringType:" + stringType);
@@ -98,8 +123,7 @@ public class Sale05M040N extends bproc {
       // 2012-11-05 B3018 E
     }
     System.out.println("ee-------------------------------------------------------");
-    // System.out.println("車位-----" + stringTemp+"----"+arrayTemp.length +
-    // "--------------"+intCarTotalRow) ;
+
     // 房屋
     // Dispatch.call(object2A1, "Select");
     if ("全部".equals(stringType) || "房屋".equals(stringType)) {
@@ -107,6 +131,7 @@ public class Sale05M040N extends bproc {
       stringTemp = Dispatch.call(objectUsedRange, "Address").toString();
       arrayTemp = convert.StringToken(stringTemp, "$");
       intHouseTotalRow = Integer.parseInt(arrayTemp[4].trim());
+
       // 2012-11-05 B3018 S
       objectUsedRange = Dispatch.get(objectSheet4, "UsedRange").toDispatch();
       stringTemp = Dispatch.call(objectUsedRange, "Address").toString();
@@ -115,6 +140,7 @@ public class Sale05M040N extends bproc {
       // 2012-11-05 B3018 E
     }
     System.out.println("ff房屋-----" + stringTemp + "----" + arrayTemp.length + "--------------" + intHouseTotalRow);
+
     // 欄位名稱檢核 房屋價目表
     // Dispatch.call(object2A1, "Select");
     for (int intFieldNo = 0; intFieldNo < arrayHouseField.length; intFieldNo++) {
@@ -136,6 +162,7 @@ public class Sale05M040N extends bproc {
       }
       // 2012-11-05 B3018 E
     }
+
     // 欄位名稱檢核 車位價目表
     // Dispatch.call(object1A1, "Select");
     for (int intFieldNo = 0; intFieldNo < arrayCarField.length; intFieldNo++) {
@@ -158,6 +185,7 @@ public class Sale05M040N extends bproc {
       }
       // 2012-11-05 B3018 E
     }
+
     // Start 修改日期:20100426 員工編號:B3774
     // 比對EXCEL坪數和Sale05M402坪數是否一致
     String retData[][] = new String[0][0];
@@ -169,79 +197,13 @@ public class Sale05M040N extends bproc {
     String stringPingSu = "";
     boolean blnHasPosition = false;
     //
-    /*
-     * 2013-08-20 B3018 先註解 if("全部".equals(stringType) || "房屋".equals(stringType)){
-     * stringSql = "select TOP 1 VisionKind, Vision "+ "from Sale05M401 "+
-     * "where ProjectID1='"+stringProjectID1+"' "+ "and HouseCar='House' "+
-     * "and convert(char(10),getdate(),111) between StartDate and EndDate "+
-     * "order by VisionKind desc"; retData = dbSale.queryFromPool(stringSql);
-     * if(retData.length == 0){ message("房屋 沒有坪數資料可以比對!");
-     * getReleaseExcelObject(retVector); return false; }else{ stringVisionKind =
-     * retData[0][0]; stringVision = retData[0][1]; // stringSql =
-     * "select Position, TotalPingSu, TotalSquare "+ "from Sale05M402 "+
-     * "where ProjectID1='"+stringProjectID1+"' "+
-     * "and VisionKind='"+stringVisionKind+"' "+ "and Vision="+stringVision;
-     * retSale05M402 = dbSale.queryFromPool(stringSql); if(retSale05M402.length ==
-     * 0){ message("房屋 沒有坪數資料可以比對!"); getReleaseExcelObject(retVector); return
-     * false; } } // for(int intRow=1; intRow<intHouseTotalRow; intRow++){
-     * blnHasPosition = false; stringPosition = getDataFromExcel( 2, intRow,
-     * objectSheet2); stringPingSu = getDataFromExcel(10, intRow, objectSheet2); //
-     * if("null".equals(stringPosition)) continue ; // 2012-11-26 B3018 新增
-     * if("null".equals(stringPingSu)) stringPingSu = "0" ; // 2012-11-26 B3018 新增
-     * if("".equals(stringPingSu)) stringPingSu = "0" ; // if
-     * (getSale05M092Count(stringPosition)<= 0){ for(int intNo=0;
-     * intNo<retSale05M402.length; intNo++){
-     * System.out.println("["+intRow+"]["+intNo+
-     * "--------------------------------------stringPosition("+stringPosition+")("+
-     * retSale05M402[intNo][0]+")") ; System.out.println(intNo+
-     * "--------------------------------------stringPingSu("+stringPingSu+")("+
-     * retSale05M402[intNo][1]+")") ;
-     * if(stringPosition.equals(retSale05M402[intNo][0])){
-     * if(operation.compareTo(stringPingSu,retSale05M402[intNo][1]) != 0){
-     * message("房屋 " +stringPosition+"的坪數錯誤!"); getReleaseExcelObject(retVector);
-     * return false; } blnHasPosition = true; } } if(!blnHasPosition){
-     * message("房屋 沒有"+stringPosition+"的面積資料!"); getReleaseExcelObject(retVector);
-     * return false; } } } } 2013-08-20 B3018 先註解
-     */
+
     // End 修改日期:20100426 員工編號:B3774
     String stringCarArea = ""; //
     String stringCarVisionKind = "";
     String stringCarVision = "0";
     String[][] retSale05M407 = new String[0][0];
-    /*
-     * 2013-08-20 B3018 先註解 if("全部".equals(stringType) || "車位".equals(stringType)) {
-     * // 坪數檢查 stringSql = "select TOP 1 VisionKind, Vision "+ "from Sale05M401 "+
-     * "where ProjectID1='"+stringProjectID1+"' "+ "and HouseCar='Car' "+
-     * "and convert(char(10),getdate(),111) between StartDate and EndDate "+
-     * "order by VisionKind desc"; retData = dbSale.queryFromPool(stringSql);
-     * if(retData.length == 0){ message("車位 沒有坪數資料可以比對!");
-     * getReleaseExcelObject(retVector); return false; }else{ stringCarVisionKind =
-     * retData[0][0]; stringCarVision = retData[0][1]; // stringSql =
-     * "select Position, BuildingSquare "+ "from Sale05M407 "+
-     * "where ProjectID1='"+stringProjectID1+"' "+
-     * "and VisionKind='"+stringCarVisionKind+"' "+ "and Vision="+stringCarVision;
-     * retSale05M407 = dbSale.queryFromPool(stringSql); if(retSale05M407.length ==
-     * 0){ message("車位 沒有坪數資料可以比對!"); getReleaseExcelObject(retVector); return
-     * false; } } // for(int intRow=1; intRow<intCarTotalRow; intRow++){
-     * blnHasPosition = false; stringPosition = getDataFromExcel2(0, intRow,
-     * objectSheet1) ; // 戶別 stringCarArea = getDataFromExcel2(23, intRow,
-     * objectSheet1) ; // if("null".equals(stringPosition)) continue ;
-     * if("".equals(stringPosition)) continue ; if("null".equals(stringCarArea))
-     * stringCarArea = "0" ; if("".equals(stringCarArea)) stringCarArea = "0" ; //
-     * if (getSale05M092Count(stringPosition)<= 0){ for(int intNo=0;
-     * intNo<retSale05M407.length; intNo++){
-     * System.out.println(intNo+"retSale05M407["+intRow+"]["+intNo+
-     * "]--------------------------------------stringPosition("+stringPosition+")("+
-     * retSale05M407[intNo][0]+")") ; System.out.println(intNo+
-     * "retSale05M407--------------------------------------stringCarArea("+
-     * stringCarArea+")("+retSale05M407[intNo][1]+")") ;
-     * if(stringPosition.equals(retSale05M407[intNo][0])){
-     * if(operation.compareTo(stringCarArea,retSale05M407[intNo][1]) != 0){
-     * message("車位 "+stringPosition+"的坪數錯誤!"); getReleaseExcelObject(retVector);
-     * return false; } blnHasPosition = true; } } if(!blnHasPosition){
-     * message("車位 沒有"+stringPosition+"的面積資料!"); getReleaseExcelObject(retVector);
-     * return false; } } } } 2013-08-20 B3018 先註解
-     */
+
     // 資料庫動作
     int intRecord = 0;
     // String stringPosition = "" ; // 修改日期:20100426 員工編號:B3774
@@ -360,20 +322,13 @@ public class Sale05M040N extends bproc {
           intRecord++;
           break;
         }
-        // System.out.println("getSale05M092Count----------------------------------") ;
+
         if (getSale05M092Count(stringPosition) <= 0) {
           // 刪除
           stringSql = getDelete(stringPosition, "House");
-          // vectorSql.add(stringSql) ;
+
           System.out.println(intRowNo + "SQL------------------------\n" + stringSql + "\n---------------------------");
-          if (!"B3018".equals(getUser())) dbSale.execFromPool(stringSql);
-          // if(intRowNo==1) System.out.println((intRowNo+1) + "House---"+stringSql) ;
-          // 新增
-          // Start 修改日期:20100426 員工編號:B3774
-          /*
-           * if(retSale05M402 == null){ // 之後要拿掉 stringTotalSquare = null; stringVision =
-           * null; }
-           */
+          dbSale.execFromPool(stringSql);
           stringTotalSquare = "0";
           stringVisionKindL = stringVisionKind;
           stringVisionL = stringVision;
@@ -386,31 +341,53 @@ public class Sale05M040N extends bproc {
             stringVisionKindL = "";
             stringVisionL = "0";
           }
-          //
-          stringSql = getInsertH(stringPosition, stringListPriceNo, stringHCom, stringLCom, stringTypeNo,
-              // End 修改日期:20100426 員工編號:B3774
-              stringPingSu, stringListUintPrice, stringListPrice, stringHListPrice, stringLListPrice,
-              // Start 修改日期:20100426 員工編號:B3774
-              // stringFloorUnitPrice, stringFloorPrice, stringHFloorPrice, stringLFloorPrice,
-              // "House",stringSaleKind) ;
-              stringFloorUnitPrice, stringFloorPrice, stringHFloorPrice, stringLFloorPrice, "House", stringSaleKind, stringTotalSquare, stringVisionKindL, stringVisionL,
-              stringSaleFlag, stringMainUse, stringBuildCd, stringBuildType, stringBuild1, stringBuild2, stringBuild3, stringBuild4, stringHratio, stringLratio, stringAHCom,
-              stringBHCom, stringALCom, stringBLCom, stringIHCom, stringILCom);
-          // End 修改日期:20100426 員工編號:B3774
-          // vectorSql.add(stringSql) ;
-          System.out.println(intRowNo + "SQL------------------------\n" + stringSql + "\n---------------------------");
-          if (!"B3018".equals(getUser())) dbSale.execFromPool(stringSql);
-          // if(intRowNo==1) System.out.println((intRowNo+1) + "House---"+stringSql) ;
+
+          // 寫入sale05M040
+          stringSql = getInsertH(stringPosition, stringListPriceNo, stringHCom, stringLCom, stringTypeNo, stringPingSu, stringListUintPrice, stringListPrice, stringHListPrice,
+              stringLListPrice, stringFloorUnitPrice, stringFloorPrice, stringHFloorPrice, stringLFloorPrice, "House", stringSaleKind, stringTotalSquare, stringVisionKindL,
+              stringVisionL, stringSaleFlag, stringMainUse, stringBuildCd, stringBuildType, stringBuild1, stringBuild2, stringBuild3, stringBuild4, stringHratio, stringLratio,
+              stringAHCom, stringBHCom, stringALCom, stringBLCom, stringIHCom, stringILCom);
+          dbSale.execFromPool(stringSql);
+          
+          //TODO: 更新訂單 合約 直接update，若沒有訂單不受影響
+          Vector vSql = new Vector();
+          //092 訂單棟樓 (坪數、牌價)
+          String sql = "update sale05m092 "
+              + "set PingSu = "+stringPingSu+" , ListPrice = "+stringListPrice+" "
+              + "where OrderNo like '%"+getValue("ProjectId").trim()+"%' AND [Position] = '"+stringPosition+"' ";
+          vSql.add(sql);
+          
+          //278 合約棟樓 (坪數、牌價、底價)
+          sql = "update Sale05M278 "
+              + "set PingSu = "+stringPingSu+" , ListPrice = "+stringListPrice+" , FloorPrice = "+stringFloorPrice+" , BalaMoney = PureMoney-"+stringFloorPrice+" "
+              + "where OrderNo like '%"+getValue("ProjectId").trim()+"%' AND [Position] = '"+stringPosition+"' ";
+          vSql.add(sql);
+          
+          //start 289 合約棟樓房土 (分房土 牌價 底價)
+          sql = "update Sale05M289 "
+              + "set ListPrice = "+stringHListPrice+" , FloorPrice = "+stringHFloorPrice+" , BalaMoney = PureMoney-"+stringHFloorPrice+" "
+              + "where OrderNo like '%"+getValue("ProjectId").trim()+"%' AND [Position] = '"+stringPosition+"' AND types = 'H' ";
+          vSql.add(sql);  //房
+          
+          sql = "update Sale05M289 "
+              + "set ListPrice = "+stringLListPrice+" , FloorPrice = "+stringLFloorPrice+" , BalaMoney = PureMoney-"+stringLFloorPrice+" "
+              + "where OrderNo like '%"+getValue("ProjectId").trim()+"%' AND [Position] = '"+stringPosition+"' AND types = 'L' ";
+          vSql.add(sql);  //土
+          //end 289
+          
+          //執行SQL
+          if(vSql.size() > 0) dbSale.execFromPool((String[]) vSql.toArray(new String[0]));
+
           intRecord++;
         } else {
-          System.out.println("以賣:" + stringPosition);
+          System.out.println("房已售:" + stringPosition);
+          if(sbMessage.length() > 0) sbMessage.append(",");
+          sbMessage.append(stringPosition);
         }
       }
       // 房屋價目表 合計
-      // 刪除
-      stringSql = getDeleteSale05M342("House");
-      System.out.println("2 房屋合計  SQL------------------------\n" + stringSql + "\n---------------------------");
-      if (!"B3018".equals(getUser())) dbSale.execFromPool(stringSql);
+
+      // Sale05M342
       for (int intRowNo = 1; intRowNo < intHouseTotalRow2; intRowNo++) {
         System.out.println("2房屋合計--------------------------------");
         stringPosition = getDataFromExcel(2, intRowNo, objectSheet4); // 戶別
@@ -444,6 +421,11 @@ public class Sale05M040N extends bproc {
         stringBLCom = getDataFromExcel2(33, intRowNo, objectSheet4); // 受託銷售人-土地
         stringIHCom = getDataFromExcel2(34, intRowNo, objectSheet4); // 代收公司別-房屋 2014-02-10 B3018 新增
         stringILCom = getDataFromExcel2(35, intRowNo, objectSheet4); // 代收公司別-土地 2014-02-10 B3018 新增
+
+        // 刪除
+        stringSql = getDeleteSale05M342_2("House", stringPosition);
+        dbSale.execFromPool(stringSql);
+
         //
         if ("null".equals(stringMainUse)) stringMainUse = ""; // 2012-08-03 B3018 新增
         if ("null".equals(stringBuildCd)) stringBuildCd = ""; // 2012-08-03 B3018 新增
@@ -454,9 +436,6 @@ public class Sale05M040N extends bproc {
         if ("null".equals(stringBuild4)) stringBuild4 = ""; // 2012-08-03 B3018 新增
         if ("null".equals(stringHratio)) stringHratio = ""; // 2014-01-02 B3018 修改
         if ("null".equals(stringLratio)) stringLratio = ""; // 2014-01-02 B3018 修改
-        // System.out.println("2-"+intRowNo+"房屋
-        // stringHratio("+stringHratio+")stringLratio("+stringLratio+")---------------------------------------------NEW")
-        // ;
         if ("null".equals(stringAHCom)) stringAHCom = ""; // 2012-11-05 B3018 新增
         if ("null".equals(stringBHCom)) stringBHCom = ""; // 2012-11-05 B3018 新增
         if ("null".equals(stringALCom)) stringALCom = ""; // 2012-11-05 B3018 新增
@@ -485,23 +464,27 @@ public class Sale05M040N extends bproc {
           stringVision = null;
         }
         if (getSale05M092Count(stringPosition) <= 0) {
+          KUtils.info("房屋insert 342");
           stringSql = getInsertH_Sale05M342(stringPosition, stringListPriceNo, stringHCom, stringLCom, stringTypeNo, stringPingSu, stringListUintPrice, stringListPrice,
               stringHListPrice, stringLListPrice, stringFloorUnitPrice, stringFloorPrice, stringHFloorPrice, stringLFloorPrice, "House", stringSaleKind, stringTotalSquare,
               stringVisionKind, stringVision, stringSaleFlag, stringMainUse, stringBuildCd, stringBuildType, stringBuild1, stringBuild2, stringBuild3, stringBuild4, stringHratio,
               stringLratio, stringAHCom, stringBHCom, stringALCom, stringBLCom, stringIHCom, stringILCom);
-          System.out.println(intRowNo + "SQL------------------------\n" + stringSql + "\n---------------------------");
-          if (!"B3018".equals(getUser())) dbSale.execFromPool(stringSql);
+          KUtils.info(intRowNo + "房屋insert 342 SQL------------------------\n" + stringSql + "\n---------------------------");
+          dbSale.execFromPool(stringSql);
           intRecord++;
         }
       }
+
+      // 補insert342 : 在040有，而342沒有，也沒在上表的
       stringSql = "insert  into  Sale05M342  select  *  from  sale05m040  where  ProjectID1  =  '" + stringProjectId + "'  and  HouseCar = 'House' "
           + "and  Position not in (select Position  from Sale05M342  where  ProjectID1  =  '" + stringProjectId + "'  and  HouseCar = 'House') ";
       System.out.println("SQL------------------------\n" + stringSql + "\n---------------------------");
-      if (!"B3018".equals(getUser())) dbSale.execFromPool(stringSql);
+      dbSale.execFromPool(stringSql);
     }
-    // System.out.println("House-----共" + intRecord + "筆") ;
     stringMessage = "房屋價目表 已轉入" + intRecord + "筆";
     intRecord = 0;
+
+    
     // 車位
     String stringCarCd = ""; // 2012-08-03 B3018 新增
     String stringCarType = ""; // 2012-08-03 B3018 新增
@@ -593,37 +576,59 @@ public class Sale05M040N extends bproc {
         if (getSale05M092Count(stringPosition) <= 0) {
           // 刪除
           stringSql = getDelete(stringPosition, "Car");
-          // vectorSql.add(stringSql) ;
           System.out.println(intRowNo + "SQL------------------------\n" + stringSql + "\n---------------------------");
-          if (!"B3018".equals(getUser())) dbSale.execFromPool(stringSql);
-          // if(intRowNo==1) System.out.println((intRowNo+1) + "Car---"+stringSql) ;
-          // 新增
-          // Start 修改日期:20100507 員工編號:B3774
-          /*
-           * stringSql = getInsert(stringPosition, stringListPriceNo, stringHCom,
-           * stringLCom, stringTypeNo, stringPingSu, stringListUintPrice, stringListPrice,
-           * stringHListPrice, stringLListPrice, stringFloorUnitPrice, stringFloorPrice,
-           * stringHFloorPrice, stringLFloorPrice, "Car",stringSaleKind) ;
-           */
+          dbSale.execFromPool(stringSql);
+
           stringSql = getInsertC(stringPosition, stringListPriceNo, stringHCom, stringLCom, stringTypeNo, stringPingSu, stringListUintPrice, stringListPrice, stringHListPrice,
               stringLListPrice, stringFloorUnitPrice, stringFloorPrice, stringHFloorPrice, stringLFloorPrice, "Car", stringSaleKind, stringCarKind1, stringCarKind2, stringCarSize,
               stringCarPaper, stringSaleFlag, stringCarCd, stringCarType, stringCarArea, stringCarHratio, stringCarLratio, stringCarAHCom, stringCarBHCom, stringCarALCom,
               stringCarBLCom, stringCarMainUse, stringCarVisionKind, stringCarVision, stringIHCom, stringILCom);
-          // End 修改日期:20100507 員工編號:B3774
-          // vectorSql.add(stringSql) ;
-          System.out.println(intRowNo + "SQL------------------------\n" + stringSql + "\n---------------------------");
-          if (!"B3018".equals(getUser())) dbSale.execFromPool(stringSql);
-          // if(intRowNo==1) System.out.println("Car---"+stringSql) ;
+          dbSale.execFromPool(stringSql);
+          
+          //TODO: 更新訂單 合約 直接update，若沒有訂單不受影響
+          Vector vSql = new Vector();
+          //092 訂單棟樓 (坪數、牌價)
+          String sql = "update sale05m092 "
+              + "set PingSu = "+stringPingSu+" , ListPrice = "+stringListPrice+" "
+              + "where OrderNo like '%"+getValue("ProjectId").trim()+"%' AND [Position] = '"+stringPosition+"' ";
+          vSql.add(sql);
+          
+          //278 合約棟樓 (坪數、牌價、底價)
+          sql = "update Sale05M278 "
+              + "set PingSu = "+stringPingSu+" , ListPrice = "+stringListPrice+" , FloorPrice = "+stringFloorPrice+" , BalaMoney = PureMoney-"+stringFloorPrice+" "
+              + "where OrderNo like '%"+getValue("ProjectId").trim()+"%' AND [Position] = '"+stringPosition+"' ";
+          vSql.add(sql);
+          
+          //289 合約棟樓房土 (分房土 牌價 底價)
+          sql = "update Sale05M289 "
+              + "set ListPrice = "+stringHListPrice+" , FloorPrice = "+stringHFloorPrice+" , BalaMoney = PureMoney-"+stringHFloorPrice+" "
+              + "where OrderNo like '%"+getValue("ProjectId").trim()+"%' AND [Position] = '"+stringPosition+"' AND types = 'H' ";
+          vSql.add(sql);  //房
+          
+          sql = "update Sale05M289 "
+              + "set ListPrice = "+stringLListPrice+" , FloorPrice = "+stringLFloorPrice+" , BalaMoney = PureMoney-"+stringLFloorPrice+" "
+              + "where OrderNo like '%"+getValue("ProjectId").trim()+"%' AND [Position] = '"+stringPosition+"' AND types = 'L' ";
+          vSql.add(sql);  //土
+          //end 289
+          
+          //執行SQL
+          if(vSql.size() > 0) dbSale.execFromPool((String[]) vSql.toArray(new String[0]));
+          
+          
           intRecord++;
         } else {
-          System.out.println("以賣--" + stringPosition);
+          System.out.println("車已售:" + stringPosition);
+          if(sbMessage.length() > 0) sbMessage.append(",");
+          sbMessage.append(stringPosition);
         }
       }
       // 2012-11-05 B3018 S
+
       // 刪除
-      stringSql = getDeleteSale05M342("Car");
-      System.out.println("4 實位合計 SQL------------------------\n" + stringSql + "\n---------------------------");
-      if (!"B3018".equals(getUser())) dbSale.execFromPool(stringSql);
+      // stringSql = getDeleteSale05M342("Car");
+      // System.out.println("4 實位合計 SQL------------------------\n" + stringSql + "\n---------------------------");
+      // dbSale.execFromPool(stringSql);
+
       for (int intRowNo = 1; intRowNo < intCarTotalRow2; intRowNo++) {
         System.out.println("4車位合計--------------------------------");
         stringPosition = getDataFromExcel(0, intRowNo, objectSheet3); // 戶別
@@ -661,6 +666,11 @@ public class Sale05M040N extends bproc {
         stringCarBLCom = getDataFromExcel2(30, intRowNo, objectSheet3); // 受託銷售人-土地
         stringIHCom = getDataFromExcel2(31, intRowNo, objectSheet3); // 代收公司別-車房 2014-02-10 B3018 新增
         stringILCom = getDataFromExcel2(32, intRowNo, objectSheet3); // 代收公司別-車土 2014-02-10 B3018 新增
+
+        // 刪除
+        stringSql = getDeleteSale05M342_2("Car", stringPosition);
+        dbSale.execFromPool(stringSql);
+
         //
         if ("null".equals(stringCarHratio)) stringCarHratio = ""; // 2014-01-02 B3018 修改
         if ("null".equals(stringCarLratio)) stringCarLratio = ""; // 2014-01-02 B3018 修改
@@ -697,14 +707,14 @@ public class Sale05M040N extends bproc {
               stringCarKind2, stringCarSize, stringCarPaper, stringSaleFlag, stringCarCd, stringCarType, stringCarArea, stringCarHratio, stringCarLratio, stringCarAHCom,
               stringCarBHCom, stringCarALCom, stringCarBLCom, stringCarMainUse, stringCarVisionKind, stringCarVision, stringIHCom, stringILCom);
           System.out.println(intRowNo + "SQL------------------------\n" + stringSql + "\n---------------------------");
-          if (!"B3018".equals(getUser())) dbSale.execFromPool(stringSql);
+          dbSale.execFromPool(stringSql);
           intRecord++;
         }
       }
       stringSql = "insert  into  Sale05M342  select  *  from  sale05m040  where  ProjectID1  =  '" + stringProjectId + "'  and  HouseCar = 'Car' "
           + "and  Position not in (select Position  from Sale05M342  where  ProjectID1  =  '" + stringProjectId + "'  and  HouseCar = 'Car') ";
       System.out.println("SQL------------------------\n" + stringSql + "\n---------------------------");
-      if (!"B3018".equals(getUser())) dbSale.execFromPool(stringSql);
+      dbSale.execFromPool(stringSql);
       // 2012-11-05 B3018 E
     }
     System.out.println("Car-----共" + intRecord + "筆");
@@ -721,8 +731,8 @@ public class Sale05M040N extends bproc {
     String stringSql = "";
     String stringProjectId = getValue("ProjectId").trim();
     //
-    stringSql = " DELETE  FROM  Sale05M040  WHERE  ProjectID1  =  '" + stringProjectId + "'  AND  HouseCar  =  '" + stringHouseCar + "'  AND  Position  =  '"
-        + stringPosition + "' ";
+    stringSql = " DELETE  FROM  Sale05M040  WHERE  ProjectID1  =  '" + stringProjectId + "'  AND  HouseCar  =  '" + stringHouseCar + "'  AND  Position  =  '" + stringPosition
+        + "' ";
     return stringSql;
   }
 
@@ -730,10 +740,18 @@ public class Sale05M040N extends bproc {
     String stringSql = "";
     String stringProjectId = getValue("ProjectId").trim();
     //
-    stringSql = " DELETE  FROM  Sale05M342  WHERE  ProjectID1  =  '" + stringProjectId + "'  AND  HouseCar  =  '" + stringHouseCar + "' "
-        + " AND  Position NOT IN (SELECT  Sale05M092.Position  FROM  Sale05M090, Sale05M092  WHERE  Sale05M090.OrderNo  =  Sale05M092.OrderNo "
-        + " AND  Sale05M090.ProjectID1 = '" + stringProjectId + "'  AND  (Sale05M090.FlowStatus <> '業管-作廢'  OR  Sale05M090.FlowStatus IS NULL) "
-        + " AND ISNULL(StatusCd,'')<>'D' )";
+    stringSql = "DELETE  FROM  Sale05M342  WHERE  ProjectID1  =  '" + stringProjectId + "'  AND  HouseCar  =  '" + stringHouseCar + "' "
+        + "AND Position NOT IN (SELECT Sale05M092.Position FROM Sale05M090, Sale05M092  WHERE Sale05M090.OrderNo = Sale05M092.OrderNo AND Sale05M090.ProjectID1 = '"
+        + stringProjectId + "' AND  (Sale05M090.FlowStatus <> '業管-作廢'  OR  Sale05M090.FlowStatus IS NULL) AND ISNULL(StatusCd,'')<>'D' )";
+    return stringSql;
+  }
+
+  // test
+  public String getDeleteSale05M342_2(String stringHouseCar, String position) throws Throwable {
+    String stringSql = "";
+    String stringProjectId = getValue("ProjectId").trim();
+    //
+    stringSql = "DELETE  FROM  Sale05M342  WHERE  ProjectID1 = '" + stringProjectId + "' AND HouseCar = '" + stringHouseCar + "' AND Position = '" + position + "' ";
     return stringSql;
   }
 
@@ -812,13 +830,13 @@ public class Sale05M040N extends bproc {
         + "L_Com,          TypeNo,       PingSu,             ListUnitPrice, ListPrice, H_ListPrice,    L_ListPrice,  FloorUnitPrice, FloorPrice,    H_FloorPrice, "
         + "L_FloorPrice, SaleKind,      CarKind1,         CarKind2,      CarSize,    CarPaper,       EmployeeNo, EDateTime,     SaleFlag,       CarCd,  "
         + "CarType,         CarArea,       CarHratio,         CarLratio,      CarAH_Com, CarBH_Com,    CarAL_Com,  CarBL_Com,   Hratio,            Lratio,  "
-        + " CarMainUse,    CarVisionKind ,CarVision,    IH_Com,         IL_Com,  MFlag,               StartUseDate,  CheckDateTime,  CheckMan) VALUES ( '"
-        + stringProjectId + "',  '" + stringHouseCar + "', " + // 例外，14
+        + " CarMainUse,    CarVisionKind ,CarVision,    IH_Com,         IL_Com,  MFlag,               StartUseDate,  CheckDateTime,  CheckMan) VALUES ( '" + stringProjectId
+        + "',  '" + stringHouseCar + "', " + // 例外，14
         " '" + stringPosition + "',  '" + stringListPriceNo + "',  '" + stringHCom + "', " + // 04
         " '" + stringLCom + "',  '" + stringTypeNo + "', " + stringPingSu + ", " + stringListUintPrice + ", " + stringListPrice + ", " + // 09
         stringHListPrice + ", " + stringLListPrice + ", " + stringFloorUnitPrice + ", " + stringFloorPrice + ", " + stringHFloorPrice + ", " + // 14
-        stringLFloorPrice + ",  '" + stringSaleKind + "',  '" + stringCarKind1 + "',  '" + stringCarKind2 + "',  '" + stringCarSize + "',  '"
-        + stringCarPaper + "',  '" + getUser() + "',  '" + datetime.getTime("YYYY/mm/dd h:m:s") + "',  '" + stringSaleFlag + "',  " + // 2012/06/29 B3018 修改
+        stringLFloorPrice + ",  '" + stringSaleKind + "',  '" + stringCarKind1 + "',  '" + stringCarKind2 + "',  '" + stringCarSize + "',  '" + stringCarPaper + "',  '" + getUser()
+        + "',  '" + datetime.getTime("YYYY/mm/dd h:m:s") + "',  '" + stringSaleFlag + "',  " + // 2012/06/29 B3018 修改
         " '" + stringCarCd + "',  " + // 2012-08-03 B3018 修改
         " '" + stringCarType + "',  " + // 2012-08-03 B3018 修改
         "  " + stringCarArea + ",  " + // 2012-08-03 B3018 修改
@@ -910,16 +928,15 @@ public class Sale05M040N extends bproc {
         + "L_FloorPrice, SaleKind,     EmployeeNo,    EDateTime,   Square, VisionKind,     Vision,         SaleFlag,          MainUse,        BuildCd, "
         + "BuildType,      Build1,         Build2,              Build3,           Build4,   Hratio,             Lratio,          AH_Com,         BH_Com,       AL_Com, "
         + " BL_Com,        CarHratio,   CarLratio,          CarMainUse,  CarVisionKind,  CarVision,      IH_Com,       IL_Com,             MFlag,           StartUseDate, "
-        + " CheckDateTime,     CheckMan)  VALUES ( '" + stringProjectId + "',  '" + stringHouseCar + "',  '" + stringPosition + "',  '" + stringListPriceNo
-        + "',  '" + stringHCom + "',  '" + stringLCom + "',  '" + stringTypeNo + "', " + stringPingSu + ", " + stringListUintPrice + ", " + stringListPrice + ", "
-        + stringHListPrice + ", " + stringLListPrice + ", " + stringFloorUnitPrice + ", " + stringFloorPrice + ", " + stringHFloorPrice + ", " + stringLFloorPrice + ",  '"
-        + stringSaleKind + "'  , '" + getUser() + "', '" + datetime.getTime("YYYY/mm/dd h:m:s") + "',  " + stringTotalSquare + ", '" + stringVisionKind + "',"
-        + "  " + stringVision + ", '" + stringSaleFlag + "',  '" + stringMainUse + "',   '" + stringBuildCd + "',   '" + stringBuildType + "',   '"
-        + stringBuild1 + "',   '" + stringBuild2 + "',   '" + stringBuild3 + "',   '" + stringBuild4 + "',  '" + stringHratio + "', " + // 2014-01-02 B3018 修改
+        + " CheckDateTime,     CheckMan)  VALUES ( '" + stringProjectId + "',  '" + stringHouseCar + "',  '" + stringPosition + "',  '" + stringListPriceNo + "',  '" + stringHCom
+        + "',  '" + stringLCom + "',  '" + stringTypeNo + "', " + stringPingSu + ", " + stringListUintPrice + ", " + stringListPrice + ", " + stringHListPrice + ", "
+        + stringLListPrice + ", " + stringFloorUnitPrice + ", " + stringFloorPrice + ", " + stringHFloorPrice + ", " + stringLFloorPrice + ",  '" + stringSaleKind + "'  , '"
+        + getUser() + "', '" + datetime.getTime("YYYY/mm/dd h:m:s") + "',  " + stringTotalSquare + ", '" + stringVisionKind + "',  " + stringVision + ", '" + stringSaleFlag
+        + "',  '" + stringMainUse + "',   '" + stringBuildCd + "',   '" + stringBuildType + "',   '" + stringBuild1 + "',   '" + stringBuild2 + "',   '" + stringBuild3 + "',   '"
+        + stringBuild4 + "',  '" + stringHratio + "', " + // 2014-01-02 B3018 修改
         " '" + stringLratio + "', " + // 2014-01-02 B3018 修改
-        " '" + stringAHCom + "' ,  '" + stringBHCom + "' ,  '" + stringALCom + "' ,  '" + stringBLCom + "' ,   0,    0,   '"
-        + "',   '',    0 ,   '" + stringIHCom + "',  " + // 2014-02-10 B3018 修改
-        "  '" + stringILCom + "' , " + // 2014-02-10 B3018 修改
+        " '" + stringAHCom + "' ,  '" + stringBHCom + "' ,  '" + stringALCom + "' ,  '" + stringBLCom + "' ,   0,    0,   '',   '',    0 ,   '" + stringIHCom + "',    '"
+        + stringILCom + "' , " + // 2014-02-10 B3018 修改
         "   'Y' , " + // 2017-06-02 B3018 修改
         "   '" + stringStartUseDate + "' , " + // 2017-06-02 B3018 修改
         "   '' , " + // 2017-06-02 B3018 修改
@@ -996,12 +1013,14 @@ public class Sale05M040N extends bproc {
     return true;
   }
 
-  //
+  // 檢查是否已售 (在Sale05M092中有資料)
   public int getSale05M092Count(String stringPosition) throws Throwable {
+    if (!isSaleLock) return 0; // 不檢核已售
     talk dbSale = getTalk("" + get("put_dbSale"));
-    String stringSql = " SELECT Sale05M092.Position FROM Sale05M090,Sale05M092   WHERE Sale05M090.OrderNo = Sale05M092.OrderNo  AND Sale05M090.ProjectID1 = '"
-        + getValue("ProjectId").trim() + "' AND Sale05M092.Position = '" + stringPosition + "'"
-        + " AND (Sale05M090.FlowStatus <> '業管-作廢' OR Sale05M090.FlowStatus IS NULL)  AND ISNULL(StatusCd,'')<>'D' ";
+    String stringSql = "SELECT Sale05M092.Position FROM Sale05M090,Sale05M092 WHERE Sale05M090.OrderNo = Sale05M092.OrderNo AND Sale05M090.ProjectID1 = '"
+        + getValue("ProjectId").trim() + "' AND Sale05M092.Position = '" + stringPosition + "' "
+        + "AND (Sale05M090.FlowStatus <> '業管-作廢' OR Sale05M090.FlowStatus IS NULL)  AND ISNULL(StatusCd,'')<>'D' ";
+
     String retSale05M092[][] = dbSale.queryFromPool(stringSql);
     return retSale05M092.length;
   }

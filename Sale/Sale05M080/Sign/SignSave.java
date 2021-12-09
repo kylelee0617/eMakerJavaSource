@@ -1,13 +1,21 @@
 package Sale.Sale05M080.Sign;
 
-import javax.swing.*;
-import jcx.jform.bproc;
-import java.io.*;
-import java.util.*;
-import jcx.util.*;
-import jcx.html.*;
-import jcx.db.*;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Random;
+import java.util.Vector;
+
+import javax.swing.JOptionPane;
+
+import org.apache.commons.lang.StringUtils;
+
 import Farglory.util.KUtils;
+import jcx.db.talk;
+import jcx.jform.bproc;
+import jcx.util.code;
+import jcx.util.convert;
+import jcx.util.datetime;
 
 /**
  * 行銷發票在這開
@@ -1091,7 +1099,7 @@ public class SignSave extends bproc {
         //
         if ("".equals(stringInvoiceTotalMoney)) continue;
 
-        stringSql = "UPDATE  InvoM041  SET  InvoiceTotalMoney  =  " + stringInvoiceTotalMoney + " WHERE  DiscountNo  =  '" + stringDiscountNo + "' AND  InvoiceNo  =  '"
+        stringSql = "UPDATE  InvoM041  SET  InvoiceTotalMoney  =  " + stringInvoiceTotalMoney + " WHERE  DiscountNo  =  '" + stringDiscountNo + "' " + " AND  InvoiceNo  =  '"
             + stringInvoiceNo + "' ";
         vectorSql.add(stringSql);
 
@@ -1128,7 +1136,7 @@ public class SignSave extends bproc {
     String[][] retSale05M080Data = null;
     String[][] retSale05M084Data = null;
     //
-    stringSql = " SELECT ProjectID1, EDate, CashMoney FROM Sale05M080 WHERE DocNo = '" + docNo.trim() + "' AND NoticeBLCASH = 'N'";
+    stringSql = " SELECT ProjectID1, EDate, CashMoney " + " FROM Sale05M080 " + " WHERE DocNo = '" + docNo.trim() + "' AND NoticeBLCASH = 'N'";
     retSale05M080Data = dbSale.queryFromPool(stringSql);
 
     double limitMaxAmt = 0.0d;
@@ -1387,9 +1395,9 @@ public class SignSave extends bproc {
     String stringSql = "";
     String[][] retSale05M040 = null;
     // 0 H_Com 1 L_Com 2 Position
-    stringSql = "SELECT  DISTINCT  T040.H_Com, T040.L_Com,  T040.Position FROM  Sale05M086 T86,  Sale05M092 T92,  Sale05M081 T81,  Sale05M091 T91,  Sale05M040 T040 "
-        + " WHERE  T86.DocNo  =  '" + stringDocNo + "' AND  T92.OrderNo  =  T86.OrderNo AND  T81.DocNo  =  T86.DocNo AND  T81.Position  =  T92.Position "
-        + " AND  ISNULL(T92.StatusCd,  '')  <>  'D' AND  T92.OrderNo  =  T91.OrderNo AND  ISNULL(T91.StatusCd,  '')  <>  'C' AND  T81.Position  =  T040.Position "
+    stringSql = "SELECT  DISTINCT  T040.H_Com, T040.L_Com,  T040.Position " + " FROM  Sale05M086 T86,  Sale05M092 T92,  Sale05M081 T81,  Sale05M091 T91,  Sale05M040 T040 "
+        + " WHERE  T86.DocNo  =  '" + stringDocNo + "' " + " AND  T92.OrderNo  =  T86.OrderNo " + " AND  T81.DocNo  =  T86.DocNo " + " AND  T81.Position  =  T92.Position "
+        + " AND  ISNULL(T92.StatusCd,  '')  <>  'D' " + " AND  T92.OrderNo  =  T91.OrderNo " + " AND  ISNULL(T91.StatusCd,  '')  <>  'C' " + " AND  T81.Position  =  T040.Position "
         + //
         " AND  T81.HouseCar  =  T040.HouseCar " + //
         " AND  T040.ProjectID1  =  '" + stringProjectID1 + "' ";
@@ -1402,7 +1410,7 @@ public class SignSave extends bproc {
     String stringCompanyCd = "";
     String[][] retACom = null;
     //
-    stringSql = "SELECT  COMPANY_CD FROM  A_COM WHERE  Com_No  =  '" + stringComNo + "' ";
+    stringSql = "SELECT  COMPANY_CD " + " FROM  A_COM " + " WHERE  Com_No  =  '" + stringComNo + "' ";
     retACom = dbSale.queryFromPool(stringSql);
     if (retACom.length != 0) {
       stringCompanyCd = retACom[0][0].trim();
@@ -1415,7 +1423,7 @@ public class SignSave extends bproc {
     String stringCompanyName = "";
     String[][] retACom = null;
     //
-    stringSql = "SELECT  Com_Name FROM  A_COM WHERE  COMPANY_CD  =  '" + stringCompanyCd + "' ";
+    stringSql = "SELECT  Com_Name " + " FROM  A_COM " + " WHERE  COMPANY_CD  =  '" + stringCompanyCd + "' ";
     retACom = dbSale.queryFromPool(stringSql);
     if (retACom.length != 0) {
       stringCompanyName = doStringSubstring(retACom[0][0].trim(), 0, 6);
@@ -1446,7 +1454,7 @@ public class SignSave extends bproc {
       stringYM = (Integer.parseInt(stringEDate.substring(0, 4)) - 1911) + stringEDate.substring(5, 7);
     }
     //
-    stringSql = "SELECT  MAX(DiscountNo) FROM  InvoM040 WHERE  CompanyNo  =  '" + stringCompanyCd + "' AND  DepartNo  =  '" + stringDepartNo + "' "
+    stringSql = "SELECT  MAX(DiscountNo) " + " FROM  InvoM040 " + " WHERE  CompanyNo  =  '" + stringCompanyCd + "' " + " AND  DepartNo  =  '" + stringDepartNo + "' "
         + " AND  SUBSTRING(DiscountDate, 1, 7)  =  SUBSTRING('" + stringEDate + "' , 1, 7) ";
     retInvoM040 = dbInvoice.queryFromPool(stringSql);
     // if (retInvoM040.length > 0){
@@ -1487,7 +1495,7 @@ public class SignSave extends bproc {
     stringSql = "INSERT  INTO  InvoM040 ( DiscountNo,     DiscountDate,              CompanyNo,         DepartNo,                           ProjectNo, "
         + " HuBei,              CustomNo,                    DiscountWay,       NewHuBeiORCustomNo,  DiscountMoney, "
         + " DiscountTax,   DiscountTotalMoney,  PrintYes,               PrintTimes,                         DELYes, "
-        + " LuChangYes,  EmployeeNo,                ModifyDateTime,  ProcessDiscountNo ) VALUES ( '" + stringDiscountNo + "', " + // 折讓單號碼
+        + " LuChangYes,  EmployeeNo,                ModifyDateTime,  ProcessDiscountNo ) " + " VALUES ( '" + stringDiscountNo + "', " + // 折讓單號碼
         " '" + stringEDate + "', " + // 折讓單日期
         " '" + stringCompanyCd + "', " + // 公司代碼
         " '" + stringDepartNo + "', " + // 部門代碼
@@ -1514,7 +1522,7 @@ public class SignSave extends bproc {
     String stringSql = "";
     String[][] retInvoM041 = null;
     // 0 DiscountNo 1 RecordNo
-    stringSql = "SELECT  DiscountNo,  RecordNo FROM  InvoM041 WHERE  DiscountNo  =  '" + stringDiscountNo + "' ";
+    stringSql = "SELECT  DiscountNo,  RecordNo " + " FROM  InvoM041 " + " WHERE  DiscountNo  =  '" + stringDiscountNo + "' ";
     // System.out.println("getInsertInvoM041-----------------"+stringSql) ;
     retInvoM041 = dbInvoice.queryFromPool(stringSql);
     return retInvoM041;
@@ -1960,9 +1968,14 @@ public class SignSave extends bproc {
     // 依照2020/12/11電子發票會議紀錄:
     // 1.若發票日非開立當日，則開立時間加 addHour 小時
     // 2.若加 addHour 後大於等於24點，以23點計
-    // 3.2021/10/19 申請書20210723006變更為四小時
-    int addHour = 4;
-    if (!stringDateTime.split(" ")[0].trim().equals(stringEDate)) {
+    // 3.2021/10/19 申請書20210723006變更為4小時
+    int addHour = 4; // 設定發票時間要 + 多少小時
+
+    // 2021/11/23 申請書20210723006 新增需求 : 只有開兩天前的發票要異動時間
+    KUtils util = new KUtils();
+    String invoiceOpenDate = stringDateTime.split(" ")[0].trim(); // 切出發票開立日期
+
+    if (StringUtils.equals(stringEDate, util.getDateAfterNDays(invoiceOpenDate, "/", -2))) {
       String[] arrTmpTime = strInvoiceTime.split(":");
       int addedTime = Integer.parseInt(arrTmpTime[0].trim()) + addHour;
       int tmpTimeH = addedTime >= 24 ? 23 : addedTime;

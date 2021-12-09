@@ -36,7 +36,7 @@ public class KSqlUtils extends bproc {
    * 被前端呼叫，能自行產生talk物件
    */
   public KSqlUtils() {
-    System.err.println("KUtils init 0");
+    System.err.println("KSqlUtils init 0");
     dbSale = getTalk("Sale");
     dbPW0D = getTalk("pw0d");
     db400 = getTalk("400CRM");
@@ -60,7 +60,7 @@ public class KSqlUtils extends bproc {
    * @param tBean talk物件
    */
   public KSqlUtils(TalkBean tBean) {
-    System.err.println("KUtils init 1");
+    System.err.println("KSqlUtils init 1");
     dbSale = tBean.getDbSale();
     dbPW0D = tBean.getDbPw0D();
     db400 = tBean.getDb400CRM();

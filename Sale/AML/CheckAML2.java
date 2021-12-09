@@ -64,14 +64,7 @@ public class CheckAML2 extends bproc {
     if ("".equals(strCheckMoney)) {
       strCheckMoney = "0";
     }
-    // 代繳人相關
-    String strDeputy = getValue("PaymentDeputy").trim();
-    String strDeputyName = getValue("DeputyName").trim();
-    String strDeputyID = getValue("DeputyID").trim();
-    String strDeputyRelationship = getValue("DeputyRelationship").trim();
-    String bStatus = getValue("B_STATUS").trim();
-    String cStatus = getValue("C_STATUS").trim();
-    String rStatus = getValue("R_STATUS").trim();
+   
     // 購買人姓名
     String allOrderID = "";
     String allOrderName = "";
@@ -400,6 +393,15 @@ public class CheckAML2 extends bproc {
     }
 
     // 現金(只有一筆)
+    String strDeputy = getValue("PaymentDeputyNot").trim();
+    String strDeputyName = getValue("DeputyName").trim();
+    String strDeputyID = getValue("DeputyID").trim();
+    String strDeputyRelationship = getValue("DeputyRelationship").trim();
+    String bStatus = getValue("B_STATUS").trim();
+    String cStatus = getValue("C_STATUS").trim();
+    String rStatus = getValue("R_STATUS").trim();
+    
+    if(StringUtils.indexOf(strCashMoney, ".") >= 0 ) strCashMoney = strCashMoney.substring(0, strCashMoney.lastIndexOf(".")); //過濾小數點
     if (StringUtils.isNumeric(strCashMoney) && Double.parseDouble(strCashMoney) > 0) {
       // 不適用LOG_6,9,10,11,12,15,16
       int[] noUseAML = { 6, 9, 10, 11, 12, 15, 16 };
@@ -411,8 +413,8 @@ public class CheckAML2 extends bproc {
         } else {
           amlNo = "0" + noUseAML[ii];
         }
-        String amlDesc = mapAMLMsg.get(amlNo).toString().replaceAll("<customName>", "").replaceAll("<customTitle>", "").replaceAll("<customName2>", "").replaceAll("<customTitle2>",
-            "");
+        String amlDesc = mapAMLMsg.get(amlNo).toString().replaceAll("<customName>", "").replaceAll("<customTitle>", "")
+                                                        .replaceAll("<customName2>", "").replaceAll("<customTitle2>","");
         strSaleSql = "INSERT INTO Sale05M070 "
             + "(DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) "
             + "VALUES " + "('" + strDocNo + "','" + strOrderNo + "','" + strProjectID1 + "','" + intRecordNo + "','" + actionNo + "','收款','信用卡資料','" + strActionName + "', '不適用','"
@@ -422,7 +424,7 @@ public class CheckAML2 extends bproc {
         intRecordNo++;
       }
 
-      if ("Y".equals(strDeputy)) {// 有代繳人
+      if ("1".equals(strDeputy)) {// 有代繳人
         // 代繳款人與購買人關係為非二等親內血/姻親。請依洗錢防制作業辦理
         if ("朋友".equals(strDeputyRelationship) || "其他".equals(strDeputyRelationship)) {
           // Sale05M070
@@ -462,6 +464,7 @@ public class CheckAML2 extends bproc {
         dbJGENLIB.execFromPool(strJGENLIBSql);
 
         errMsg += "現金代繳款人" + strDeputyName + "代為辦理不動產交易，請依洗錢及資恐防制作業辦理。\n";
+        
 
         // 客戶為公司利害關系人，需依保險業與利害關係人從事放款以外之其他交易管理辦法執行。
         if ("Y".equals(rStatus)) {
@@ -502,7 +505,7 @@ public class CheckAML2 extends bproc {
               .replaceAll("<customTitle2>", "");
           strSaleSql = "INSERT INTO Sale05M070 "
               + "(DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) "
-              + "VALUES " + "('" + strDocNo + "','" + strOrderNo + "','" + strProjectID1 + "','" + intRecordNo + "','" + actionNo + "','收款','信用卡資料','" + strActionName
+              + "VALUES " + "('" + strDocNo + "','" + strOrderNo + "','" + strProjectID1 + "','" + intRecordNo + "','" + actionNo + "','收款','現金資料','" + strActionName
               + "', '不適用','" + allCustomID + "'" + ",'" + allCustomName + "','" + strEDate + "','RY','773','" + amlNo + "','" + amlDesc + "'" + ",'" + empNo + "','" + RocNowDate
               + "','" + strNowTime + "')";
           dbSale.execFromPool(strSaleSql);
@@ -510,6 +513,7 @@ public class CheckAML2 extends bproc {
         }
       }
     }
+    
 
     // 銀行匯款
     ret328Table = getTableData("table9");
@@ -877,7 +881,6 @@ public class CheckAML2 extends bproc {
       getButton("sendMail").doClick();
     }
 
-    System.out.println("value=====>" + value);
     System.out.println("===========AML============E");
     return value;
   }
