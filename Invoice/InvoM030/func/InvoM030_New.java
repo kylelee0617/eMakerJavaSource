@@ -231,7 +231,7 @@ public class InvoM030_New extends bTransaction{
       String invoiceTime = "";
       String[] arrTmpInvoiceTime = stringSystemDateTime.split(" ")[1].trim().split(":");
       int tmpInvoTimeH = (Integer.parseInt(arrTmpInvoiceTime[0].trim()) + 1) >=24 ? 23:(Integer.parseInt(arrTmpInvoiceTime[0].trim()) + 1);
-      invoiceTime = "" + tmpInvoTimeH + ":" + arrTmpInvoiceTime[1].trim() + ":" + arrTmpInvoiceTime[2].trim();
+      invoiceTime = "" + (tmpInvoTimeH>9?tmpInvoTimeH:"0"+tmpInvoTimeH) + ":" + arrTmpInvoiceTime[1].trim() + ":" + arrTmpInvoiceTime[2].trim();
       //insert InvoM030
       sbSQL = new StringBuilder();
       sbSQL.append("INSERT  INTO  InvoM030 ");

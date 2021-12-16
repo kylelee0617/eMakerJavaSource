@@ -1099,7 +1099,7 @@ public class SignSave extends bproc {
         //
         if ("".equals(stringInvoiceTotalMoney)) continue;
 
-        stringSql = "UPDATE  InvoM041  SET  InvoiceTotalMoney  =  " + stringInvoiceTotalMoney + " WHERE  DiscountNo  =  '" + stringDiscountNo + "' " + " AND  InvoiceNo  =  '"
+        stringSql = "UPDATE  InvoM041  SET  InvoiceTotalMoney  =  " + stringInvoiceTotalMoney + " WHERE  DiscountNo  =  '" + stringDiscountNo + "'  AND  InvoiceNo  =  '"
             + stringInvoiceNo + "' ";
         vectorSql.add(stringSql);
 
@@ -1136,7 +1136,7 @@ public class SignSave extends bproc {
     String[][] retSale05M080Data = null;
     String[][] retSale05M084Data = null;
     //
-    stringSql = " SELECT ProjectID1, EDate, CashMoney " + " FROM Sale05M080 " + " WHERE DocNo = '" + docNo.trim() + "' AND NoticeBLCASH = 'N'";
+    stringSql = " SELECT ProjectID1, EDate, CashMoney  FROM Sale05M080  WHERE DocNo = '" + docNo.trim() + "' AND NoticeBLCASH = 'N'";
     retSale05M080Data = dbSale.queryFromPool(stringSql);
 
     double limitMaxAmt = 0.0d;
@@ -1163,7 +1163,7 @@ public class SignSave extends bproc {
       for (int i = 0; i < retSale05M084Data.length; i++) {
         int insertCashID = Integer.parseInt(cashID[0][0]) + 1 + i;
         String insertSql = "INSERT INTO BLCASH "
-            + "(CASH_ID,INP_EMPNO,INP_DEPT,KEY_NO,CASE_NO,CNT_DATE,TRN_TYPE,CLIENT_ID,CLIENT_NAT,AGENT_ID,AGENT_NAT,TRN_DATE,TRN_AMOUNT,IS_VALID,CREATOR,CREATETIME) " + "VALUES "
+            + "(CASH_ID,INP_EMPNO,INP_DEPT,KEY_NO,CASE_NO,CNT_DATE,TRN_TYPE,CLIENT_ID,CLIENT_NAT,AGENT_ID,AGENT_NAT,TRN_DATE,TRN_AMOUNT,IS_VALID,CREATOR,CREATETIME) VALUES "
             + "(" + insertCashID + ",'" + stringUserID + "','" + stringDeptID + "','" + docNo.trim() + "','" + retSale05M080Data[0][0] + "','" + cntDate + "','" + trnType + "','"
             + retSale05M084Data[i][0] + "','" + ntCode + "','','','" + cntDate + "'," + tradeAmt + ",'Y','" + stringCreator + "','" + nowDateTime + "')";
         dbAs400.execFromPool(insertSql);
@@ -1395,9 +1395,9 @@ public class SignSave extends bproc {
     String stringSql = "";
     String[][] retSale05M040 = null;
     // 0 H_Com 1 L_Com 2 Position
-    stringSql = "SELECT  DISTINCT  T040.H_Com, T040.L_Com,  T040.Position " + " FROM  Sale05M086 T86,  Sale05M092 T92,  Sale05M081 T81,  Sale05M091 T91,  Sale05M040 T040 "
-        + " WHERE  T86.DocNo  =  '" + stringDocNo + "' " + " AND  T92.OrderNo  =  T86.OrderNo " + " AND  T81.DocNo  =  T86.DocNo " + " AND  T81.Position  =  T92.Position "
-        + " AND  ISNULL(T92.StatusCd,  '')  <>  'D' " + " AND  T92.OrderNo  =  T91.OrderNo " + " AND  ISNULL(T91.StatusCd,  '')  <>  'C' " + " AND  T81.Position  =  T040.Position "
+    stringSql = "SELECT  DISTINCT  T040.H_Com, T040.L_Com,  T040.Position  FROM  Sale05M086 T86,  Sale05M092 T92,  Sale05M081 T81,  Sale05M091 T91,  Sale05M040 T040 "
+        + " WHERE  T86.DocNo  =  '" + stringDocNo + "'  AND  T92.OrderNo  =  T86.OrderNo  AND  T81.DocNo  =  T86.DocNo  AND  T81.Position  =  T92.Position "
+        + " AND  ISNULL(T92.StatusCd,  '')  <>  'D'  AND  T92.OrderNo  =  T91.OrderNo  AND  ISNULL(T91.StatusCd,  '')  <>  'C'  AND  T81.Position  =  T040.Position "
         + //
         " AND  T81.HouseCar  =  T040.HouseCar " + //
         " AND  T040.ProjectID1  =  '" + stringProjectID1 + "' ";
@@ -1410,7 +1410,7 @@ public class SignSave extends bproc {
     String stringCompanyCd = "";
     String[][] retACom = null;
     //
-    stringSql = "SELECT  COMPANY_CD " + " FROM  A_COM " + " WHERE  Com_No  =  '" + stringComNo + "' ";
+    stringSql = "SELECT  COMPANY_CD  FROM  A_COM  WHERE  Com_No  =  '" + stringComNo + "' ";
     retACom = dbSale.queryFromPool(stringSql);
     if (retACom.length != 0) {
       stringCompanyCd = retACom[0][0].trim();
@@ -1423,7 +1423,7 @@ public class SignSave extends bproc {
     String stringCompanyName = "";
     String[][] retACom = null;
     //
-    stringSql = "SELECT  Com_Name " + " FROM  A_COM " + " WHERE  COMPANY_CD  =  '" + stringCompanyCd + "' ";
+    stringSql = "SELECT  Com_Name  FROM  A_COM  WHERE  COMPANY_CD  =  '" + stringCompanyCd + "' ";
     retACom = dbSale.queryFromPool(stringSql);
     if (retACom.length != 0) {
       stringCompanyName = doStringSubstring(retACom[0][0].trim(), 0, 6);
@@ -1454,7 +1454,7 @@ public class SignSave extends bproc {
       stringYM = (Integer.parseInt(stringEDate.substring(0, 4)) - 1911) + stringEDate.substring(5, 7);
     }
     //
-    stringSql = "SELECT  MAX(DiscountNo) " + " FROM  InvoM040 " + " WHERE  CompanyNo  =  '" + stringCompanyCd + "' " + " AND  DepartNo  =  '" + stringDepartNo + "' "
+    stringSql = "SELECT  MAX(DiscountNo)  FROM  InvoM040  WHERE  CompanyNo  =  '" + stringCompanyCd + "'  AND  DepartNo  =  '" + stringDepartNo + "' "
         + " AND  SUBSTRING(DiscountDate, 1, 7)  =  SUBSTRING('" + stringEDate + "' , 1, 7) ";
     retInvoM040 = dbInvoice.queryFromPool(stringSql);
     // if (retInvoM040.length > 0){
@@ -1495,25 +1495,25 @@ public class SignSave extends bproc {
     stringSql = "INSERT  INTO  InvoM040 ( DiscountNo,     DiscountDate,              CompanyNo,         DepartNo,                           ProjectNo, "
         + " HuBei,              CustomNo,                    DiscountWay,       NewHuBeiORCustomNo,  DiscountMoney, "
         + " DiscountTax,   DiscountTotalMoney,  PrintYes,               PrintTimes,                         DELYes, "
-        + " LuChangYes,  EmployeeNo,                ModifyDateTime,  ProcessDiscountNo ) " + " VALUES ( '" + stringDiscountNo + "', " + // 折讓單號碼
+        + " LuChangYes,  EmployeeNo,                ModifyDateTime,  ProcessDiscountNo )  VALUES ( '" + stringDiscountNo + "', " + // 折讓單號碼
         " '" + stringEDate + "', " + // 折讓單日期
         " '" + stringCompanyCd + "', " + // 公司代碼
         " '" + stringDepartNo + "', " + // 部門代碼
         " '" + stringProjectID1 + "', " + // 案別代碼 4
-        " '" + "" + "', " + // 戶別代碼
+        " '', " + // 戶別代碼
         " '" + stringCustomNo + "', " + // 客戶代碼(統編)
-        " '" + "B" + "', " + // 折讓方式
-        " '" + "" + "', " + // 戶別代碼 or 客戶代碼
+        " 'B', " + // 折讓方式
+        " '', " + // 戶別代碼 or 客戶代碼
         stringInvoiceMoney + ", " + // 折讓未稅金額 9
         stringInvoiceTax + ", " + // 折讓稅額
         stringDiscountMoney + ", " + // 折讓總金額
-        " '" + "N" + "', " + // 已列印(Y/N)
-        "0" + ", " + // 補印次數
-        " '" + "N" + "', " + // 作癈 14
-        " '" + "N" + "', " + // 入帳
+        " 'N', " + // 已列印(Y/N)
+        "0, " + // 補印次數
+        " 'N', " + // 作癈 14
+        " 'N', " + // 入帳
         " '" + getUser() + "', " + // 修改人
         " '" + datetime.getTime("YYYY/mm/dd h:m:s") + "', " + // 修改時間
-        " '" + "1" + "') "; // 18
+        " '1') "; // 18
     // System.out.println("doInsertInvoM040-----------------"+stringSql) ;
     dbInvoice.execFromPool(stringSql);
   }
@@ -1522,7 +1522,7 @@ public class SignSave extends bproc {
     String stringSql = "";
     String[][] retInvoM041 = null;
     // 0 DiscountNo 1 RecordNo
-    stringSql = "SELECT  DiscountNo,  RecordNo " + " FROM  InvoM041 " + " WHERE  DiscountNo  =  '" + stringDiscountNo + "' ";
+    stringSql = "SELECT  DiscountNo,  RecordNo  FROM  InvoM041  WHERE  DiscountNo  =  '" + stringDiscountNo + "' ";
     // System.out.println("getInsertInvoM041-----------------"+stringSql) ;
     retInvoM041 = dbInvoice.queryFromPool(stringSql);
     return retInvoM041;
@@ -1538,15 +1538,15 @@ public class SignSave extends bproc {
     String stringInvoiceTax = convert.FourToFive("" + doubleInvoiceTax, 0);
     //
     stringSql = "INSERT  INTO  Invom041  ( DiscountNo,       RecordNo,   ChoiceYES,                 InvoiceNo,               PointNo, "
-        + " InvoiceMoney,  InvoiceTax,  InvoiceTotalMoney,  YiDiscountMoney,  DiscountItemMoney) " + " VALUES ( '" + stringDiscountNo + "', " + // 折讓單號碼
+        + " InvoiceMoney,  InvoiceTax,  InvoiceTotalMoney,  YiDiscountMoney,  DiscountItemMoney)  VALUES ( '" + stringDiscountNo + "', " + // 折讓單號碼
         intDiscountCount + ", " + // 筆數
-        " '" + "Y" + "', " + // 勾選
+        " 'Y', " + // 勾選
         " '" + stringInvoiceNo + "', " + // 發票號碼
         " '" + stringITEMLS_CHINESE + "', " + // 摘要代碼
         stringInvoiceMoney + ", " + // 發票未稅額
         stringInvoiceTax + ", " + // 發票稅額
         stringInvoiceTotalMoney + ", " + // 發票總金額
-        "0" + ", " + // 已折讓金額
+        "0, " + // 已折讓金額
         stringInvoiceTotalMoney + ") "; // 折讓金額
     // System.out.println("doInsertInvoM041-----------------"+stringSql) ;
     dbInvoice.execFromPool(stringSql);
@@ -1559,7 +1559,7 @@ public class SignSave extends bproc {
     String stringItemlsChinese = "";
     String[][] retSale05M052 = null;
     //
-    stringSql = " SELECT  ITEMLS_CHINESE " + " FROM  Sale05M052 " + " WHERE  ITEMLS_CD  =  '" + stringITEMLS_CD + "' ";
+    stringSql = " SELECT  ITEMLS_CHINESE  FROM  Sale05M052  WHERE  ITEMLS_CD  =  '" + stringITEMLS_CD + "' ";
     retSale05M052 = dbSale.queryFromPool(stringSql);
     if (retSale05M052.length != 0) {
       stringItemlsChinese = retSale05M052[0][0].trim();
@@ -1572,13 +1572,13 @@ public class SignSave extends bproc {
     String stringSql = " UPDATE Sale05M061 ";
     // 房屋款
     if (intInvoice == 1) {
-      stringSql += " SET  H_ReceiveMoney = H_ReceiveMoney + " + stringReceiveMoney + "," + " HL_ReceiveMoney = HL_ReceiveMoney + " + stringReceiveMoney;
+      stringSql += " SET  H_ReceiveMoney = H_ReceiveMoney + " + stringReceiveMoney + ", HL_ReceiveMoney = HL_ReceiveMoney + " + stringReceiveMoney;
     }
     // 土地款
     if (intInvoice == 2) {
-      stringSql += " SET  L_ReceiveMoney = L_ReceiveMoney + " + stringReceiveMoney + "," + " HL_ReceiveMoney = HL_ReceiveMoney + " + stringReceiveMoney;
+      stringSql += " SET  L_ReceiveMoney = L_ReceiveMoney + " + stringReceiveMoney + ", HL_ReceiveMoney = HL_ReceiveMoney + " + stringReceiveMoney;
     }
-    stringSql += " WHERE  ProjectID1  =  '" + stringProjectID1 + "' " + " AND  HouseCar  =  '" + stringHouseCar + "' " + " AND  Position  =  '" + stringPosition + "' "
+    stringSql += " WHERE  ProjectID1  =  '" + stringProjectID1 + "'  AND  HouseCar  =  '" + stringHouseCar + "'  AND  Position  =  '" + stringPosition + "' "
         + " AND  ORDER_NO  =  " + stringORDER_NO;
     // System.out.println("doUpdateSale05M061-----------------------------------"+stringSql)
     // ;
@@ -1587,9 +1587,9 @@ public class SignSave extends bproc {
 
   public Vector doUpdateSale05M061(String stringH_MomentaryMoney, String stringL_MomentaryMoney, String stringProjectID1, String stringHouseCar, String stringPosition,
       String stringORDER_NO, Vector vectorSale05M061Sql) throws Throwable {
-    String stringSql = " UPDATE  Sale05M061  SET  H_MomentaryMoney  =  H_MomentaryMoney  + " + stringH_MomentaryMoney + ", " + " L_MomentaryMoney  =  L_MomentaryMoney  +  "
-        + stringL_MomentaryMoney + "," + " HL_MomentaryMoney = H_MomentaryMoney + L_MomentaryMoney " + " WHERE  ProjectID1  =  '" + stringProjectID1 + "' " + " AND  HouseCar  =  '"
-        + stringHouseCar + "' " + " AND  Position  =  '" + stringPosition + "' " + " AND  ORDER_NO  =  " + stringORDER_NO;
+    String stringSql = " UPDATE  Sale05M061  SET  H_MomentaryMoney  =  H_MomentaryMoney  + " + stringH_MomentaryMoney + ",  L_MomentaryMoney  =  L_MomentaryMoney  +  "
+        + stringL_MomentaryMoney + ", HL_MomentaryMoney = H_MomentaryMoney + L_MomentaryMoney  WHERE  ProjectID1  =  '" + stringProjectID1 + "'  AND  HouseCar  =  '"
+        + stringHouseCar + "'  AND  Position  =  '" + stringPosition + "'  AND  ORDER_NO  =  " + stringORDER_NO;
     // System.out.println("doUpdateSale05M061(2)-----------------------------------"+stringSql)
     // ;
     vectorSale05M061Sql.add(stringSql);
@@ -1601,8 +1601,8 @@ public class SignSave extends bproc {
   public void doInsert_Sale05M080_Flow_HIS() throws Throwable {
     String stringSql = "";
     //
-    stringSql = " INSERT  INTO  Sale05M080_Flow_HIS (DocNo,  FlowStatus,  EmployeeNo,  EDateTime,  Opinion) " + " VALUES  ( N'" + getValue("DocNo").trim() + "', " + " N'"
-        + getValue("FlowStatus").trim() + "', " + " N'" + getUser() + "', " + " N'" + datetime.getTime("YYYY/mm/dd h:m:s") + "', " + " N'" + getValue("Opinion").trim() + "' ) ";
+    stringSql = " INSERT  INTO  Sale05M080_Flow_HIS (DocNo,  FlowStatus,  EmployeeNo,  EDateTime,  Opinion)  VALUES  ( N'" + getValue("DocNo").trim() + "',  N'"
+        + getValue("FlowStatus").trim() + "',  N'" + getUser() + "',  N'" + datetime.getTime("YYYY/mm/dd h:m:s") + "',  N'" + getValue("Opinion").trim() + "' ) ";
     // System.out.println("doInsert_Sale05M080_Flow_HIS-----------------------------------"+stringSql)
     // ;
     dbSale.execFromPool(stringSql);
@@ -1614,16 +1614,16 @@ public class SignSave extends bproc {
     String stringSql = "";
     String[][] retSale05M080_Flow = null;
     //
-    stringSql = " SELECT  Opinion " + " FROM  Sale05M080_Flow " + " WHERE  DocNo  =  '" + getValue("DocNo").trim() + "' " + " AND  FlowStatus  =  '" + getValue("FlowStatus").trim()
+    stringSql = " SELECT  Opinion  FROM  Sale05M080_Flow  WHERE  DocNo  =  '" + getValue("DocNo").trim() + "'  AND  FlowStatus  =  '" + getValue("FlowStatus").trim()
         + "' ";
     retSale05M080_Flow = dbSale.queryFromPool(stringSql);
     if (retSale05M080_Flow.length == 0) {
-      stringSql = " INSERT  INTO  Sale05M080_Flow  (DocNo,  FlowStatus,  EmployeeNo,  EDateTime,  Opinion)  " + " VALUES  ( N'" + getValue("DocNo").trim() + "', " + " N'"
-          + getValue("FlowStatus").trim() + "', " + " N'" + getUser() + "', " + " N'" + datetime.getTime("YYYY/mm/dd h:m:s") + "', " + " N'" + getValue("Opinion").trim() + "') ";
+      stringSql = " INSERT  INTO  Sale05M080_Flow  (DocNo,  FlowStatus,  EmployeeNo,  EDateTime,  Opinion)   VALUES  ( N'" + getValue("DocNo").trim() + "',  N'"
+          + getValue("FlowStatus").trim() + "',  N'" + getUser() + "',  N'" + datetime.getTime("YYYY/mm/dd h:m:s") + "',  N'" + getValue("Opinion").trim() + "') ";
       dbSale.execFromPool(stringSql);
     } else {
-      stringSql = " UPDATE  Sale05M080_Flow  SET  EmployeeNo  =  N'" + getUser() + "', " + " EDateTime  =  N'" + datetime.getTime("YYYY/mm/dd h:m:s") + "', " + " Opinion  =  N'"
-          + getValue("Opinion").trim() + "' " + " WHERE  DocNo  =  '" + getValue("DocNo").trim() + "' " + " AND  FlowStatus  =  '" + getValue("FlowStatus").trim() + "' ";
+      stringSql = " UPDATE  Sale05M080_Flow  SET  EmployeeNo  =  N'" + getUser() + "',  EDateTime  =  N'" + datetime.getTime("YYYY/mm/dd h:m:s") + "',  Opinion  =  N'"
+          + getValue("Opinion").trim() + "'  WHERE  DocNo  =  '" + getValue("DocNo").trim() + "'  AND  FlowStatus  =  '" + getValue("FlowStatus").trim() + "' ";
       dbSale.execFromPool(stringSql);
     }
     // System.out.println("doInsert_Sale05M080_Flow-----------------------------------"+stringSql)
@@ -1633,7 +1633,7 @@ public class SignSave extends bproc {
   // 更新狀態
   // Primary Key：DocNo
   public void doUpdate_Sale05M080() throws Throwable {
-    String stringSql = " UPDATE  Sale05M080  SET  FlowStatus  =  N'" + getValue("FlowStatus") + "', " + " SendMessage  =  '" + getValue("SendMessage") + "' "
+    String stringSql = " UPDATE  Sale05M080  SET  FlowStatus  =  N'" + getValue("FlowStatus") + "',  SendMessage  =  '" + getValue("SendMessage") + "' "
         + " WHERE  DocNo  =  '" + getValue("DocNo").trim() + "' ";
     // System.out.println("doUpdate_Sale05M080(
     // )-----------------------------------"+stringSql) ;
@@ -1647,7 +1647,7 @@ public class SignSave extends bproc {
     //
 //        stringSql   = " SELECT  CompanyNo,  DepartNo,  ProjectID1,  EDate "  +
     stringSql = " SELECT  CompanyNo,  DepartNo,  ProjectID1,  PaperEDate " + // 20201211 kyle : 主要使用發票日期
-        " FROM  Sale05M080 " + " WHERE  DocNo  =  '" + getValue("DocNo").trim() + "' ";
+        " FROM  Sale05M080  WHERE  DocNo  =  '" + getValue("DocNo").trim() + "' ";
     retSale05M080 = dbSale.queryFromPool(stringSql);
     return retSale05M080;
   }
@@ -1666,10 +1666,10 @@ public class SignSave extends bproc {
     // 12 H_DiscountMoney 13 H_FeeMoney 14 L_FeeMoney
     stringSql = "SELECT  T81.HouseCar,              T81.Position,         ORDER_NO,              ITEMLS_CD, "
         + " H_MomentaryMoney,  H_UsableMoney,  H_ReceiveMoney,  (H_ReceiveMoney + H_UsableMoney) AS H_InvoiceMoney, "
-        + " L_MomentaryMoney,   L_UsableMoney,  L_ReceiveMoney,   (L_ReceiveMoney + L_UsableMoney) AS L_InvoiceMoney, " + " H_DiscountMoney,      H_FeeMoney,       L_FeeMoney "
-        + " FROM  Sale05M086 T86,  Sale05M092 T92,  Sale05M081 T81,  Sale05M091 T91 " + " WHERE  T86.DocNo  =  '" + stringDocNo + "' " + " AND  T92.OrderNo  =  '" + stringOrderNo
-        + "' " + " AND  T92.OrderNo  =  T86.OrderNo " + " AND  T81.DocNo  =  T86.DocNo " + " AND  T81.Position  =  T92.Position " + " AND  ISNULL(T92.StatusCd,  '')  <>  'D' "
-        + " AND  T92.OrderNo  =  T91.OrderNo " + " AND  T91.customNo  =  '" + stringCustomNo + "' " + " AND  ISNULL(T91.StatusCd,  '')  <>  'C' "
+        + " L_MomentaryMoney,   L_UsableMoney,  L_ReceiveMoney,   (L_ReceiveMoney + L_UsableMoney) AS L_InvoiceMoney,  H_DiscountMoney,      H_FeeMoney,       L_FeeMoney "
+        + " FROM  Sale05M086 T86,  Sale05M092 T92,  Sale05M081 T81,  Sale05M091 T91  WHERE  T86.DocNo  =  '" + stringDocNo + "'  AND  T92.OrderNo  =  '" + stringOrderNo
+        + "'  AND  T92.OrderNo  =  T86.OrderNo  AND  T81.DocNo  =  T86.DocNo  AND  T81.Position  =  T92.Position  AND  ISNULL(T92.StatusCd,  '')  <>  'D' "
+        + " AND  T92.OrderNo  =  T91.OrderNo  AND  T91.customNo  =  '" + stringCustomNo + "'  AND  ISNULL(T91.StatusCd,  '')  <>  'C' "
         + " ORDER BY  T92.OrderNo,  T92.Position,  T92.HouseCar DESC, T81.ORDER_NO ";
     retSale05M081 = dbSale.queryFromPool(stringSql);
     return retSale05M081;
@@ -1686,9 +1686,9 @@ public class SignSave extends bproc {
     // H_UsableMoney) AS H_InvoiceMoney
     // 9 L_MomentaryMoney 10 L_UsableMoney 11 L_ReceiveMoney 12 (L_ReceiveMoney +
     // L_UsableMoney) AS L_InvoiceMoney " +
-    stringSql = "SELECT  DISTINCT  T81.Position " + " FROM  Sale05M086 T86,  Sale05M092 T92,  Sale05M081 T81,  Sale05M091 T91 " + " WHERE  T86.DocNo  =  '" + stringDocNo + "' "
-        + " AND  T92.OrderNo  =  T86.OrderNo " + " AND  T81.DocNo  =  T86.DocNo " + " AND  T81.Position  =  T92.Position " + " AND  ISNULL(T92.StatusCd,  '')  <>  'D' "
-        + " AND  T92.OrderNo  =  T91.OrderNo " + " AND  T91.customNo  =  '" + stringCustomNo + "' " + " AND  ISNULL(T91.StatusCd,  '')  <>  'C' " + " ORDER BY  T81.Position ";
+    stringSql = "SELECT  DISTINCT  T81.Position  FROM  Sale05M086 T86,  Sale05M092 T92,  Sale05M081 T81,  Sale05M091 T91  WHERE  T86.DocNo  =  '" + stringDocNo + "' "
+        + " AND  T92.OrderNo  =  T86.OrderNo  AND  T81.DocNo  =  T86.DocNo  AND  T81.Position  =  T92.Position  AND  ISNULL(T92.StatusCd,  '')  <>  'D' "
+        + " AND  T92.OrderNo  =  T91.OrderNo  AND  T91.customNo  =  '" + stringCustomNo + "'  AND  ISNULL(T91.StatusCd,  '')  <>  'C'  ORDER BY  T81.Position ";
     retSale05M081 = dbSale.queryFromPool(stringSql);
     return retSale05M081;
   }
@@ -1698,7 +1698,7 @@ public class SignSave extends bproc {
     String stringSql = "";
     String[][] retSale05M084 = null;
     // 0 CustomNo
-    stringSql = " SELECT  DISTINCT  CustomNo,  Nationality " + " FROM  Sale05M084 " + " WHERE  DocNo  =  '" + getValue("DocNo").trim() + "' ";
+    stringSql = " SELECT  DISTINCT  CustomNo,  Nationality  FROM  Sale05M084  WHERE  DocNo  =  '" + getValue("DocNo").trim() + "' ";
     retSale05M084 = dbSale.queryFromPool(stringSql);
     return retSale05M084;
   }
@@ -1709,7 +1709,7 @@ public class SignSave extends bproc {
     String stringPercentage = "0";
     String[][] retSale05M091 = null;
     //
-    stringSql = "SELECT  CustomNo,  Percentage " + " FROM  Sale05M091 T91 " + " WHERE  OrderNo  =  '" + stringOrderNo + "' " + " AND  CustomNo  =  '" + stringCustomNo + "' "
+    stringSql = "SELECT  CustomNo,  Percentage  FROM  Sale05M091 T91  WHERE  OrderNo  =  '" + stringOrderNo + "'  AND  CustomNo  =  '" + stringCustomNo + "' "
         + " AND  ISNULL(T91.StatusCd,  '')  <>  'C' ";
     retSale05M091 = dbSale.queryFromPool(stringSql);
     if (retSale05M091.length != 0) {
@@ -1723,7 +1723,7 @@ public class SignSave extends bproc {
     String stringNationality = "0";
     String[][] retSale05M091 = null;
     //
-    stringSql = "SELECT  Nationality " + " FROM  Sale05M091 T91 " + " WHERE  OrderNo  =  '" + stringOrderNo + "' " + " AND  CustomNo  =  '" + stringCustomNo + "' "
+    stringSql = "SELECT  Nationality  FROM  Sale05M091 T91  WHERE  OrderNo  =  '" + stringOrderNo + "'  AND  CustomNo  =  '" + stringCustomNo + "' "
         + " AND  ISNULL(T91.StatusCd,  '')  <>  'C' ";
     retSale05M091 = dbSale.queryFromPool(stringSql);
     if (retSale05M091.length != 0) {
@@ -1734,7 +1734,7 @@ public class SignSave extends bproc {
 
   // Primary Key：DocNo、CompanyNo、InvoiceYYYYMM、FSChar、StartNo、InvoiceBook
   public void doDeleteSale05M085() throws Throwable {
-    String stringSql = " DELETE  FROM  Sale05M085 " + " WHERE  DocNo  =  '" + getValue("DocNo").trim() + "' ";
+    String stringSql = " DELETE  FROM  Sale05M085  WHERE  DocNo  =  '" + getValue("DocNo").trim() + "' ";
     // System.out.println("doDeleteSale05M085-----------------------------------"+stringSql)
     // ;
     dbSale.execFromPool(stringSql);
@@ -1748,10 +1748,10 @@ public class SignSave extends bproc {
   // 5 InvoiceEndNo 6 MaxInvoiceNo 7 MaxInvoiceDate
   public void doInsertSale05M085(String stringCompanyCd, String[] retInvoM022, String stringInvoiceKind) throws Throwable {
     String stringSql = " INSERT  INTO Sale05M085 (DocNo,            CompanyNo,        InvoiceYYYYMM,  FSChar,              StartNo, "
-        + " InvoiceBook,  InvoiceStartNo,  InvoiceEndNo,  InvoiceKind,     MaxInvoiceNo,  MaxInvoiceDate, " + " EndYES ) " + " VALUES (N'" + getValue("DocNo").trim() + "', "
-        + " N'" + stringCompanyCd + "', " + " N'" + retInvoM022[0].trim() + "', " + " N'" + retInvoM022[1].trim() + "', " + " N'" + retInvoM022[2].trim() + "', " + " N'"
-        + retInvoM022[3].trim() + "', " + " N'" + retInvoM022[4].trim() + "', " + " N'" + retInvoM022[5].trim() + "', " + " N'" + stringInvoiceKind + "', " + " N'"
-        + retInvoM022[6].trim() + "', " + " N'" + retInvoM022[7].trim() + "', " + " N'N')";
+        + " InvoiceBook,  InvoiceStartNo,  InvoiceEndNo,  InvoiceKind,     MaxInvoiceNo,  MaxInvoiceDate,  EndYES )  VALUES (N'" + getValue("DocNo").trim() + "', "
+        + " N'" + stringCompanyCd + "',  N'" + retInvoM022[0].trim() + "',  N'" + retInvoM022[1].trim() + "',  N'" + retInvoM022[2].trim() + "',  N'"
+        + retInvoM022[3].trim() + "',  N'" + retInvoM022[4].trim() + "',  N'" + retInvoM022[5].trim() + "',  N'" + stringInvoiceKind + "',  N'"
+        + retInvoM022[6].trim() + "',  N'" + retInvoM022[7].trim() + "',  N'N')";
     // System.out.println("doInsertSale05M085-----------------------------------"+stringSql)
     // ;
     dbSale.execFromPool(stringSql);
@@ -1766,9 +1766,9 @@ public class SignSave extends bproc {
     String[][] retSale05M085 = null;
     // 0 InvoiceYYYYMM 1 FSChar 2 StartNo 3 InvoiceBook 4 InvoiceStartNo
     // 5 InvoiceEndNo 6 MaxInvoiceNo
-    stringSql = " SELECT  TOP 1  InvoiceYYYYMM,  FSChar,  StartNo,  InvoiceBook,  InvoiceStartNo, " + " InvoiceEndNo,  MaxInvoiceNo " + " FROM  Sale05M085 " + " WHERE  DocNo  =  '"
-        + getValue("DocNo").trim() + "' " + " AND  (MaxInvoiceDate <= '" + stringEDate + "'  OR  MaxInvoiceDate IS NULL) " + " AND  EndYES  =  'N'  AND  CompanyNo  =  '"
-        + stringCompanyCd + "'  and  InvoiceKind = '" + stringInvoiceKind + "' " + " ORDER BY  InvoiceStartNo ";
+    stringSql = " SELECT  TOP 1  InvoiceYYYYMM,  FSChar,  StartNo,  InvoiceBook,  InvoiceStartNo,  InvoiceEndNo,  MaxInvoiceNo  FROM  Sale05M085  WHERE  DocNo  =  '"
+        + getValue("DocNo").trim() + "'  AND  (MaxInvoiceDate <= '" + stringEDate + "'  OR  MaxInvoiceDate IS NULL)  AND  EndYES  =  'N'  AND  CompanyNo  =  '"
+        + stringCompanyCd + "'  and  InvoiceKind = '" + stringInvoiceKind + "'  ORDER BY  InvoiceStartNo ";
     retSale05M085 = dbSale.queryFromPool(stringSql);
     return retSale05M085;
   }
@@ -1777,17 +1777,17 @@ public class SignSave extends bproc {
     String stringSql = "";
     String[][] retSale05M085UPDATE = null;
     //
-    stringSql = " SELECT  InvoiceYYYYMM,  FSChar,  StartNo,  InvoiceBook,  MaxInvoiceNo, " + " MaxInvoiceDate,   EndYES " + " FROM  Sale05M085 " + " WHERE  DocNo  =  '"
-        + getValue("DocNo").trim() + "' " + " AND  CompanyNo  =  '" + stringCompanyCd + "' ";
+    stringSql = " SELECT  InvoiceYYYYMM,  FSChar,  StartNo,  InvoiceBook,  MaxInvoiceNo,  MaxInvoiceDate,   EndYES  FROM  Sale05M085  WHERE  DocNo  =  '"
+        + getValue("DocNo").trim() + "'  AND  CompanyNo  =  '" + stringCompanyCd + "' ";
     retSale05M085UPDATE = dbSale.queryFromPool(stringSql);
     return retSale05M085UPDATE;
   }
 
   public void doUpdateSale05M085(String stringInvoiceNo, String stringEDate, String stringEndYes, String stringCompanyCd, String stringInvoiceYYYYMM, String stringFSChar,
       String stringStartNo, String stringInvoiceBook) throws Throwable {
-    String stringSql = " UPDATE  Sale05M085  SET  MaxInvoiceNo  =  '" + stringInvoiceNo + "', " + " MaxInvoiceDate  =  '" + stringEDate + "', " + " EndYES  =  '" + stringEndYes
-        + "' " + " WHERE  DocNo  =  '" + getValue("DocNo").trim() + "' " + " AND  CompanyNo  =  '" + stringCompanyCd + "' " + " AND  InvoiceYYYYMM  =  '" + stringInvoiceYYYYMM
-        + "' " + " AND  FSChar  =  '" + stringFSChar + "' " + " AND  StartNo  =  '" + stringStartNo + "' " + " AND  InvoiceBook  =  '" + stringInvoiceBook + "' ";
+    String stringSql = " UPDATE  Sale05M085  SET  MaxInvoiceNo  =  '" + stringInvoiceNo + "',  MaxInvoiceDate  =  '" + stringEDate + "',  EndYES  =  '" + stringEndYes
+        + "'  WHERE  DocNo  =  '" + getValue("DocNo").trim() + "'  AND  CompanyNo  =  '" + stringCompanyCd + "'  AND  InvoiceYYYYMM  =  '" + stringInvoiceYYYYMM
+        + "'  AND  FSChar  =  '" + stringFSChar + "'  AND  StartNo  =  '" + stringStartNo + "'  AND  InvoiceBook  =  '" + stringInvoiceBook + "' ";
     // System.out.println("doUpdateSale05M085-----------------------------------"+stringSql)
     // ;
     dbSale.execFromPool(stringSql);
@@ -1798,9 +1798,9 @@ public class SignSave extends bproc {
     String stringSql = "";
     String[][] retSale05M086 = null;
     //
-    stringSql = " SELECT  DISTINCT  T86.OrderNo " + " FROM  Sale05M086 T86,  Sale05M092 T92,  Sale05M081 T81,  Sale05M091 T91 " + " WHERE  T86.DocNo  =  '" + stringDocNo + "' "
-        + " AND  T81.DocNo  =  T86.DocNo " + " AND  T92.OrderNo  =  T86.OrderNo " + " AND  T81.Position  =  T92.Position " + " AND  ISNULL(T92.StatusCd,  '')  <>  'D' "
-        + " AND  T92.OrderNo  =  T91.OrderNo " + " AND  T91.customNo  =  '" + stringCustomNo + "' " + " AND  ISNULL(T91.StatusCd,  '')  <>  'C' ";
+    stringSql = " SELECT  DISTINCT  T86.OrderNo  FROM  Sale05M086 T86,  Sale05M092 T92,  Sale05M081 T81,  Sale05M091 T91  WHERE  T86.DocNo  =  '" + stringDocNo + "' "
+        + " AND  T81.DocNo  =  T86.DocNo  AND  T92.OrderNo  =  T86.OrderNo  AND  T81.Position  =  T92.Position  AND  ISNULL(T92.StatusCd,  '')  <>  'D' "
+        + " AND  T92.OrderNo  =  T91.OrderNo  AND  T91.customNo  =  '" + stringCustomNo + "'  AND  ISNULL(T91.StatusCd,  '')  <>  'C' ";
     // System.out.println("getSale05M086-----------------------------------"+stringSql)
     // ;
     retSale05M086 = dbSale.queryFromPool(stringSql);
@@ -1812,9 +1812,9 @@ public class SignSave extends bproc {
     String stringSql = "";
     String[][] retSale05M086 = null;
     //
-    stringSql = " SELECT  DISTINCT  T91.CustomNo " + " FROM  Sale05M086 T86,  Sale05M092 T92,  Sale05M081 T81,  Sale05M091 T91 " + " WHERE  T86.DocNo  =  '" + stringDocNo + "' "
-        + " AND  T81.DocNo  =  T86.DocNo " + " AND  T92.OrderNo  =  T86.OrderNo " + " AND  T92.OrderNo  =  T91.OrderNo " + " AND  T81.Position  =  T92.Position "
-        + " AND  T81.Position  =  '" + stringPosition + "' " + " AND  ISNULL(T92.StatusCd,  '')  <>  'D' " + " AND  ISNULL(T91.StatusCd,  '')  <>  'C' ";
+    stringSql = " SELECT  DISTINCT  T91.CustomNo  FROM  Sale05M086 T86,  Sale05M092 T92,  Sale05M081 T81,  Sale05M091 T91  WHERE  T86.DocNo  =  '" + stringDocNo + "' "
+        + " AND  T81.DocNo  =  T86.DocNo  AND  T92.OrderNo  =  T86.OrderNo  AND  T92.OrderNo  =  T91.OrderNo  AND  T81.Position  =  T92.Position "
+        + " AND  T81.Position  =  '" + stringPosition + "'  AND  ISNULL(T92.StatusCd,  '')  <>  'D'  AND  ISNULL(T91.StatusCd,  '')  <>  'C' ";
     // System.out.println("getSale05M086Count-----------------------------------"+stringSql)
     // ;
     retSale05M086 = dbSale.queryFromPool(stringSql);
@@ -1828,7 +1828,7 @@ public class SignSave extends bproc {
     String stringInvoiceNo1 = "";
     String[][] retSale05M087 = null;
     //
-    stringSql = " SELECT  TOP 1  InvoiceNo " + " FROM  Sale05M087 " + " WHERE  DocNo  =  '" + getValue("DocNo").trim() + "' ";
+    stringSql = " SELECT  TOP 1  InvoiceNo  FROM  Sale05M087  WHERE  DocNo  =  '" + getValue("DocNo").trim() + "' ";
     retSale05M087 = dbSale.queryFromPool(stringSql);
     if (retSale05M087.length != 0) {
       stringInvoiceNo1 = retSale05M087[0][0].trim();
@@ -1841,8 +1841,8 @@ public class SignSave extends bproc {
   }
 
   public void doInsertSale05M087(String stringDocNo, int intRecordNo, String stringInvoiceNo, String stringFeeYes) throws Throwable {
-    String stringSql = "INSERT  INTO  Sale05M087 (DocNo,  RecordNo,  InvoiceNo,  FeeYes,  DELYes) " + " VALUES ( '" + stringDocNo + "', " + intRecordNo + ", " + " '"
-        + stringInvoiceNo + "', " + " '" + stringFeeYes + "', " + " N'N') ";
+    String stringSql = "INSERT  INTO  Sale05M087 (DocNo,  RecordNo,  InvoiceNo,  FeeYes,  DELYes)  VALUES ( '" + stringDocNo + "', " + intRecordNo + ",  '"
+        + stringInvoiceNo + "',  '" + stringFeeYes + "',  N'N') ";
 
     // System.out.println("doInsertSale05M087-----------------------------------"+stringSql)
     // ;
@@ -1854,7 +1854,7 @@ public class SignSave extends bproc {
     String[][] retSale05M089 = null;
     String stringSql = "";
     // 0 DiscountNo 1 InvoiceNo
-    stringSql = "SELECT   DiscountNo,  InvoiceNo " + " FROM  Sale05M089 " + " WHERE  DocNo  =  '" + stringDocNo + "' ";
+    stringSql = "SELECT   DiscountNo,  InvoiceNo  FROM  Sale05M089  WHERE  DocNo  =  '" + stringDocNo + "' ";
     // System.out.println("getSale05M089-----------------------------------"+stringSql)
     // ;
     retSale05M089 = dbSale.queryFromPool(stringSql);
@@ -1862,8 +1862,8 @@ public class SignSave extends bproc {
   }
 
   public void doInvertSale05M089(String stringDocNo, int intRecordNo, String stringDiscountNo, String stringInvoiceNo) throws Throwable {
-    String stringSql = "INSERT  INTO  Sale05M089 (DocNo,  RecordNo,  DiscountNo,  InvoiceNo) " + " VALUES ( '" + stringDocNo + "', " + intRecordNo + ", " + " '" + stringDiscountNo
-        + "', " + " '" + stringInvoiceNo + "') ";
+    String stringSql = "INSERT  INTO  Sale05M089 (DocNo,  RecordNo,  DiscountNo,  InvoiceNo)  VALUES ( '" + stringDocNo + "', " + intRecordNo + ",  '" + stringDiscountNo
+        + "',  '" + stringInvoiceNo + "') ";
     // System.out.println("doInvertSale05M089-----------------------------------"+stringSql)
     // ;
     dbSale.execFromPool(stringSql);
@@ -1874,7 +1874,7 @@ public class SignSave extends bproc {
     String stringSql = "";
     String[][] retInvoM010 = null;
     // 0 TaxRate 1 TaxKind
-    stringSql = "SELECT  TaxRate,  TaxKind " + " FROM  InvoM010 " + " WHERE  PointNo  =  '" + stringPointNo + "' ";
+    stringSql = "SELECT  TaxRate,  TaxKind  FROM  InvoM010  WHERE  PointNo  =  '" + stringPointNo + "' ";
     retInvoM010 = dbInvoice.queryFromPool(stringSql);
     return retInvoM010;
   }
@@ -1891,10 +1891,10 @@ public class SignSave extends bproc {
     // 0 InvoiceYYYYMM 1 FSChar 2 StartNo 3 InvoiceBook 4 InvoiceStartNo
     // 5 InvoiceEndNo 6 MaxInvoiceNo 7 MaxInvoiceDate
     stringSql = " SELECT  TOP 2  InvoiceYYYYMM,  FSChar,              StartNo,                InvoiceBook,  InvoiceStartNo, "
-        + " InvoiceEndNo,       MaxInvoiceNo,  MaxInvoiceDate " + " FROM  InvoM022 " + " WHERE  CompanyNo  =  '" + stringCompanyCd + "' " + " AND  DepartNo  =  '" + stringDepartNo
-        + "' " + " AND  ProjectNo  =  '" + stringProjectID1 + "' " + " AND  InvoiceKind  =  '" + stringInvoiceKind + "' " + " AND  UseYYYYMM  =  '" + stringEDate.substring(0, 7)
-        + "' " + " AND  (MaxInvoiceDate <= '" + stringEDate + "'  OR  MaxInvoiceDate IS NULL)" + " AND  ENDYES  =  'N' " + " AND  CloseYes  =  'N' "
-        + " AND  ProcessInvoiceNo  =  '1' " + " ORDER BY  InvoiceStartNo ";
+        + " InvoiceEndNo,       MaxInvoiceNo,  MaxInvoiceDate  FROM  InvoM022  WHERE  CompanyNo  =  '" + stringCompanyCd + "'  AND  DepartNo  =  '" + stringDepartNo
+        + "'  AND  ProjectNo  =  '" + stringProjectID1 + "'  AND  InvoiceKind  =  '" + stringInvoiceKind + "'  AND  UseYYYYMM  =  '" + stringEDate.substring(0, 7)
+        + "'  AND  (MaxInvoiceDate <= '" + stringEDate + "'  OR  MaxInvoiceDate IS NULL) AND  ENDYES  =  'N'  AND  CloseYes  =  'N' "
+        + " AND  ProcessInvoiceNo  =  '1'  ORDER BY  InvoiceStartNo ";
     System.out.println("getRetInvoM022: " + stringSql);
     retInvoM022 = dbInvoice.queryFromPool(stringSql);
     return retInvoM022;
@@ -1910,17 +1910,17 @@ public class SignSave extends bproc {
     //
     String stringSql = "";
     //
-    stringSql = " UPDATE  InvoM022  SET  CloseYes  =  N'Y' " + " WHERE  CompanyNo  =  '" + stringCompanyCd + "' " + " AND  InvoiceYYYYMM  =  '" + retInvoM022[0].trim() + "' "
-        + " AND  FSChar  =  '" + retInvoM022[1].trim() + "' " + " AND  StartNo  =  '" + retInvoM022[2].trim() + "' " + " AND  InvoiceBook  =  '" + retInvoM022[3].trim() + "' ";
+    stringSql = " UPDATE  InvoM022  SET  CloseYes  =  N'Y'  WHERE  CompanyNo  =  '" + stringCompanyCd + "'  AND  InvoiceYYYYMM  =  '" + retInvoM022[0].trim() + "' "
+        + " AND  FSChar  =  '" + retInvoM022[1].trim() + "'  AND  StartNo  =  '" + retInvoM022[2].trim() + "'  AND  InvoiceBook  =  '" + retInvoM022[3].trim() + "' ";
     // System.out.println("doUpdateInvoM022-----------------------------------"+stringSql)
     // ;
     dbInvoice.execFromPool(stringSql);
   }
 
   public void doUpdateInvoM022(String[] retSale05M085UPDATE, String stringCompanyCd) throws Throwable {
-    String stringSql = " UPDATE  InvoM022  SET  MaxInvoiceNo  =  '" + retSale05M085UPDATE[4].trim() + "', " + " MaxInvoiceDate  =  '" + retSale05M085UPDATE[5].trim() + "', "
-        + " EndYES  =  '" + retSale05M085UPDATE[6].trim() + "', " + " CloseYes  =  'N' " + " WHERE  CompanyNo  =  '" + stringCompanyCd + "' " + " AND  InvoiceYYYYMM  =  '"
-        + retSale05M085UPDATE[0].trim() + "' " + "  AND  FSChar  =  '" + retSale05M085UPDATE[1].trim() + "' " + " AND  StartNo  =  '" + retSale05M085UPDATE[2].trim() + "' "
+    String stringSql = " UPDATE  InvoM022  SET  MaxInvoiceNo  =  '" + retSale05M085UPDATE[4].trim() + "',  MaxInvoiceDate  =  '" + retSale05M085UPDATE[5].trim() + "', "
+        + " EndYES  =  '" + retSale05M085UPDATE[6].trim() + "',  CloseYes  =  'N'  WHERE  CompanyNo  =  '" + stringCompanyCd + "'  AND  InvoiceYYYYMM  =  '"
+        + retSale05M085UPDATE[0].trim() + "'   AND  FSChar  =  '" + retSale05M085UPDATE[1].trim() + "'  AND  StartNo  =  '" + retSale05M085UPDATE[2].trim() + "' "
         + " AND  InvoiceBook  =  '" + retSale05M085UPDATE[3].trim() + "' ";
     // System.out.println("doUpdateInvoM022(2)-----------------------------------"+stringSql)
     // ;
@@ -1928,8 +1928,8 @@ public class SignSave extends bproc {
   }
 
   public void doUpdateInvoM022Undo(String[] retSale05M085UPDATE, String stringCompanyCd) throws Throwable {
-    String stringSql = " UPDATE  InvoM022  SET  CloseYes  =  'N' " + " WHERE  CompanyNo  =  '" + stringCompanyCd + "' " + " AND  InvoiceYYYYMM  =  '"
-        + retSale05M085UPDATE[0].trim() + "' " + "  AND  FSChar  =  '" + retSale05M085UPDATE[1].trim() + "' " + " AND  StartNo  =  '" + retSale05M085UPDATE[2].trim() + "' "
+    String stringSql = " UPDATE  InvoM022  SET  CloseYes  =  'N'  WHERE  CompanyNo  =  '" + stringCompanyCd + "'  AND  InvoiceYYYYMM  =  '"
+        + retSale05M085UPDATE[0].trim() + "'   AND  FSChar  =  '" + retSale05M085UPDATE[1].trim() + "'  AND  StartNo  =  '" + retSale05M085UPDATE[2].trim() + "' "
         + " AND  InvoiceBook  =  '" + retSale05M085UPDATE[3].trim() + "' ";
     // System.out.println("doUpdateInvoM022(2)-----------------------------------"+stringSql)
     // ;
@@ -1978,21 +1978,26 @@ public class SignSave extends bproc {
     if (StringUtils.equals(stringEDate, util.getDateAfterNDays(invoiceOpenDate, "/", -2))) {
       String[] arrTmpTime = strInvoiceTime.split(":");
       int addedTime = Integer.parseInt(arrTmpTime[0].trim()) + addHour;
+      /*
       int tmpTimeH = addedTime >= 24 ? 23 : addedTime;
       // tip : 數字計算後，小於10的0會不見，要再補回來
       strInvoiceTime = kUtil.add0(tmpTimeH, 2, "F") + ":" + arrTmpTime[1].trim() + ":" + arrTmpTime[2].trim();
+      */
+      
+      //財務一定要23:00:00，說不通，由他們去
+      if(addedTime >= 24) strInvoiceTime = "23:00:00";
     }
 
     String stringSql = " INSERT  INTO  InvoM030 (InvoiceNo,                InvoiceDate, InvoiceTime,  InvoiceKind,              CompanyNo,  DepartNo, "
         + " ProjectNo,                InvoiceWay,   Hubei,                         CustomNo,     PointNo, "
         + " InvoiceMoney,         InvoiceTax,    InvoiceTotalMoney,  TaxKind,         DisCountMoney,  "
         + " DisCountTimes,        PrintYes,       PrintTimes,                 DELYes,          LuChangYes ,"
-        + " ProcessInvoiceNo,  Transfer,       CreateUserNo,           CreateDateTime,  LastUserNo, " + " LastDateTime, RandomCode, CustomName) " + " VALUES ( '" + stringInvoiceNo
-        + "', " + " '" + stringEDate + "', " + " '" + strInvoiceTime + "', " + " '" + stringInvoiceKind + "', " + " '" + stringCompanyCd + "', " + " '" + stringDepartNo + "', " + // 04
-        " '" + stringProjectID1 + "', " + " 'A', " + " '" + stringPosition + "', " + " '" + stringCustomNo + "', " + " '" + stringPointNo + "', " + // 09
-        stringInvoiceMoney + ", " + stringInvoiceTax + ", " + stringInvoiceTotalMoney + ", " + " '" + stringTaxKind + "', " + stringL_DiscountMoney + ", " + // 14
-        intDiscountCountInvoice + ", " + " 'N', " + " 0, " + " 'N', " + " 'N', " + " '1', " + " '收款', " + " '" + stringUserID + "', " + " '" + stringDateTime + "', " + " '"
-        + stringUserID + "', " + " '" + stringDateTime + "', " + " '" + kUtil.add0(r1.nextInt(9999), 4, "F") + "', " + " '" + customName + "' " + "  ) ";
+        + " ProcessInvoiceNo,  Transfer,       CreateUserNo,           CreateDateTime,  LastUserNo,  LastDateTime, RandomCode, CustomName)  VALUES ( '" + stringInvoiceNo
+        + "',  '" + stringEDate + "',  '" + strInvoiceTime + "',  '" + stringInvoiceKind + "',  '" + stringCompanyCd + "',  '" + stringDepartNo + "', " + // 04
+        " '" + stringProjectID1 + "',  'A',  '" + stringPosition + "',  '" + stringCustomNo + "',  '" + stringPointNo + "', " + // 09
+        stringInvoiceMoney + ", " + stringInvoiceTax + ", " + stringInvoiceTotalMoney + ",  '" + stringTaxKind + "', " + stringL_DiscountMoney + ", " + // 14
+        intDiscountCountInvoice + ",  'N',  0,  'N',  'N',  '1',  '收款',  '" + stringUserID + "',  '" + stringDateTime + "',  '"
+        + stringUserID + "',  '" + stringDateTime + "',  '" + kUtil.add0(r1.nextInt(9999), 4, "F") + "',  '" + customName + "'   ) ";
     // System.out.println("InvoM030-------------" + stringSql) ;
     dbInvoice.execFromPool(stringSql);
 
@@ -2040,7 +2045,7 @@ public class SignSave extends bproc {
       stringITEMLS_CHINESE = code.ByteToStr(stringTemp.substring(0, 24));
     }
     //
-    String stringSql = " INSERT  INTO  InvoM031 (InvoiceNo,  RecordNo,  DetailItem,  Remark) " + " VALUES ( '" + stringInvoiceNo + "',  " + intRecord + ", " + " '"
+    String stringSql = " INSERT  INTO  InvoM031 (InvoiceNo,  RecordNo,  DetailItem,  Remark)  VALUES ( '" + stringInvoiceNo + "',  " + intRecord + ",  '"
         + stringITEMLS_CHINESE + "', " +
         // " '" + stringITEMLS_CHINESE.substring(0,5) + "', " +
         " '" + stringORDER_NO + "') ";
@@ -2064,7 +2069,7 @@ public class SignSave extends bproc {
     stringSql = " SELECT  CustomName from InvoM0C0 where CustomNo='" + stringCustomNo + "' ";
     retInvoM0C0 = dbInvoice.queryFromPool(stringSql);
     if (retInvoM0C0.length == 0 && !"".equals(stringCustomName)) {
-      stringSql = " INSERT  INTO  InvoM0C0 (CustomNo,  CustomName,  Transfer,  Nationality) " + " values ('" + stringCustomNo + "',N'" + stringCustomName + "','Y',  '"
+      stringSql = " INSERT  INTO  InvoM0C0 (CustomNo,  CustomName,  Transfer,  Nationality)  values ('" + stringCustomNo + "',N'" + stringCustomName + "','Y',  '"
           + stringNationality + "')";
       String ret = dbInvoice.execFromPool(stringSql);
     }
