@@ -7,7 +7,6 @@ import java.util.*;
 import jcx.util.*;
 import jcx.html.*;
 import jcx.db.*;
-import cLabel;
 import com.jacob.activeX.*;
 import com.jacob.com.*;
 import Farglory.util.FargloryUtil;
