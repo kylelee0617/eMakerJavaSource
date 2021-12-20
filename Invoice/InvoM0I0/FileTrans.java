@@ -1,15 +1,17 @@
 package Invoice.InvoM0I0;
 
-import javax.swing.*;
-import jcx.jform.bproc;
-import java.io.*;
-import java.util.*;
-import jcx.util.*;
-import jcx.html.*;
-import jcx.db.*;
-import com.jacob.activeX.*;
-import com.jacob.com.*;
+import java.util.Calendar;
+
+import com.jacob.activeX.ActiveXComponent;
+import com.jacob.com.ComThread;
+import com.jacob.com.Dispatch;
+import com.jacob.com.Variant;
+
 import Farglory.util.FargloryUtil;
+import jcx.db.talk;
+import jcx.jform.bproc;
+import jcx.util.check;
+import jcx.util.convert;
 
 public class FileTrans extends bproc {
   public String getDefaultValue(String value) throws Throwable {
@@ -265,6 +267,7 @@ public class FileTrans extends bproc {
         } else {
           stringNowInvoiceNo = stringFSChar + stringMaxInvoiceNo1;
         }
+        
         if (stringNowInvoiceNo.equals(stringInvoiceEndNo)) {
           stringEndYes = "Y";
         }
