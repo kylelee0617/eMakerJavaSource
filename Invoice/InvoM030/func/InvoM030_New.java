@@ -75,7 +75,7 @@ public class InvoM030_New extends bTransaction {
     String transferName = "收款";
     if ("0351".equals(getValue("DepartNo").trim())) {
       transferName = "客服";
-    }else if ("5600".equals(getValue("DepartNo").trim())) {
+    } else if ("5600".equals(getValue("DepartNo").trim())) {
       transferName = "租賃";
     }
 
@@ -90,8 +90,8 @@ public class InvoM030_New extends bTransaction {
     if (getValue("ProjectNo").trim().equals("E2AII") || getValue("ProjectNo").trim().equals("H802A")) {
       stringSQL = "SELECT TOP 1 InvoiceYYYYMM, FSChar, StartNo, InvoiceBook, InvoiceStartNo, InvoiceEndNo, MaxInvoiceNo, "
           + " SUBSTRING(MaxInvoiceNo,3,10)+1 FROM InvoM022  WHERE CompanyNo = '" + getValue("CompanyNo").trim() + "' AND DepartNo = '" + getValue("DepartNo").trim()
-          + "' AND ProjectNo = '" + getValue("ProjectNo").trim() + "' AND InvoiceKind = '" + getValue("InvoiceKind").trim() + "' AND UseYYYYMM = '"
-          + stringInvoiceDate + "' AND (MaxInvoiceDate <= '" + getValue("InvoiceDate").trim() + "' OR MaxInvoiceDate IS NULL OR LEN(MaxInvoiceDate) = 0)"
+          + "' AND ProjectNo = '" + getValue("ProjectNo").trim() + "' AND InvoiceKind = '" + getValue("InvoiceKind").trim() + "' AND UseYYYYMM = '" + stringInvoiceDate
+          + "' AND (MaxInvoiceDate <= '" + getValue("InvoiceDate").trim() + "' OR MaxInvoiceDate IS NULL OR LEN(MaxInvoiceDate) = 0)"
           + " AND ENDYES = 'N'  AND CloseYes = 'N'  AND ProcessInvoiceNo = '" + processNo + "' AND CompanyNo+BranchNo IN(  SELECT  CompanyNo+BranchNo "
           + " FROM Invom025 WHERE ProjectNo = '" + getValue("ProjectNo").trim() + "' AND HuBei = '" + getValue("HuBei").trim() + "')";
     }
@@ -129,11 +129,11 @@ public class InvoM030_New extends bTransaction {
       } else {
         stringNowInvoiceNo = stringFSChar + stringMaxInvoiceNo1;
       }
-      
+
       if (stringNowInvoiceNo.equals(stringInvoiceEndNo)) stringEndYes = "Y";
     }
     System.out.println("取得發票號碼>>>" + stringNowInvoiceNo);
-    
+
     if (stringNowInvoiceNo.length() < 10) {
       message("發票已用完 請洽財務室領取!");
       return false;
@@ -154,8 +154,8 @@ public class InvoM030_New extends bTransaction {
     stringSQL = "DELETE FROM InvoM030TempBody WHERE UseKey = '" + stringUserkey + "'";
     dbInvoice.execFromPool(stringSQL);
     for (int i = 0; i < A_table.length; i++) {
-      stringSQL = " INSERT INTO InvoM030TempBody( UseKey, RecordNo, DetailItem, Remark ) VALUES ('" + stringUserkey + "'," + A_table[i][1] + ","
-          + "'" + A_table[i][2] + "','" + A_table[i][3] + "')";
+      stringSQL = " INSERT INTO InvoM030TempBody( UseKey, RecordNo, DetailItem, Remark ) VALUES ('" + stringUserkey + "'," + A_table[i][1] + "," + "'" + A_table[i][2] + "','"
+          + A_table[i][3] + "')";
       dbInvoice.execFromPool(stringSQL);
     }
     //
@@ -167,20 +167,17 @@ public class InvoM030_New extends bTransaction {
     getButton("buttonMoney").doClick();
 
     /**
-     * 1. insert InvoM030 
-     * 1.1. insert InvoM031 
-     * 2. insert GLEAPFUF 
-     * 3. check GLEDPFUF
-     * 4. insert GLEDPFUF 
-     * 5. update InvoM022
+     * 1. insert InvoM030 1.1. insert InvoM031 2. insert GLEAPFUF 3. check GLEDPFUF
+     * 4. insert GLEDPFUF 5. update InvoM022
      */
     try {
       Random r1 = new Random();
       StringBuilder sbSQL = new StringBuilder();
 
+      int addHour = 4; // 設定發票時間要 + 多少小時
       String invoiceTime = "";
       String[] arrTmpInvoiceTime = stringSystemDateTime.split(" ")[1].trim().split(":");
-      int tmpInvoTimeH = (Integer.parseInt(arrTmpInvoiceTime[0].trim()) + 1) >= 24 ? 23 : (Integer.parseInt(arrTmpInvoiceTime[0].trim()) + 1);
+      int tmpInvoTimeH = (Integer.parseInt(arrTmpInvoiceTime[0].trim()) + addHour) >= 24 ? 23 : (Integer.parseInt(arrTmpInvoiceTime[0].trim()) + 1);
       invoiceTime = "" + (tmpInvoTimeH > 9 ? tmpInvoTimeH : "0" + tmpInvoTimeH) + ":" + arrTmpInvoiceTime[1].trim() + ":" + arrTmpInvoiceTime[2].trim();
       // insert InvoM030
       sbSQL = new StringBuilder();
@@ -265,9 +262,9 @@ public class InvoM030_New extends bTransaction {
       System.out.println("rsTrans>>>" + rsTrans);
 
       // 檢查是否開立成功，若022的發票號碼跟這邊一樣，代表沒開立成功，不做接下去的動作
-      String testSql = "SELECT TOP 1 FSChar , SUBSTRING(MaxInvoiceNo,3,10)+1  FROM InvoM022  WHERE CompanyNo = '" + getValue("CompanyNo").trim() + "'"
-          + " AND DepartNo = '" + getValue("DepartNo").trim() + "' AND ProjectNo = '" + getValue("ProjectNo").trim() + "' AND InvoiceKind = '"
-          + getValue("InvoiceKind").trim() + "' AND UseYYYYMM = '" + stringInvoiceDate + "' AND (MaxInvoiceDate <= '" + getValue("InvoiceDate").trim()
+      String testSql = "SELECT TOP 1 FSChar , SUBSTRING(MaxInvoiceNo,3,10)+1  FROM InvoM022  WHERE CompanyNo = '" + getValue("CompanyNo").trim() + "'" + " AND DepartNo = '"
+          + getValue("DepartNo").trim() + "' AND ProjectNo = '" + getValue("ProjectNo").trim() + "' AND InvoiceKind = '" + getValue("InvoiceKind").trim() + "' AND UseYYYYMM = '"
+          + stringInvoiceDate + "' AND (MaxInvoiceDate <= '" + getValue("InvoiceDate").trim()
           + "' OR MaxInvoiceDate IS NULL OR LEN(MaxInvoiceDate) = 0) AND ENDYES = 'N'  AND CloseYes = 'N'  AND ProcessInvoiceNo = '" + processNo + "'";
       String retTestInvoM022[][] = dbInvoice.queryFromPool(testSql);
       if (stringNowInvoiceNo.equals(retTestInvoM022[0][0].trim() + retTestInvoM022[0][1].trim())) {

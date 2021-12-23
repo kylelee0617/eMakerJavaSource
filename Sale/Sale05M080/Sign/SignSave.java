@@ -1949,7 +1949,7 @@ public class SignSave extends bproc {
     return stringInvoiceTotalMoney;
   }
 
-  // 寫入發票主檔
+  // TODO : 寫入發票主檔
   // 0 CompanyNo 1 DepartNo 2 ProjectID1 3 EDate
   public void doInvertInvoM030(String stringInvoiceNo, String stringInvoiceKind, String stringPosition, String stringCustomNo, String stringPointNo, String stringInvoiceMoney,
       String stringInvoiceTax, String stringInvoiceTotalMoney, String stringTaxKind, String stringCompanyCd, String[][] retSale05M080, String stringL_DiscountMoney,
@@ -1965,7 +1965,7 @@ public class SignSave extends bproc {
     String customName = mapCustomers.get(stringCustomNo) != null ? mapCustomers.get(stringCustomNo).toString() : "";
     Random r1 = new Random();
 
-    // 依照2020/12/11電子發票會議紀錄:
+    // TODO : 依照2020/12/11電子發票會議紀錄:
     // 1.若發票日非開立當日，則開立時間加 addHour 小時
     // 2.若加 addHour 後大於等於24點，以23點計
     // 3.2021/10/19 申請書20210723006變更為4小時

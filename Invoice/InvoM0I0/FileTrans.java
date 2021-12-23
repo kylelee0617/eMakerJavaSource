@@ -1,13 +1,14 @@
 package Invoice.InvoM0I0;
 
 import java.util.Calendar;
+import java.util.Random;
 
 import com.jacob.activeX.ActiveXComponent;
 import com.jacob.com.ComThread;
 import com.jacob.com.Dispatch;
 import com.jacob.com.Variant;
-
 import Farglory.util.FargloryUtil;
+import Farglory.util.KUtils;
 import jcx.db.talk;
 import jcx.jform.bproc;
 import jcx.util.check;
@@ -15,6 +16,7 @@ import jcx.util.convert;
 
 public class FileTrans extends bproc {
   public String getDefaultValue(String value) throws Throwable {
+    KUtils kUtil = new KUtils();
     message("");
     //
     FargloryUtil exeUtil = new FargloryUtil();
@@ -268,6 +270,7 @@ public class FileTrans extends bproc {
           stringNowInvoiceNo = stringFSChar + stringMaxInvoiceNo1;
         }
         
+        //取得的發票號碼(已+1) = 最大發票號碼，代表是最後一筆，應關帳
         if (stringNowInvoiceNo.equals(stringInvoiceEndNo)) {
           stringEndYes = "Y";
         }
@@ -323,19 +326,32 @@ public class FileTrans extends bproc {
         stringInvoiceTax = "" + (floatInvoiceTotalMoney - Double.parseDouble(stringInvoiceMoney));
         stringInvoiceTax = convert.FourToFive(stringInvoiceTax, 0);
       }
-      //
+      
+      
+      //執行SP
+      int addHour = 4; // 設定發票時間要 + 多少小時
+      Random r1 = new Random();
+      //發票時間
       String retSystemDateTime[][] = dbInvoice.queryFromPool("spInvoSystemDateTime  'Admin'");
       String stringSystemDateTime = "";
       stringSystemDateTime = retSystemDateTime[0][0].replace("-", "/");
       stringSystemDateTime = stringSystemDateTime.substring(0, 19);
+      String[] arrTmpInvoiceTime = stringSystemDateTime.split(" ")[1].trim().split(":");
+      int tmpInvoTimeH = (Integer.parseInt(arrTmpInvoiceTime[0].trim()) + addHour) >= 24 ? 23 : (Integer.parseInt(arrTmpInvoiceTime[0].trim()) + 1);
+      String invoiceTime = "" + (tmpInvoTimeH > 9 ? tmpInvoTimeH : "0" + tmpInvoTimeH) + ":" + arrTmpInvoiceTime[1].trim() + ":" + arrTmpInvoiceTime[2].trim();
+      //隨機碼
+      String ranCode = kUtil.add0(r1.nextInt(9999), 4, "F");
+      
       stringSQL = "spInvoM030Insert '" + stringNowInvoiceNo + "','" + stringFSChar + "','" + stringStartNo + "','" + getValue("InvoiceDate").trim() + "','" + stringInvoiceKind
           + "','" + getValue("CompanyNo").trim() + "','5600','" + getValue("ProjectNo").trim() + "','A','" + string戶別 + "','" + string統編 + "','" + string摘要代碼 + "',"
           + stringInvoiceMoney + "," + stringInvoiceTax + "," + stringInvoiceTotalMoney + ",'A','1','" + stringInvoiceYYYYMM + "'," + stringInvoiceBook + ",'" + stringEndYes
           + "','" + getUser() + "','" + stringSystemDateTime + "','" + stringSystemDateTime + "','A','" + stringUserkey + "'";
       dbInvoice.execFromPool(stringSQL);
+      
       // RollBack
       stringSQL = " INSERT  INTO InvoM0I0RollBack( UseKey, InvoiceNo  )  VALUES ('" + stringUserkey + "','" + stringNowInvoiceNo + "'" + ")";
       dbInvoice.execFromPool(stringSQL);
+
       //
       stringSQL = "SELECT CustomNo FROM InvoM0C0  WHERE CustomNo = '" + string統編 + "'";
       String retInvoM0C0[][] = dbInvoice.queryFromPool(stringSQL);
@@ -345,6 +361,8 @@ public class FileTrans extends bproc {
       }
       Dispatch.put(Dispatch.invoke(objectSheet1, "Range", Dispatch.Get, new Object[] { "K" + intRow }, new int[1]).toDispatch(), "Value", "");
       Dispatch.put(Dispatch.invoke(objectSheet1, "Range", Dispatch.Get, new Object[] { "K" + intRow }, new int[1]).toDispatch(), "Value", stringNowInvoiceNo);
+      
+      
       intRow++;
     }
     if (stringStatus.equals("Error")) {
