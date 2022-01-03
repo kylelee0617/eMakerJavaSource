@@ -3,16 +3,19 @@ package Invoice.InvoM0I0;
 import java.util.Calendar;
 import java.util.Random;
 
-import com.jacob.activeX.ActiveXComponent;
-import com.jacob.com.ComThread;
-import com.jacob.com.Dispatch;
-import com.jacob.com.Variant;
-import Farglory.util.FargloryUtil;
-import Farglory.util.KUtils;
-import jcx.db.talk;
+import Farglory.util.*;
+import javax.swing.*;
+
+import org.apache.commons.lang.StringUtils;
+
 import jcx.jform.bproc;
-import jcx.util.check;
-import jcx.util.convert;
+import java.io.*;
+import java.util.*;
+import jcx.util.*;
+import jcx.html.*;
+import jcx.db.*;
+import com.jacob.activeX.*;
+import com.jacob.com.*;
 
 public class FileTrans extends bproc {
   public String getDefaultValue(String value) throws Throwable {
@@ -69,6 +72,7 @@ public class FileTrans extends bproc {
     String stringInvoiceDate = getValue("InvoiceDate").trim();
     stringInvoiceDate = stringInvoiceDate.substring(0, 7);
     String stringUserkey = "";
+
     // Check
     int intRow = 2;
     String stringStatus = "";
@@ -114,11 +118,6 @@ public class FileTrans extends bproc {
         break;
       }
       //
-      /*
-       * if (string戶別.length() == 0){ stringStatus = "Error"; message("第" + intRow +
-       * "列 戶別 不可空白"); break; }
-       */
-      //
       if (string摘要代碼.length() == 0) {
         stringStatus = "Error";
         message("第" + intRow + "列 摘要代碼 不可空白");
@@ -155,6 +154,7 @@ public class FileTrans extends bproc {
     if (stringStatus.equals("Error")) {
       return value;
     }
+
     // 實際轉
     intRow = 2;
     stringStatus = "";
@@ -186,6 +186,7 @@ public class FileTrans extends bproc {
         stringStatus = "OK";
         break;
       }
+
       //
       if (string統編.length() == 0) {
         stringStatus = "Error";
@@ -198,11 +199,6 @@ public class FileTrans extends bproc {
         message("第" + intRow + "列 買受人 不可空白");
         break;
       }
-      //
-      /*
-       * if (string戶別.length() == 0){ stringStatus = "Error"; message("第" + intRow +
-       * "列 戶別 不可空白"); break; }
-       */
       //
       if (string摘要代碼.length() == 0) {
         stringStatus = "Error";
@@ -221,15 +217,24 @@ public class FileTrans extends bproc {
         message("第" + intRow + "列 金額 不可空白");
         break;
       }
+      
+      //取得公司統編怪怪的，處理一下
+      String last2 = StringUtils.substring(string統編, string統編.length()-2);
+      kUtil.info(last2);
+      if( StringUtils.equals(last2, "E7") ) {
+        string統編 = string統編.replace("E7", "").replace(".", "").trim();
+      }
+      KUtils.info(string統編);
+      
       //
       if (string統編.length() == 8 && !check.isCoId(string統編)) {
         stringStatus = "Error";
         message("第" + intRow + "列 統編 錯誤");
         break;
       }
-      //
+
+      // 檢查統編，對應發票聯式
       String stringInvoiceKind = "2";
-      //
       if (string統編.length() == 8 && check.isCoId(string統編)) stringInvoiceKind = "3";
 
       // 發票號碼
@@ -269,8 +274,8 @@ public class FileTrans extends bproc {
         } else {
           stringNowInvoiceNo = stringFSChar + stringMaxInvoiceNo1;
         }
-        
-        //取得的發票號碼(已+1) = 最大發票號碼，代表是最後一筆，應關帳
+
+        // 取得的發票號碼(已+1) = 最大發票號碼，代表是最後一筆，應關帳
         if (stringNowInvoiceNo.equals(stringInvoiceEndNo)) {
           stringEndYes = "Y";
         }
@@ -280,7 +285,8 @@ public class FileTrans extends bproc {
         message("電腦發票已用完 請洽財務室領取!");
         break;
       }
-      System.out.println(string統編 + "-" + intRow + "-" + stringNowInvoiceNo + "-" + stringInvoiceEndNo);
+      System.out.println("test1>>>" + string統編 + "-" + intRow + "-" + stringNowInvoiceNo + "-" + stringInvoiceEndNo);
+      
       // 明細
       Calendar cal = Calendar.getInstance();// Current time
       stringUserkey = getUser() + "_T" + ((cal.get(Calendar.HOUR_OF_DAY) * 10000) + (cal.get(Calendar.MINUTE) * 100) + cal.get(Calendar.SECOND));
@@ -326,28 +332,28 @@ public class FileTrans extends bproc {
         stringInvoiceTax = "" + (floatInvoiceTotalMoney - Double.parseDouble(stringInvoiceMoney));
         stringInvoiceTax = convert.FourToFive(stringInvoiceTax, 0);
       }
-      
-      
-      //執行SP
+
+      // 執行SP
       int addHour = 4; // 設定發票時間要 + 多少小時
       Random r1 = new Random();
-      //發票時間
+      // 發票時間
       String retSystemDateTime[][] = dbInvoice.queryFromPool("spInvoSystemDateTime  'Admin'");
       String stringSystemDateTime = "";
       stringSystemDateTime = retSystemDateTime[0][0].replace("-", "/");
       stringSystemDateTime = stringSystemDateTime.substring(0, 19);
       String[] arrTmpInvoiceTime = stringSystemDateTime.split(" ")[1].trim().split(":");
-      int tmpInvoTimeH = (Integer.parseInt(arrTmpInvoiceTime[0].trim()) + addHour) >= 24 ? 23 : (Integer.parseInt(arrTmpInvoiceTime[0].trim()) + 1);
+      int tmpInvoTimeH = (Integer.parseInt(arrTmpInvoiceTime[0].trim()) + addHour) >= 24 ? 23 : (Integer.parseInt(arrTmpInvoiceTime[0].trim()) + addHour);
       String invoiceTime = "" + (tmpInvoTimeH > 9 ? tmpInvoTimeH : "0" + tmpInvoTimeH) + ":" + arrTmpInvoiceTime[1].trim() + ":" + arrTmpInvoiceTime[2].trim();
-      //隨機碼
+      // 隨機碼
       String ranCode = kUtil.add0(r1.nextInt(9999), 4, "F");
-      
+
       stringSQL = "spInvoM030Insert '" + stringNowInvoiceNo + "','" + stringFSChar + "','" + stringStartNo + "','" + getValue("InvoiceDate").trim() + "','" + stringInvoiceKind
           + "','" + getValue("CompanyNo").trim() + "','5600','" + getValue("ProjectNo").trim() + "','A','" + string戶別 + "','" + string統編 + "','" + string摘要代碼 + "',"
           + stringInvoiceMoney + "," + stringInvoiceTax + "," + stringInvoiceTotalMoney + ",'A','1','" + stringInvoiceYYYYMM + "'," + stringInvoiceBook + ",'" + stringEndYes
-          + "','" + getUser() + "','" + stringSystemDateTime + "','" + stringSystemDateTime + "','A','" + stringUserkey + "'";
+          + "','" + getUser() + "','" + stringSystemDateTime + "','" + stringSystemDateTime + "','A','" + stringUserkey + "','" + invoiceTime + "','" + ranCode + "',"
+              + "'" + string買受人 + "','發票轉檔' ";
       dbInvoice.execFromPool(stringSQL);
-      
+
       // RollBack
       stringSQL = " INSERT  INTO InvoM0I0RollBack( UseKey, InvoiceNo  )  VALUES ('" + stringUserkey + "','" + stringNowInvoiceNo + "'" + ")";
       dbInvoice.execFromPool(stringSQL);
@@ -361,8 +367,7 @@ public class FileTrans extends bproc {
       }
       Dispatch.put(Dispatch.invoke(objectSheet1, "Range", Dispatch.Get, new Object[] { "K" + intRow }, new int[1]).toDispatch(), "Value", "");
       Dispatch.put(Dispatch.invoke(objectSheet1, "Range", Dispatch.Get, new Object[] { "K" + intRow }, new int[1]).toDispatch(), "Value", stringNowInvoiceNo);
-      
-      
+
       intRow++;
     }
     if (stringStatus.equals("Error")) {
