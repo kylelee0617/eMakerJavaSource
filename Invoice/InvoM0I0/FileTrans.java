@@ -261,7 +261,7 @@ public class FileTrans extends bproc {
         stringInvoiceBook = retInvoM022[i][3];
         stringInvoiceStartNo = retInvoM022[i][4];
         stringInvoiceEndNo = retInvoM022[i][5];
-        stringMaxInvoiceNo = retInvoM022[i][6];
+        stringMaxInvoiceNo = retInvoM022[i][6].trim();
         stringMaxInvoiceNo1 = retInvoM022[i][7].trim();
         if (stringMaxInvoiceNo1.length() == 7) stringMaxInvoiceNo1 = "0" + stringMaxInvoiceNo1;
         if (stringMaxInvoiceNo1.length() == 6) stringMaxInvoiceNo1 = "00" + stringMaxInvoiceNo1;
@@ -269,6 +269,10 @@ public class FileTrans extends bproc {
         if (stringMaxInvoiceNo1.length() == 4) stringMaxInvoiceNo1 = "0000" + stringMaxInvoiceNo1;
         if (stringMaxInvoiceNo1.length() == 3) stringMaxInvoiceNo1 = "00000" + stringMaxInvoiceNo1;
         if (stringMaxInvoiceNo1.length() == 2) stringMaxInvoiceNo1 = "000000" + stringMaxInvoiceNo1;
+        
+        KUtils.info("stringMaxInvoiceNo:" + stringMaxInvoiceNo);
+        KUtils.info("stringMaxInvoiceNo1:" + stringMaxInvoiceNo1);
+        
         if (stringMaxInvoiceNo.length() == 0) {
           stringNowInvoiceNo = stringInvoiceStartNo;
         } else {

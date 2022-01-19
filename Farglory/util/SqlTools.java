@@ -21,7 +21,8 @@ public class SqlTools extends bproc {
       return value;
     }
 
-    String script = getValue("script").toString().trim().toLowerCase();
+    String script = getValue("script").toString().trim().toLowerCase(); //拆解用
+    String scriptReal = getValue("script").toString().trim(); //執行用
     if ("".equals(script)) {
       message("script不得為空");
       return value;
@@ -32,17 +33,17 @@ public class SqlTools extends bproc {
     System.out.println("action:" + action);
 
     String insertYN = getValue("insertYN").toString();
-    if ((script.indexOf("insert") != -1) && "N".equals(insertYN)) {
+    if (StringUtils.equals(action, "insert") && "N".equals(insertYN)) {
       messagebox("禁止執行 insert 語法");
       return value;
     }
     String updateYN = getValue("updateYN").toString();
-    if ((script.indexOf("update") != -1) && "N".equals(updateYN)) {
+    if (StringUtils.equals(action, "update") && "N".equals(updateYN)) {
       messagebox("禁止執行 update 語法");
       return value;
     }
     String deleteYN = getValue("deleteYN").toString();
-    if ((script.indexOf("delete") != -1) && "N".equals(deleteYN)) {
+    if (StringUtils.equals(action, "delete") && "N".equals(deleteYN)) {
       messagebox("禁止執行 Delete 語法");
       return value;
     }
@@ -57,7 +58,7 @@ public class SqlTools extends bproc {
     // start
     StringBuilder sb = new StringBuilder();
     String[][] retTable = null;
-    if (StringUtils.equals(action, "select") ) { // 查詢
+    if (StringUtils.equals(action, "select")) { // 查詢
       String column = StringUtils.substring(script, script.indexOf(" "), script.indexOf("from")).replaceAll("distinct", "").replaceAll("top", "").trim();
 //      System.out.println("column0:" + column);
       String tmpCut1 = StringUtils.substring(column, 0, column.indexOf(" ")).trim();
@@ -91,11 +92,11 @@ public class SqlTools extends bproc {
       tb1.setName("SQL查詢結果");
       this.setTableHeader("ResultTable", tableH);
 
-      retTable = dbTalk.queryFromPool(script);
+      retTable = dbTalk.queryFromPool(scriptReal);
       this.setTableData("ResultTable", retTable);
     } else if (StringUtils.equals(action, "update") || StringUtils.equals(action, "delete") || StringUtils.equals(action, "insert")) { // update
       retTable = new String[1][1];
-      String rs = dbTalk.execFromPool(script);
+      String rs = dbTalk.execFromPool(scriptReal);
       sb.append(rs);
       retTable[0][0] = rs;
       setValue("sqlResult", sb.toString());

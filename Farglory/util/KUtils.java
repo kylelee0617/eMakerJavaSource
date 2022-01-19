@@ -6,8 +6,6 @@ package Farglory.util;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Vector;
 
 import org.apache.commons.lang.StringUtils;
@@ -79,7 +77,7 @@ public class KUtils extends bproc {
   }
 
   /**
-   * 合併身分證號 & 護照號碼 conpareTo比較，大的放前面
+   * 合併身分證號 & 護照號碼 compareTo比較，大的放前面
    * 
    * @param cusNo1
    * @param custNo2

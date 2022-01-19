@@ -1,5 +1,5 @@
 // 修改日期:20100520 員工編號:B3774  因新增可選擇是否匯出贈送項目變動過大，故不mark且刪除所有mark
-package Sale;
+package Sale.Report;
 
 import jcx.jform.bTransaction;
 import java.util.*;

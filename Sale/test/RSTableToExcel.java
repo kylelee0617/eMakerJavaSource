@@ -56,6 +56,7 @@ public class RSTableToExcel extends bproc {
     JTable tb1 = this.getTable("ResultTable");
     tableName = tb1.getName();
     DefaultTableModel dtm = (DefaultTableModel) tb1.getModel();
+    
     Vector v = new Vector();
     int columnNum = 0;
     while (true) {
@@ -65,6 +66,7 @@ public class RSTableToExcel extends bproc {
       v.add(columnName);
       columnNum++;
     }
+    
     String[] tableTitle = (String[]) v.toArray(new String[v.size()]);
     mainList.add(tableTitle);
 
@@ -76,9 +78,9 @@ public class RSTableToExcel extends bproc {
 
   public void doExcel() throws Throwable {
     System.out.println("mainList size>>>" + mainList.size());
-    
-    // ミ  秨﹍计  挡计  计  ﹍计
-    Farglory.Excel.FargloryExcel exeFun = new Farglory.Excel.FargloryExcel(1, mainList.size()+1, mainList.size(), 1);
+
+    // ミ 秨﹍计 挡计 计 ﹍计
+    Farglory.Excel.FargloryExcel exeFun = new Farglory.Excel.FargloryExcel(1, mainList.size() + 1, mainList.size(), 1);
 
     // sample郎隔畖
     String stringPrintExcel = "G:\\kyleTest\\Excel\\PaperExcel.xlt";
@@ -87,8 +89,8 @@ public class RSTableToExcel extends bproc {
     // ミExcelン
     Vector retVector = exeFun.getExcelObject(stringPrintExcel);
     Dispatch objectSheet1 = (Dispatch) retVector.get(1);
-    
-    //繷
+
+    // 繷
     exeFun.putDataIntoExcel(0, 0, tableName, objectSheet1);
 
     // Start of Body 戈セ砰
@@ -96,8 +98,8 @@ public class RSTableToExcel extends bproc {
       String[] thisRow = (String[]) mainList.get(intRow);
       int recordNo = intRow + exeFun.getStartDataRow();
 
-      for (int intCon=0 ; intCon<thisRow.length ; intCon++) {
-        exeFun.putDataIntoExcel(intCon, recordNo+1, thisRow[intCon], objectSheet1);
+      for (int intCon = 0; intCon < thisRow.length; intCon++) {
+        exeFun.putDataIntoExcel(intCon, recordNo + 1, thisRow[intCon], objectSheet1);
       }
     }
     // End of Body
