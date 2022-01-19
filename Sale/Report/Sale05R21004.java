@@ -241,7 +241,7 @@ public class Sale05R21004 extends bTransaction {
         // doChangePage後剛好沒有資料
         if (exeExcel.getPageNo() > 1) {
           // 因為doChangePage會把頁數+1, 實際上已剛好沒資料, 所以頁數要-1
-          exeExcel.setPageNo(exeExcel.getPageNo() - 1);
+          exeExcel.setPageNo(exeExcel.getPageNo() - 1); 
         }
       }
       // 頁尾
