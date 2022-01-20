@@ -17,78 +17,81 @@ public class Sale05R21004 extends bTransaction {
     // 傳入值 value 為 "新增","查詢","修改","刪除","列印","PRINT" (列印預覽的列印按鈕),"PRINTALL"
     // (列印預覽的全部列印按鈕) 其中之一
     Farglory.util.FargloryUtil exeUtil = new Farglory.util.FargloryUtil();
+    int countOC = 0; // 付訂日跟簽約日必須要有一flag
+    String retDate = "";
+    int countDate = 0;
 
-    // 付訂期間-起
+    // 付訂期間
     String stringOrderDateS = getValue("OrderDateS").trim();
-    if (stringOrderDateS.length() == 0) {
-      message("請輸入付訂期間-起!");
-      getcLabel("OrderDateS").requestFocus();
-      return false;
+    if (!"".equals(stringOrderDateS)) {
+      retDate = exeUtil.getDateAC(stringOrderDateS, "付訂日期(起)");
+      if (retDate.length() != 10) {
+        message(retDate);
+        getcLabel("OrderDateS").requestFocus();
+        return false;
+      }
+      setValue("OrderDateS", retDate);
+      countDate++;
+      countOC++;
     }
-    stringOrderDateS = exeUtil.getDateAC(stringOrderDateS, "付訂期間-起");
-    if (stringOrderDateS.length() != 10) {
-      message(stringOrderDateS);
-      getcLabel("OrderDateS").requestFocus();
-      return false;
-    } else {
-      setValue("OrderDateS", stringOrderDateS);
-    }
-    // 付訂期間-迄
     String stringOrderDateE = getValue("OrderDateE").trim();
-    if (stringOrderDateE.length() == 0) {
-      message("請輸入付訂期間-迄!");
-      getcLabel("OrderDateE").requestFocus();
-      return false;
+    if (!"".equals(stringOrderDateE)) {
+      retDate = exeUtil.getDateAC(stringOrderDateE, "付訂日期(迄)");
+      if (retDate.length() != 10) {
+        message(retDate);
+        getcLabel("OrderDateE").requestFocus();
+        return false;
+      }
+      setValue("OrderDateE", retDate);
+      countDate++;
     }
-    stringOrderDateE = exeUtil.getDateAC(stringOrderDateE, "付訂期間-迄");
-    if (stringOrderDateE.length() != 10) {
-      message(stringOrderDateE);
-      getcLabel("OrderDateE").requestFocus();
+    if (countDate == 1) {
+      message("[付訂日期(起)(迄)] 須同時限制。");
       return false;
-    } else {
-      setValue("OrderDateE", stringOrderDateE);
     }
     if (datetime.subDays1(stringOrderDateS.replaceAll("/", ""), stringOrderDateE.replaceAll("/", "")) > 0) {
       message("付訂期間起不可以大於迄!");
       return false;
     }
 
-    // 簽約期間-起
+    // 簽約期間
     String conDateS = getValue("ContractDateS").trim();
-    if (conDateS.length() == 0) {
-      message("請輸入簽約期間-起!");
-      getcLabel("ContractDateS").requestFocus();
-      return false;
+    if (!"".equals(conDateS)) {
+      retDate = exeUtil.getDateAC(conDateS, "簽約日期(起)");
+      if (retDate.length() != 10) {
+        message(retDate);
+        getcLabel("ContractDateS").requestFocus();
+        return false;
+      }
+      setValue("ContractDateS", retDate);
+      countDate++;
+      countOC++;
     }
-    conDateS = exeUtil.getDateAC(conDateS, "簽約期間-起");
-    if (conDateS.length() != 10) {
-      message(conDateS);
-      getcLabel("ContractDateS").requestFocus();
-      return false;
-    } else {
-      setValue("ContractDateS", conDateS);
-    }
-    // 簽約期間-迄
     String conDateE = getValue("ContractDateE").trim();
-    if (conDateE.length() == 0) {
-      message("請輸入付訂期間-迄!");
-      getcLabel("ContractDateE").requestFocus();
-      return false;
+    if (!"".equals(conDateE)) {
+      retDate = exeUtil.getDateAC(conDateE, "簽約日期(迄)");
+      if (retDate.length() != 10) {
+        message(retDate);
+        getcLabel("ContractDateE").requestFocus();
+        return false;
+      }
+      setValue("ContractDateE", retDate);
+      countDate++;
     }
-    conDateE = exeUtil.getDateAC(conDateE, "簽約期間-迄");
-    if (conDateE.length() != 10) {
-      message(conDateE);
-      getcLabel("ContractDateE").requestFocus();
+    if (countDate == 1) {
+      message("[簽約日期(起)(迄)] 須同時限制。");
       return false;
-    } else {
-      setValue("ContractDateE", conDateE);
     }
     if (datetime.subDays1(conDateS.replaceAll("/", ""), conDateE.replaceAll("/", "")) > 0) {
       message("簽約期間起不可以大於迄!");
       return false;
     }
 
-    // TODO: 兩組日期須成對存在、不可同時沒有
+    // 付訂與簽約需擇一或共有
+    if (countOC == 0) {
+      message("[付訂日期] 與 [簽約日期] 必須擇一以上填寫");
+      return false;
+    }
 
     // 使用時間
     long longTime1 = exeUtil.getTimeInMillis();
@@ -383,7 +386,7 @@ public class Sale05R21004 extends bTransaction {
     if ("Yes".equals(stringIsExportGifts)) {
       stringSql += "left join Sale05M210 T210 on T92.OrderNo=T210.OrderNo and T92.Position=T210.Position ";
     }
-    stringSql += "where T90.OrderNo=T92.OrderNo and T90.ProjectID1=T40.ProjectID1 and T92.HouseCar=T40.HouseCar and  "
+    stringSql += "where T90.OrderNo=T92.OrderNo and T90.ProjectID1=T40.ProjectID1 and T92.HouseCar=T40.HouseCar "
                + "and T92.Position=T40.Position and T90.ProjectID1='" + stringProjectID1 + "' and ISNULL(T92.StatusCd,'')='' ";
     
     //付訂日條件
