@@ -361,22 +361,22 @@ public class Sale05R21004 extends bTransaction {
   public String[][] getPositionCarGifts(String stringProjectID1, String stringOrderDateS, String stringOrderDateE, String stringIsExportGifts, String conDateS , String conDateE) throws Throwable {
     String stringSql = "";
     String retData[][] = null;
-    //
+
     // 0
     stringSql = "select (case when T92.HouseCar='House' then T92.Position else '' end) Position, (case when T92.HouseCar='Car' then T92.Position else '' end) Car, "
         + "T90.OrderNo, T90.OrderDate, (select distinct (case when convert(char(10),ContrDate,111)='1900/01/01' then '' else convert(char(10),ContrDate,111) end) "
         + "from A_Sale where ProjectID1=T90.ProjectID1 and HouseCar=(case when T92.HouseCar='House' then 'Position' else 'Car' end) "
-        + "and (case when HouseCar='Position' then Position else Car end)=T92.Position " +
-        ") ContrDate, " +
+        + "and (case when HouseCar='Position' then Position else Car end)=T92.Position "
+        + ") ContrDate, "
         // 5
-        "T40.PingSu, T92.ListPrice, T92.DealMoney, T92.GiftMoney, T92.CommMoney, " +
+        + "T40.PingSu, T92.ListPrice, T92.DealMoney, T92.GiftMoney, T92.CommMoney, "
         // 10
-        "(T92.DealMoney -T92.GiftMoney -T92.CommMoney -T92.ViMoney) PureMoney, T40.FloorPrice, "
-        + "(T92.DealMoney -T92.GiftMoney -T92.CommMoney -T92.ViMoney -T40.FloorPrice) BalaMoney, T90.SaleName1, T90.SaleName2, " +
+        + "(T92.DealMoney -T92.GiftMoney -T92.CommMoney -T92.ViMoney) PureMoney, T40.FloorPrice, "
+        + "(T92.DealMoney -T92.GiftMoney -T92.CommMoney -T92.ViMoney -T40.FloorPrice) BalaMoney, T90.SaleName1, T90.SaleName2, "
         // 15
-        "T90.SaleName3, T90.SaleName4, T90.SaleName5, T90.SaleName6, T90.SaleName7, " +
+        + "T90.SaleName3, T90.SaleName4, T90.SaleName5, T90.SaleName6, T90.SaleName7, "
         // 20
-        "T90.SaleName8, T90.SaleName9, T90.SaleName10, ";
+        + "T90.SaleName8, T90.SaleName9, T90.SaleName10, ";
     if ("Yes".equals(stringIsExportGifts)) {
       stringSql += "T210.ItemNo, ISNULL(T210.Qty,0) Qty, ISNULL(T210.TotalAmt,0) TotalAmt ";
     } else {
