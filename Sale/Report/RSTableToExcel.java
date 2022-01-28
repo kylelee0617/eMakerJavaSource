@@ -1,4 +1,4 @@
-package Sale.test;
+package Sale.Report;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +68,9 @@ public class RSTableToExcel extends bproc {
 
     // sample檔路徑
     String stringPrintExcel = "G:\\資訊室\\Excel\\public\\PaperExcel.xlt";
+    if(StringUtils.contains(this.getFunctionName(), "財務")) {
+      stringPrintExcel = "\\Tpbk03\\檔案快遞2\\DLIBACC\\PaperExcel.xlt";
+    }
 
     // 建立Excel物件
     Vector retVector = exeFun.getExcelObject(stringPrintExcel);

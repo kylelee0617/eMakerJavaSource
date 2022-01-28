@@ -1,4 +1,4 @@
-package Sale.Report;
+package Sale.Report.DataQuery;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +19,7 @@ public class IRA extends bproc{
   public String getDefaultValue(String value)throws Throwable{  
     
     //TODO: 查詢條件
-    year = this.getValue("Year").trim();
+    year = this.getValue("行銷-Year").trim();
     
     //TODO: 查詢資料
     String[][] retTable = this.getMainData();

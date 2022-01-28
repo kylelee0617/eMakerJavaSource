@@ -1,11 +1,11 @@
-package Invoice.Report;
+package Sale.Report.DataQuery;
 
 import javax.swing.JTable;
 
 import jcx.db.talk;
 import jcx.jform.bproc;
 
-public class MonthInvoice extends bproc{
+public class MonthDISC extends bproc{
   
   //param
   String yM = "";
@@ -13,10 +13,9 @@ public class MonthInvoice extends bproc{
   public String getDefaultValue(String value)throws Throwable{
     
     //查詢條件
-    yM = this.getValue("Year").trim();
+    yM = this.getValue("財務-YearMonth").trim();
     
-    
-    String funcName = yM + "月開立發票";
+    String funcName = yM + "月折讓";
     
     //TODO: 查詢資料
     String[][] retTable = this.getMainData();
@@ -25,9 +24,7 @@ public class MonthInvoice extends bproc{
     
     //TODO: 寫表格
     //表頭
-    String tmpHeader = "InvoiceNo、InvoiceDate、InvoiceTime、InvoiceKind、CompanyNo、DepartNo、ProjectNo、InvoiceWay、HuBei、CustomNo、CustomName、PointNo、InvoiceMoney、InvoiceTax、"
-        + "InvoiceTotalMoney、TaxKind、DisCountMoney、DisCountTimes、PrintYes、PrintTimes、DELYes、LuChangYes、ProcessInvoiceNo、Transfer、CreateUserNo、CreateDateTime、UpdateUserNo、"
-        + "UpdateDateTime、DeleteUserNo、DeleteDateTime、LastUserNo、LastDateTime、CarbonPrintYes、OBJECT_CD、OBJECT_FULL_NAME、RandomCode、InvoTransYN、delTransYN";
+    String tmpHeader = "DiscountNo、RecordNo、ChoiceYES、InvoiceNo、PointNo、InvoiceMoney、InvoiceTax、InvoiceTotalMoney、YiDiscountMoney、DiscountItemMoney、CustomNo、DELYes、Reason";
     String[] tableHeader = tmpHeader.split("、");
     JTable tb1 = getTable("ResultTable");
     tb1.setName(funcName);
@@ -44,8 +41,12 @@ public class MonthInvoice extends bproc{
   }
   
   public String[][] getMainData() throws Throwable{
+    
+    String[] arrYM = yM.split("/");
+    String newYear = Integer.toString( (Integer.parseInt(arrYM[0].trim())-1911) );
+    
     talk dbINV = getTalk("Invoice");
-    String sql = "Select * from invom030 where invoiceDate>='"+yM+"/01' and invoiceDate<='"+yM+"/99' order by invoiceNo";
+    String sql = "Select A.*,B.CustomNo,B.DELYes,B.Reason from invom041 A,invom040 B where A.DiscountNo=B.DiscountNo and Substring(A.DiscountNo,8,5)='"+ newYear + arrYM[1].trim() +"' ";
     
     return dbINV.queryFromPool(sql);
   }
