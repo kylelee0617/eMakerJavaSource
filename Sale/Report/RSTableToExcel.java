@@ -69,7 +69,7 @@ public class RSTableToExcel extends bproc {
     // sample檔路徑
     String stringPrintExcel = "G:\\資訊室\\Excel\\public\\PaperExcel.xlt";
     if(StringUtils.contains(this.getFunctionName(), "財務")) {
-      stringPrintExcel = "\\Tpbk03\\檔案快遞2\\DLIBACC\\PaperExcel.xlt";
+      stringPrintExcel = "N:\\公用資料區\\財務室\\EXCELTEMP\\PaperExcel.xlt";
     }
 
     // 建立Excel物件
