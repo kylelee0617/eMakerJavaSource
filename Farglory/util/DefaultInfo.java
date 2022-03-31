@@ -43,25 +43,15 @@ public class DefaultInfo extends jcx.jform.sproc {
     configMap.put("serverIP", serverIP);
     configMap.put("serverName", serverName);
     configMap.put("serverType", serverType);
+    
+    //???
+    String ninjaCode = resource.getString("NINJACODE");
+    put("ninjaCode", ninjaCode);
+    
+    
+    //放入全域MAP
     put("config", configMap);
-
     setValue("config", showConfig.toString());
-
-    // =============================== 物件化 ==================================
-    SystemConfig sysConfig = new SystemConfig();
-    sysConfig.setServerIp(serverIP);
-    sysConfig.setServerName(serverName);
-    sysConfig.setServerType(serverType);
-    sysConfig.setLyodsSoapURL(lyodsSoapURL);
-    sysConfig.setGENLIB(GENLIB);
-//    put("sysConfig", sysConfig);
-
-//    Map mapSysConfig = new HashMap();
-//    mapSysConfig.put("sysConfig", sysConfig);
-//    put("SYSTEMCONFIG", mapSysConfig);
-//
-//    this.putProperty("lyodsSoapURL", lyodsSoapURL);
-//    System.out.println(">>>" + this.getProperty("lyodsSoapURL"));
 
     return value;
   }

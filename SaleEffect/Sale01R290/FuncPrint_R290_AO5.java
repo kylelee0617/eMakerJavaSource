@@ -189,7 +189,7 @@ public class FuncPrint_R290_AO5 extends bTransaction {
     if (stringBuyerCashDate2.length() > 0)
       setValue("BuyerCashDate2", exeFun.getDateAC(stringBuyerCashDate2, "買方兌現日"));
     //
-    talk dbSale = getTalk("" + get("put_dbSale"));
+    talk dbSale = getTalk("Sale");
     String stringSQL = "";
     String retData[][] = null;
     //
@@ -229,7 +229,7 @@ public class FuncPrint_R290_AO5 extends bTransaction {
     //與AO資料做檢核  (依照[業績參照]改變日期區間)
     String strTypeDate1 = ( "ContrDate".equals(strDateType) )? stringContrDate1 : stringOrderDate1;
     String strTypeDate2 = ( "ContrDate".equals(strDateType) )? stringContrDate2 : stringOrderDate2;
-    talk dbAO = getTalk("" + get("put_dbAO"));
+    talk dbAO = getTalk("dbAO");
     stringSQL = "Select [AgentDEPT4],[Agent_Num],[Agent_Name],SUM(CAST(TEL_V AS real)) AS TEL_V,SUM(CAST(DS_V AS real)) AS DS_V,SUM(CAST(Income_V AS real)) AS Income_V "
         + ",SUM(CAST(Friend_V AS real)) AS Friend_V,SUM(CAST(First_V AS real)) AS First_V,SUM(CAST(Repeat_V AS real)) AS Repeat_V "
         + " from AO_DayPerReportTempShow where (Date_Str between '" + strTypeDate1 + "' and '" + strTypeDate2

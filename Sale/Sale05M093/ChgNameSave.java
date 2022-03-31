@@ -197,10 +197,11 @@ public class ChgNameSave extends bproc {
 
         // 法人時檢核實受人是否空白
         System.out.println("tb5_string.length==>" + tb5_string.length);
+        /*
         if (stringCustomNo.length() == 8) {
           if (tb5_string.length == 0) {
-            messagebox("更新客戶資料包含法人，請指定其實質受益人!!");
-            return value;
+//            messagebox("更新客戶資料包含法人，請指定其實質受益人!!");
+//            return value;
           }
           // 該法人是否存在
           boolean flag91Ben = true;
@@ -219,6 +220,8 @@ public class ChgNameSave extends bproc {
             }
           }
         }
+        */
+        
         if ("1".equals(stringNationality)) {
           // 本國人
           if (stringCustomNo.length() != 8 && stringCustomNo.length() != 10) {

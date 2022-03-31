@@ -1,21 +1,17 @@
 package Doc.Doc3;
 
-import java.io.File;
-import java.util.Hashtable;
-import java.util.Vector;
-
-import javax.swing.JTable;
-
-import com.jacob.com.Dispatch;
-import com.jacob.com.Variant;
-
-import Farglory.Excel.FargloryExcel;
-import Farglory.util.FargloryUtil;
-import jcx.db.talk;
 import jcx.jform.bproc;
-import jcx.util.code;
-import jcx.util.convert;
-import jcx.util.datetime;
+import java.io.*;
+import java.util.*;
+import jcx.util.*;
+import jcx.html.*;
+import jcx.db.*;
+import cLabel;
+import javax.swing.*;
+import Farglory.util.FargloryUtil;
+import Farglory.Excel.FargloryExcel;
+import com.jacob.activeX.*;
+import com.jacob.com.*;
 
 //
 public class Doc3R011_Print1 extends bproc {
@@ -70,6 +66,8 @@ public class Doc3R011_Print1 extends bproc {
     FargloryExcel exeExcel = new FargloryExcel();
     if (stringThisFunction.indexOf("±ÄÁÊ") == -1) exeExcel.setVisibleProperty(false);
     String stringFilePath = "g:/¸ê°T«Ç/Excel/Doc/Doc3/" + stringExcelFileName;
+    
+    /*
     if (!(new File(stringFilePath)).exists()) {
       stringFilePath = getClientFile(stringFilePath, exeUtil);
     }
@@ -79,6 +77,7 @@ public class Doc3R011_Print1 extends bproc {
       // ;
       stringFilePath = "https://fg-emaker3.fglife.com.tw/servlet/baServer3?step=6?filename=" + stringFilePath;
     }
+    */
 
     System.out.println("\n\nstringFilePath(" + stringFilePath + ")----------------------------------------------------\n\n");
     Vector retVector = exeExcel.getExcelObject(stringFilePath);

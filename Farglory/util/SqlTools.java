@@ -1,7 +1,13 @@
 package Farglory.util;
 
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JTable;
 
@@ -12,45 +18,45 @@ import jcx.jform.bproc;
 
 public class SqlTools extends bproc {
   public String getDefaultValue(String value) throws Throwable {
-    KUtils kUtil = new KUtils();
-
+    
+    //æª¢æŸ¥æ¬Šé™
     String keyCode = getValue("keyCode").toString().trim();
-    System.out.println("keyCode:" + keyCode);
-    if (!kUtil.chkSQLpws(keyCode)) {
-      messagebox("µL¨Ï¥ÎÅv­­");
+    String chkCode = get("NINJACODE2").toString().trim();
+    if (!StringUtils.equals(chkCode, this.getMD5Str(keyCode).toUpperCase())) {
+      messagebox("ç„¡ä½¿ç”¨æ¬Šé™");
       return value;
     }
 
-    String script = getValue("script").toString().trim().toLowerCase(); //©î¸Ñ¥Î
-    String scriptReal = getValue("script").toString().trim(); //°õ¦æ¥Î
+    String script = getValue("script").toString().trim().toLowerCase(); // æ‹†è§£ç”¨
+    String scriptReal = getValue("script").toString().trim(); // åŸ·è¡Œç”¨
     if ("".equals(script)) {
-      message("script¤£±o¬°ªÅ");
+      message("scriptä¸å¾—ç‚ºç©º");
       return value;
     }
 
-    // ©î¸Ñsql»yªk
+    // æ‹†è§£sqlèªæ³•
     String action = StringUtils.substring(script, 0, script.indexOf(" "));
     System.out.println("action:" + action);
 
     String insertYN = getValue("insertYN").toString();
     if (StringUtils.equals(action, "insert") && "N".equals(insertYN)) {
-      messagebox("¸T¤î°õ¦æ insert »yªk");
+      messagebox("ç¦æ­¢åŸ·è¡Œ insert èªæ³•");
       return value;
     }
     String updateYN = getValue("updateYN").toString();
     if (StringUtils.equals(action, "update") && "N".equals(updateYN)) {
-      messagebox("¸T¤î°õ¦æ update »yªk");
+      messagebox("ç¦æ­¢åŸ·è¡Œ update èªæ³•");
       return value;
     }
     String deleteYN = getValue("deleteYN").toString();
     if (StringUtils.equals(action, "delete") && "N".equals(deleteYN)) {
-      messagebox("¸T¤î°õ¦æ Delete »yªk");
+      messagebox("ç¦æ­¢åŸ·è¡Œ Delete èªæ³•");
       return value;
     }
 
     String database = getValue("dataBase").toString();
     if ("".equals(database)) {
-      message("database¤£±o¬°ªÅ");
+      message("databaseä¸å¾—ç‚ºç©º");
       return value;
     }
     talk dbTalk = getTalk(database);
@@ -58,11 +64,11 @@ public class SqlTools extends bproc {
     // start
     StringBuilder sb = new StringBuilder();
     String[][] retTable = null;
-    if (StringUtils.equals(action, "select")) { // ¬d¸ß
+    if (StringUtils.equals(action, "select")) { // æŸ¥è©¢
       String column = StringUtils.substring(script, script.indexOf(" "), script.indexOf("from")).replaceAll("distinct", "").replaceAll("top", "").trim();
 //      System.out.println("column0:" + column);
       String tmpCut1 = StringUtils.substring(column, 0, column.indexOf(" ")).trim();
-      if (column.indexOf(" ") > 0 && StringUtils.isNumeric(tmpCut1)) column = StringUtils.substring(column, column.indexOf(" ")).trim(); // top N ¹LÂo¼Æ¦r³B²z
+      if (column.indexOf(" ") > 0 && StringUtils.isNumeric(tmpCut1)) column = StringUtils.substring(column, column.indexOf(" ")).trim(); // top N éæ¿¾æ•¸å­—è™•ç†
 //      System.out.println("column1:" + column);
 
       String[] tableH = null;
@@ -89,7 +95,7 @@ public class SqlTools extends bproc {
         }
       }
       JTable tb1 = getTable("ResultTable");
-      tb1.setName("SQL¬d¸ßµ²ªG");
+      tb1.setName("SQLæŸ¥è©¢çµæœ");
       this.setTableHeader("ResultTable", tableH);
 
       retTable = dbTalk.queryFromPool(scriptReal);
@@ -100,11 +106,33 @@ public class SqlTools extends bproc {
       sb.append(rs);
       retTable[0][0] = rs;
       setValue("sqlResult", sb.toString());
+    } else {
+      retTable = new String[1][1];
+      String rs = dbTalk.execFromPool(scriptReal);
+      sb.append(rs);
+      retTable[0][0] = rs;
+      setValue("sqlResult", sb.toString());
     }
 
     message("done : all " + retTable.length + " Rows");
 
     return value;
+  }
+  
+  //åŠ å¯†è™•ç†
+  public String getMD5Str(String str) {
+    byte[] digest = null;
+    try {
+      MessageDigest md5 = MessageDigest.getInstance("md5");
+      digest = md5.digest(str.getBytes("utf-8"));
+    } catch (NoSuchAlgorithmException e) {
+      e.printStackTrace();
+    } catch (UnsupportedEncodingException e) {
+      e.printStackTrace();
+    }
+    // 16æ˜¯è¡¨ç¤ºè½¬æ¢ä¸º16è¿›åˆ¶æ•°
+    String md5Str = new BigInteger(1, digest).toString(16);
+    return md5Str;
   }
 
   public String getInformation() {

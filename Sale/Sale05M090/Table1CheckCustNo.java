@@ -23,12 +23,14 @@ public class Table1CheckCustNo extends bvalidate {
     System.out.println("getFunctionName>>>" + getFunctionName());
     System.out.println("POSITION>>>" + POSITION);
 
-    KSqlUtils ksUtil = new KSqlUtils();
+//    value = value.trim();
+    KSqlUtils kSqlUtil = new KSqlUtils();
     KUtils kUtil = new KUtils();
 
     JTable tb1 = getTable("table1");
     int sRow = tb1.getSelectedRow();
     int sColumn = tb1.getSelectedColumn();
+    boolean isCust = true;
 
     String custNo = "";
     String engNo = "";
@@ -82,27 +84,25 @@ public class Table1CheckCustNo extends bvalidate {
         }
       }
 
-//      setValueAt("table1", value, sRow, "CustomNo");
-
-      // 取ID值
-      custNo = value.trim();
-      engNo = getValueAt("table1", sRow, "EngNo").toString();
+      // 取兩個ID
+//      custNo = value.trim();
+//      engNo = getValueAt("table1", sRow, "EngNo").toString();
     } else if (StringUtils.equals(columnName, "護照證件號")) {
       if (StringUtils.isBlank(countryName2)) {
         messagebox("外國國籍須先行");
         return false;
       }
+      
+      isCust = false;
 
-//      setValueAt("table1", value, sRow, "EngNo");
-
-      // 取ID
-      custNo = getValueAt("table1", sRow, "CustomNo").toString();
-      engNo = value.trim();
+      // 取兩個ID
+//      custNo = getValueAt("table1", sRow, "CustomNo").toString();
+//      engNo = value.trim();
     }
 
     // 偷黑名單資料
     String custNo3 = kUtil.getCustNo3(custNo, engNo);
-    QueryLogBean qBean = ksUtil.getQueryLogByCustNoProjectId(projectId, custNo3);
+    QueryLogBean qBean = kSqlUtil.getQueryLogByCustNoProjectId(projectId, custNo3);
     if (qBean == null) {
       messagebox("無此人資訊，請先執行黑名單查詢。");
       return false;
@@ -110,24 +110,30 @@ public class Table1CheckCustNo extends bvalidate {
 
     String tmpMsg = "";
     String errMsg = "";
+    String bstatus = qBean.getbStatus();
+    String cstatus = qBean.getcStatus();
+    String rstatus = qBean.getrStatus();
     String custName = qBean.getName();
     String birthday = qBean.getBirthday();
     String indCode = qBean.getJobType();
-    countryName = ksUtil.getCountryNameByNationCode(qBean.getNtCode());
-    countryName2 = ksUtil.getCountryNameByNationCode(qBean.getNtCode2());
-    String[] cityTownZip = ksUtil.getCityTownZipName(qBean.getCity(), qBean.getTown());
+    custNo = qBean.getQueryId();
+    engNo = qBean.getEngNo();
+    countryName = kSqlUtil.getCountryNameByNationCode(qBean.getNtCode());
+    countryName2 = kSqlUtil.getCountryNameByNationCode(qBean.getNtCode2());
+    String[] cityTownZip = kSqlUtil.getCityTownZipName(qBean.getCity(), qBean.getTown());
     String engName = qBean.getEngName();
     String addr = qBean.getAddress();
     String funcName = getFunctionName().trim();
     String recordType = "客戶資料";
-    String bstatus = qBean.getbStatus();
-    String rstatus = qBean.getrStatus();
-    String cstatus = ksUtil.chkIsCStatus(custNo, custName, birthday)? "Y":"N";
     setValueAt("table1", "A", sRow, "auditorship"); // 身分，都是一般(已棄用，隱藏中)
     setValueAt("table1", StringUtils.equals(countryName, "中華民國") ? "1" : "2", sRow, "Nationality"); // 舊國籍，其實是本國人或外國人(改名: 本外國人)
     setValueAt("table1", custName, sRow, "CustomName");
     setValueAt("table1", engName, sRow, "EngName");
-    setValueAt("table1", qBean.getEngNo(), sRow, "EngNo");
+    
+    //寫入另一個id
+    if(isCust) setValueAt("table1", engNo, sRow, "EngNo");
+    if(!isCust) setValueAt("table1", custNo, sRow, "CustomNo");
+    
     setValueAt("table1", birthday, sRow, "Birthday");
     setValueAt("table1", cityTownZip[0], sRow, "ZIP");
     setValueAt("table1", cityTownZip[1], sRow, "City");
@@ -136,7 +142,7 @@ public class Table1CheckCustNo extends bvalidate {
     setValueAt("table1", countryName, sRow, "CountryName"); // 國籍
     setValueAt("table1", countryName2, sRow, "CountryName2"); // 國籍2
     setValueAt("table1", indCode, sRow, "IndustryCode"); // 行業別代碼
-    setValueAt("table1", ksUtil.getNameByIndCode(indCode), sRow, "MajorName"); // 行業別
+    setValueAt("table1", kSqlUtil.getNameByIndCode(indCode), sRow, "MajorName"); // 行業別
     setValueAt("table1", bstatus, sRow, "IsBlackList");
     setValueAt("table1", cstatus, sRow, "IsControlList");
     setValueAt("table1", rstatus, sRow, "IsLinked");

@@ -3,48 +3,42 @@ package Farglory.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
-public class TestFile {
-  public static void main(String[] args) {
-    File file = new File("D:\\oldDir");
-    listDir(file); // 列出當前路徑下的所有檔案以及資料夾路徑
+import jcx.jform.sproc;
+
+public class FileControl extends sproc{
+  public String getDefaultValue(String value)throws Throwable{
+    return value;
   }
-
-  /**
-   * 列出當前路徑下的所有檔案路徑
-   * 
-   * @param file
-   */
-  public static void listDir(File file) {
-    String newPath = "D:\\newDir";
-    
+  
+  public static void main(String[] args) {
+  }
+  
+  public static List getFiles2(File file) {
+    List rsList = new ArrayList();  
+    listDir2(file, rsList);
+    return rsList;
+  }
+  
+  public static void listDir2(File file, List rsList) {
+    boolean isDir = false;
     if (file.isDirectory()) { // 是一個目錄
       System.out.println("是目錄");
       // 列出目錄中的全部內容
       File results[] = file.listFiles();
       if (results != null) {
         for (int i = 0; i < results.length; i++) {
-          listDir(results[i]); // 繼續一次判斷
-        }
-      }
-    } else { // 是檔案
-      System.out.println("是檔案");
-      String fileStr = (file.getName()).toString();
-      String fileFormat = "JPG,PNG,MP4";
-      String suffixStr = "";
-      if (null != fileStr && !"".equals(fileStr)) {
-        suffixStr = fileStr.substring(fileStr.lastIndexOf(".") + 1, fileStr.length());
-        if (fileFormat.indexOf(suffixStr.toUpperCase()) != -1) {
-          newPath = newPath + "/" + fileStr;
-          copyFile(file, newPath);
+          listDir2(results[i], rsList); // 繼續一次判斷
         }
       }
     }
     
-    // file.delete(); //刪除!!!!! 根目錄,慎操作
-    
     // 獲取完整路徑
-    System.out.println(file);
+    if(file.isFile()) {
+      rsList.add(file);
+    }
   }
 
   /**

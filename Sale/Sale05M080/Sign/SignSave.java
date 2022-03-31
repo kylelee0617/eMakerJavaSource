@@ -1949,7 +1949,7 @@ public class SignSave extends bproc {
     return stringInvoiceTotalMoney;
   }
 
-  // TODO : 寫入發票主檔
+  // 寫入發票主檔
   // 0 CompanyNo 1 DepartNo 2 ProjectID1 3 EDate
   public void doInvertInvoM030(String stringInvoiceNo, String stringInvoiceKind, String stringPosition, String stringCustomNo, String stringPointNo, String stringInvoiceMoney,
       String stringInvoiceTax, String stringInvoiceTotalMoney, String stringTaxKind, String stringCompanyCd, String[][] retSale05M080, String stringL_DiscountMoney,
@@ -1965,27 +1965,30 @@ public class SignSave extends bproc {
     String customName = mapCustomers.get(stringCustomNo) != null ? mapCustomers.get(stringCustomNo).toString() : "";
     Random r1 = new Random();
 
-    // TODO : 依照2020/12/11電子發票會議紀錄:
+    // 依照2020/12/11電子發票會議紀錄:
     // 1.若發票日非開立當日，則開立時間加 addHour 小時
     // 2.若加 addHour 後大於等於24點，以23點計
     // 3.2021/10/19 申請書20210723006變更為4小時
+    // 4.2021/11/23 申請書20210723006 新增需求 : 只有開兩天前的發票要異動時間
+    
     int addHour = 4; // 設定發票時間要 + 多少小時
-
-    // 2021/11/23 申請書20210723006 新增需求 : 只有開兩天前的發票要異動時間
     KUtils util = new KUtils();
     String invoiceOpenDate = stringDateTime.split(" ")[0].trim(); // 切出發票開立日期
-
     if (StringUtils.equals(stringEDate, util.getDateAfterNDays(invoiceOpenDate, "/", -2))) {
       String[] arrTmpTime = strInvoiceTime.split(":");
       int addedTime = Integer.parseInt(arrTmpTime[0].trim()) + addHour;
-      /*
-      int tmpTimeH = addedTime >= 24 ? 23 : addedTime;
-      // tip : 數字計算後，小於10的0會不見，要再補回來
-      strInvoiceTime = kUtil.add0(tmpTimeH, 2, "F") + ":" + arrTmpTime[1].trim() + ":" + arrTmpTime[2].trim();
-      */
+      if(addedTime >= 24) {
+        strInvoiceTime = "23:00:00";
+      }else {
+        strInvoiceTime = kUtil.add0(addedTime, 2, "F") + ":" + arrTmpTime[1].trim() + ":" + arrTmpTime[2].trim(); // tip : 數字計算後，小於10的0會不見，要再補回來
+      }
       
-      //財務一定要23:00:00，說不通，由他們去
+      /*
+       * 舊code備份
+      int tmpTimeH = addedTime >= 24 ? 23 : addedTime;
+      strInvoiceTime = kUtil.add0(tmpTimeH, 2, "F") + ":" + arrTmpTime[1].trim() + ":" + arrTmpTime[2].trim();
       if(addedTime >= 24) strInvoiceTime = "23:00:00";
+       */
     }
 
     String stringSql = " INSERT  INTO  InvoM030 (InvoiceNo,                InvoiceDate, InvoiceTime,  InvoiceKind,              CompanyNo,  DepartNo, "

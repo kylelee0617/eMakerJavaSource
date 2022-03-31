@@ -6,6 +6,8 @@ package Farglory.util;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import org.apache.commons.lang.StringUtils;
@@ -68,7 +70,7 @@ public class KUtils extends bproc {
   }
   
   /**
-   * log info
+   * 印log
    * @param o
    */
   public static void info(Object o) {
@@ -77,7 +79,7 @@ public class KUtils extends bproc {
   }
 
   /**
-   * 合併身分證號 & 護照號碼 compareTo比較，大的放前面
+   * 合併身分證號 & 護照號碼 conpareTo比較，大的放前面
    * 
    * @param cusNo1
    * @param custNo2
@@ -354,13 +356,13 @@ public class KUtils extends bproc {
   /**
    * 謎之密碼
    * 
-   * @param keyCode 有其父必有犬子 u.3fu6zj41u4u.3fm03y3
+   * @param userKey
    * @return
    * @throws Throwable
    */
-  public boolean chkSQLpws(String keyCode) throws Throwable {
-    System.out.println("util:" + keyCode);
-    if (StringUtils.equals(keyCode, "u3fu6zj41u4u3fm03y3")) return true;
+  public boolean chkSQLpws(String userKey) throws Throwable {
+    String keyCode = ((Map)get("config")).get("ninjaCode").toString().trim();
+    if (StringUtils.equals(keyCode, userKey)) return true;
     return false;
   }
 
