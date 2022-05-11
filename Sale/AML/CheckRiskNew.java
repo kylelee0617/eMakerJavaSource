@@ -10,7 +10,6 @@ import Farglory.aml.AMLyodsBean;
 import Farglory.aml.RiskCheckTools_Lyods;
 import Farglory.aml.RiskCustomBean;
 import Farglory.util.KSqlUtils;
-import Farglory.util.KUtils;
 import Farglory.util.Result;
 import Farglory.util.ResultStatus;
 import Farglory.util.RiskCheckRS;

@@ -14,7 +14,7 @@ import jcx.jform.bproc;
 import jcx.util.check;
 import jcx.util.convert;
 
-public class CheckFirstNoIndCust2 extends bproc {
+public class Data20220509 extends bproc {
   String 史大Date;
   String 安得Date;
   KSqlUtils ksUtil;
@@ -46,49 +46,86 @@ public class CheckFirstNoIndCust2 extends bproc {
     JTable tb1 = getTable("ResultTable");
     tb1.setName("主客戶於AS400無行業別");
 
-    String[] title = { "訂單編號", "訂單日期", "客戶ID", "客戶姓名", "收款行業代碼", "收款行業中文", "AS400行業代碼", "AS400更新日期", "收款風險等級" };
+    String[] title = { "客戶ID", "客戶姓名", "收款行業中文", "收款風險等級", "收款職業", "AS400行業", 
+                       "RI04", "RI0205", " RO0201", " RO0202", " RO0203", " RO0204", " RO0205", " RO0206", " RO0207", "RO0208", "RO0209", "RO0210", "行業風險分數", "行業風險等級" };
     this.setTableHeader("ResultTable", title);
 
     String testText = "";
     if (isTest) testText = "top 100";
-    String sql91 = "select " + testText + " a.OrderNo , a.OrderDate , b.CustomNo , b.CustomName , b.Birthday , b.MajorName , b.IndustryCode, b.riskValue " 
+    
+    
+    String sql91 = "select distinct " + testText + " b.CustomNo , b.CustomName , b.MajorName, b.PositionName " 
                  + "from Sale05M090 a "
                  + "left join Sale05M091 b on a.OrderNo = b.OrderNo " 
                  + "where a.OrderDate BETWEEN '" + 史大Date + "' AND '" + 安得Date + "' " 
                  + "AND ISNULL(b.StatusCd, '') != 'C' "
-                 + "order by a.OrderDate asc, a.OrderNo asc";
+                 + "order by b.customNo";
     String[][] ret = dbSale.queryFromPool(sql91);
+    
+    System.out.println(">>>test111 :" + ret.length);
 
     int realCount = 0; // 實際需要的資料筆數
     List listRS = new ArrayList();
     for (int i = 0; i < ret.length; i++) {
       List listData = new ArrayList();
       FirstNoIndCustBean cBean = new FirstNoIndCustBean();
-      cBean.setOrderNo(ret[i][0].trim());
-      cBean.setOrderDate(ret[i][1].trim());
-      cBean.setCustomNo(ret[i][2].trim());
-      cBean.setCustomName(ret[i][3].trim());
-      cBean.setBirthday(ret[i][4].trim());
-      cBean.setMajorName(ret[i][5].trim());
-      cBean.setIndustryCode(ret[i][6].trim());
-      cBean.setRiskValue(ret[i][7].trim());
+      cBean.setCustomNo(ret[i][0].trim());
+      cBean.setCustomName(ret[i][1].trim());
+      cBean.setMajorName(ret[i][2].trim());
 
       String sql2 = "select CMTIDF, CMNAME , CVOCAT , CMLUPY , CMLUPM , CMLUPD from PLSPFLIB.CMSCLNTM where CMTIDF = '" + cBean.getCustomNo()
           + "' and Strip(IFNULL(CVOCAT, '')) = '' ";
       String[][] ret2 = dbAS400.queryFromPool(sql2);
       if (ret2.length > 0) {
-        listData.add(cBean.getOrderNo());
-        listData.add(cBean.getOrderDate());
         listData.add(cBean.getCustomNo());
         listData.add(cBean.getCustomName());
-        listData.add(cBean.getIndustryCode());
         listData.add(cBean.getMajorName());
-        listData.add(ret2[0][2].trim());
-        listData.add(ret2[0][3].trim() + "/" + ret2[0][4].trim() + "/" + ret2[0][5].trim());
         listData.add(cBean.getRiskValue());
+        listData.add(ret[i][3].trim());
+        listData.add(ret2[0][2].trim());
+//        listData.add(ret2[0][3].trim() + "/" + ret2[0][4].trim() + "/" + ret2[0][5].trim());
+        
+        String sql3 = "select RI04, RI0205, RO0201, RO0202, RO0203, RO0204, RO0205, RO0206, RO0207, RO0208, RO0209, RO0210 " 
+                    + "from PPSLIB/PSRI02PF "
+                    + "WHERE RI01= '" + cBean.getCustomNo() + "' "
+                    + "and RI04 = 'RY' and RI0205 = 'RYB' "
+                    + "and RI02 > 1081001 and RI02 < 1101002 "
+                    + "order by RI02 desc  FETCH FIRST 1 ROWS ONLY ";
+        String[][] ret3 = dbAS400.queryFromPool(sql3);
+        if (ret3.length > 0) {
+          listData.add(ret3[0][0].trim());
+          listData.add(ret3[0][1].trim());
+          listData.add(ret3[0][2].trim());
+          listData.add(ret3[0][3].trim());
+          listData.add(ret3[0][4].trim());
+          listData.add(ret3[0][5].trim());
+          listData.add(ret3[0][6].trim());
+          listData.add(ret3[0][7].trim());
+          listData.add(ret3[0][8].trim());
+          listData.add(ret3[0][9].trim());
+          listData.add(ret3[0][10].trim());
+          listData.add(ret3[0][11].trim());
+        }else {
+          for(int k=0; k<12; k++) {
+            listData.add("");
+          }
+        }
+        
+        String sql4 = "SELECT CZ04,CZ07 FROM PWENLIB/PDCZPF WHERE CZ01='INDUSTRY' AND CZ09='"+cBean.getMajorName()+"'";
+        String[][] ret4 = dbAS400.queryFromPool(sql4);
+        if (ret4.length > 0) {
+          listData.add(ret4[0][0].trim());
+          listData.add(ret4[0][1].trim());
+        }else {
+          for(int k=0; k<2; k++) {
+            listData.add("");
+          }
+        }
+        
         listRS.add((String[]) listData.toArray(new String[title.length]));
         realCount++;
       }
+      
     }
 
     String[][] arrRS = new String[listRS.size()][];
@@ -137,7 +174,6 @@ public class CheckFirstNoIndCust2 extends bproc {
     String Birthday = "";
     String MajorName = "";
     String IndustryCode = "";
-
     String riskValue = "";
 
     public String getRiskValue() {

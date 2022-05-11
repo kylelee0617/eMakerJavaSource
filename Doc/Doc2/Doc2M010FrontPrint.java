@@ -48,9 +48,9 @@ public class Doc2M010FrontPrint extends bTransaction {
       }
     }
     doSession(stringPrinterIP, exeUtil);
-    System.out.println("stringFunction(" + stringFunction + ")----------------------S");
+    System.out.println("stringFunction( " + stringFunction + " )----------------------S");
     showForm(stringFunction);
-    System.out.println("stringFunction(" + stringFunction + ")----------------------E");
+    System.out.println("stringFunction( " + stringFunction + " )----------------------E");
 
     // 成功訊息
     String stringPrintSuccess = ("" + get("Doc2M010_Print_OK")).trim();
@@ -59,8 +59,8 @@ public class Doc2M010FrontPrint extends bTransaction {
 
 //      String[] arrayTemp = convert.StringToken(stringPrinterIP, "\\");
 //      JOptionPane.showMessageDialog(null, "完成列印。(列表機：" + arrayTemp[arrayTemp.length - 1] + ")", "訊息", JOptionPane.INFORMATION_MESSAGE);
-      
-      //申20210601006 Kyle : 因疫情改為手動列印，通知訊息修改
+
+      // 申20210601006 Kyle : 因疫情改為手動列印，通知訊息修改
 //      messagebox("請選擇列印方式~");
     }
     System.out.println("----------11111111----------------------列印完成" + stringFunction);
@@ -70,7 +70,7 @@ public class Doc2M010FrontPrint extends bTransaction {
   public void doEnd(String stringComNo, JTable jtable2, JButton jbutton, String stringFunctionName, FargloryUtil exeUtil) throws Throwable {
     if ("OO".equals(stringComNo)) return;
     if (stringFunctionName.indexOf("土地") != -1) return;
-    
+
     //
     String stringInOut = "";
     String stringDepart = "";
@@ -100,7 +100,7 @@ public class Doc2M010FrontPrint extends bTransaction {
       // 第一次才列印
       String stringPrintCount = getValue("PrintCount").trim();
       if (exeUtil.doParseInteger(stringPrintCount) == 0) {
-         System.out.println("stringPrintCount----------------------------------["+stringPrintCount+"]");
+        System.out.println("stringPrintCount----------------------------------[" + stringPrintCount + "]");
         if (jbutton != null) jbutton.doClick();
       }
     }

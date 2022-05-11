@@ -144,10 +144,10 @@ public class LyodsTools extends bvalidate {
       mainQuery.setApplyDate("");                           // 受理/申請日期
       mainQuery.setContractDate(lyodsBean.getOrderDate().replaceAll("/", "").replaceAll("-", ""));  // 契約生效日期
       mainQuery.setProduct("RYB");                             // 產品代碼
-      mainQuery.setChannel("");                             // 通路代碼
+      mainQuery.setChannel("1");                             // 通路代碼
       mainQuery.setUserId(this.empNo);                      // 承辦人員編 v
       mainQuery.setUserUnit("");                            // 承辦人單位
-      mainQuery.setChannel("1");
+//      mainQuery.setChannel("1");
       MainReply mainReply = blackListClient.executeMain(mainQuery);
 
       // 風險值結果輸出

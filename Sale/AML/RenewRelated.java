@@ -5,7 +5,6 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 import Farglory.util.KSqlUtils;
-import Farglory.util.KUtils;
 import jcx.db.talk;
 import jcx.jform.bproc;
 

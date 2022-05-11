@@ -72,7 +72,7 @@ public class Save extends bproc {
       return value;
     }
     // End
-    
+
     for (int i = 0; i < tb2_string.length; i++) {
       System.out.println("tb2_string" + tb2_string[i][0] + "");
       if (tb2_string[i][0].equals("1")) {

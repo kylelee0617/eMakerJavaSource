@@ -100,6 +100,7 @@ public class CheckRiskNew2021 extends jcx.jform.sproc {
         RiskCustomBean cBean = new RiskCustomBean();
         cBean.setCustomNo(desNo);
         cBean.setCustomName(desName);
+        cBean.setCountryName(retM356[ii][2].toString().trim());
         cBean.setBirthday(qBean.getBirthday());
         cBean.setIndustryCode(qBean.getJobType());
         cBean.setqBean(qBean);

@@ -31,9 +31,8 @@ public class AML extends sproc {
     tBean.setDbPw0D(getTalk("pw0d"));
     tBean.setDbSale(getTalk("Sale"));
     tBean.setDbEIP(getTalk("EIP"));
-//    KUtils kUtil = new KUtils(tBean);
+    
     KSqlUtils kSqlUtil = new KSqlUtils(tBean);
-
     Result rs = new Result();
     String stringSQL = "";
     String errMsg = "";
@@ -55,20 +54,22 @@ public class AML extends sproc {
       return value;
     }
     orderDate = kSqlUtil.getOrderDateByOrderNo(orderNo);
-
+    
     AMLyodsBean aBean = new AMLyodsBean();
+    aBean.setDb400CRM(getTalk("400CRM"));
+    aBean.setDbPw0D(getTalk("pw0d"));
+    aBean.setDbSale(tBean.getDbSale());
+    aBean.setDbEIP(getTalk("EIP"));
+    aBean.settBean(tBean);
     aBean.setProjectID1(projectId);
     aBean.setOrderNo(orderNo);
-    aBean.setOrderDate(orderDate.replaceAll("/", "").replaceAll("-", ""));
+    aBean.setOrderDate(orderDate);
     aBean.setFunc(funcName);
     aBean.setRecordType(recordType);
     aBean.setActionName(actionName);
     aBean.setEmakerUserNo(getUser());
     aBean.setTestServer(isTest);
     aBean.setLyodsSoapURL(lyodsSoapURL);
-    aBean.setDb400CRM(getTalk("400CRM"));
-    aBean.setDbSale(dbSale);
-    aBean.setDbEIP(getTalk("EIP"));
 
     stringSQL = "SELECT ProjectID1,ContractDate FROM Sale05M274 WHERE ContractNo='" + stringContractNo + "'";
     String[][] retSale = dbSale.queryFromPool(stringSQL);

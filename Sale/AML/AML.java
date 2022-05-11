@@ -29,7 +29,6 @@ public class AML extends sproc {
     tBean.setDbSale(getTalk("Sale"));
     tBean.setDbEIP(getTalk("EIP"));
 
-//  KUtils kUtil = new KUtils();
     KSqlUtils ksUtil = new KSqlUtils(tBean);
     Result rs = new Result();
     String stringSQL = "";
@@ -69,7 +68,8 @@ public class AML extends sproc {
     
     //TODO: 客戶資料
     System.out.println("==============客戶資料==============");
-    stringSQL = "SELECT CustomNo, CustomName, CountryName, IsBlackList, IsControlList, IsLinked, CountryName2, EngNo, EngName FROM Sale05M091 WHERE ORDERNO = '" + orderNo + "' "
+    stringSQL = "SELECT CustomNo, CustomName, CountryName, IsBlackList, IsControlList, IsLinked, CountryName2, EngNo, EngName ,MajorName , IndustryCode  "
+        + "FROM Sale05M091 WHERE ORDERNO = '" + orderNo + "' "
         + "and ISNULL(StatusCd , '') != 'C' ";
     String[][] custData = tBean.getDbSale().queryFromPool(stringSQL);
     if (custData.length > 0) {
@@ -94,7 +94,7 @@ public class AML extends sproc {
         cBean.setCustomName(custName);    //姓名
         cBean.setEngName(engName);
         cBean.setBirthday(qBean.getBirthday());  //生日
-        cBean.setIndustryCode(qBean.getJobType());  //業別
+        cBean.setIndustryCode(custData[m][10].trim());  //業別
         cBean.setCountryName(custData[m][2].trim());  //國名
         cBean.setCountryName2(custData[m][6].trim());  //國名2
         cBean.setbStatus(custData[m][3].trim());      //黑名單

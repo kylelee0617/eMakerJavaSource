@@ -14,7 +14,7 @@ import jcx.jform.bproc;
 import jcx.util.check;
 import jcx.util.convert;
 
-public class CheckFirstNoIndCust2 extends bproc {
+public class CheckFirstNoIndCust3 extends bproc {
   String 史大Date;
   String 安得Date;
   KSqlUtils ksUtil;
@@ -44,19 +44,19 @@ public class CheckFirstNoIndCust2 extends bproc {
 
   private void 執行() throws Throwable {
     JTable tb1 = getTable("ResultTable");
-    tb1.setName("主客戶於AS400無行業別");
+    tb1.setName("主客戶對應AS400各風險值");
 
-    String[] title = { "訂單編號", "訂單日期", "客戶ID", "客戶姓名", "收款行業代碼", "收款行業中文", "AS400行業代碼", "AS400更新日期", "收款風險等級" };
+    String[] title = { "RI01", "RI0205", " RI0206", " RO0201", " RO0202", " RO0203", " RO0204", " RO0205", " RO0206", " RO0207", " RO0209", "RO0210", "RO0208" };
     this.setTableHeader("ResultTable", title);
 
     String testText = "";
     if (isTest) testText = "top 100";
     String sql91 = "select " + testText + " a.OrderNo , a.OrderDate , b.CustomNo , b.CustomName , b.Birthday , b.MajorName , b.IndustryCode, b.riskValue " 
-                 + "from Sale05M090 a "
-                 + "left join Sale05M091 b on a.OrderNo = b.OrderNo " 
-                 + "where a.OrderDate BETWEEN '" + 史大Date + "' AND '" + 安得Date + "' " 
-                 + "AND ISNULL(b.StatusCd, '') != 'C' "
-                 + "order by a.OrderDate asc, a.OrderNo asc";
+        + "from Sale05M090 a "
+        + "left join Sale05M091 b on a.OrderNo = b.OrderNo " 
+        + "where a.OrderDate BETWEEN '" + 史大Date + "' AND '" + 安得Date + "' " 
+        + "AND ISNULL(b.StatusCd, '') != 'C' "
+        + "order by a.OrderDate asc, a.OrderNo asc";
     String[][] ret = dbSale.queryFromPool(sql91);
 
     int realCount = 0; // 實際需要的資料筆數
@@ -73,19 +73,23 @@ public class CheckFirstNoIndCust2 extends bproc {
       cBean.setIndustryCode(ret[i][6].trim());
       cBean.setRiskValue(ret[i][7].trim());
 
-      String sql2 = "select CMTIDF, CMNAME , CVOCAT , CMLUPY , CMLUPM , CMLUPD from PLSPFLIB.CMSCLNTM where CMTIDF = '" + cBean.getCustomNo()
-          + "' and Strip(IFNULL(CVOCAT, '')) = '' ";
+      String sql2 = "select RI01, RI0205, RI0206, RO0201, RO0202, RO0203, RO0204, RO0205, RO0206, RO0207, RO0209, RO0210, RO0208 "
+              + "from PPSLIB/PSRI02PF WHERE RI01= '" + cBean.getCustomNo() + "' ";
       String[][] ret2 = dbAS400.queryFromPool(sql2);
       if (ret2.length > 0) {
-        listData.add(cBean.getOrderNo());
-        listData.add(cBean.getOrderDate());
-        listData.add(cBean.getCustomNo());
-        listData.add(cBean.getCustomName());
-        listData.add(cBean.getIndustryCode());
-        listData.add(cBean.getMajorName());
+        listData.add(ret2[0][0].trim());
+        listData.add(ret2[0][1].trim());
         listData.add(ret2[0][2].trim());
-        listData.add(ret2[0][3].trim() + "/" + ret2[0][4].trim() + "/" + ret2[0][5].trim());
-        listData.add(cBean.getRiskValue());
+        listData.add(ret2[0][3].trim());
+        listData.add(ret2[0][4].trim());
+        listData.add(ret2[0][5].trim());
+        listData.add(ret2[0][6].trim());
+        listData.add(ret2[0][7].trim());
+        listData.add(ret2[0][8].trim());
+        listData.add(ret2[0][9].trim());
+        listData.add(ret2[0][10].trim());
+        listData.add(ret2[0][11].trim());
+        listData.add(ret2[0][12].trim());
         listRS.add((String[]) listData.toArray(new String[title.length]));
         realCount++;
       }

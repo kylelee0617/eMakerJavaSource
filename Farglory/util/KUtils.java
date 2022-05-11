@@ -353,17 +353,4 @@ public class KUtils extends bproc {
     return sb.toString();
   }
 
-  /**
-   * Á¼¤§±K½X
-   * 
-   * @param userKey
-   * @return
-   * @throws Throwable
-   */
-  public boolean chkSQLpws(String userKey) throws Throwable {
-    String keyCode = ((Map)get("config")).get("ninjaCode").toString().trim();
-    if (StringUtils.equals(keyCode, userKey)) return true;
-    return false;
-  }
-
 }

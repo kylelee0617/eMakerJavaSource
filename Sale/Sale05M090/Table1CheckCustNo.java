@@ -30,7 +30,7 @@ public class Table1CheckCustNo extends bvalidate {
     JTable tb1 = getTable("table1");
     int sRow = tb1.getSelectedRow();
     int sColumn = tb1.getSelectedColumn();
-    boolean isCust = true;
+    boolean isCust = true;  //現主時處理 ==> Y:本國人組，N:外國人組
 
     String custNo = "";
     String engNo = "";
@@ -85,19 +85,19 @@ public class Table1CheckCustNo extends bvalidate {
       }
 
       // 取兩個ID
-//      custNo = value.trim();
-//      engNo = getValueAt("table1", sRow, "EngNo").toString();
+      custNo = value.trim();
+      engNo = getValueAt("table1", sRow, "EngNo").toString();
     } else if (StringUtils.equals(columnName, "護照證件號")) {
       if (StringUtils.isBlank(countryName2)) {
         messagebox("外國國籍須先行");
         return false;
       }
-      
+
       isCust = false;
 
       // 取兩個ID
-//      custNo = getValueAt("table1", sRow, "CustomNo").toString();
-//      engNo = value.trim();
+      custNo = getValueAt("table1", sRow, "CustomNo").toString();
+      engNo = value.trim();
     }
 
     // 偷黑名單資料
@@ -107,7 +107,7 @@ public class Table1CheckCustNo extends bvalidate {
       messagebox("無此人資訊，請先執行黑名單查詢。");
       return false;
     }
-
+    
     String tmpMsg = "";
     String errMsg = "";
     String bstatus = qBean.getbStatus();
@@ -129,11 +129,14 @@ public class Table1CheckCustNo extends bvalidate {
     setValueAt("table1", StringUtils.equals(countryName, "中華民國") ? "1" : "2", sRow, "Nationality"); // 舊國籍，其實是本國人或外國人(改名: 本外國人)
     setValueAt("table1", custName, sRow, "CustomName");
     setValueAt("table1", engName, sRow, "EngName");
-    
-    //寫入另一個id
-    if(isCust) setValueAt("table1", engNo, sRow, "EngNo");
-    if(!isCust) setValueAt("table1", custNo, sRow, "CustomNo");
-    
+
+    // 寫入另一個id
+    if (isCust) {
+      setValueAt("table1", engNo, sRow, "EngNo");
+    }else {
+      setValueAt("table1", custNo, sRow, "CustomNo");
+    }
+
     setValueAt("table1", birthday, sRow, "Birthday");
     setValueAt("table1", cityTownZip[0], sRow, "ZIP");
     setValueAt("table1", cityTownZip[1], sRow, "City");
@@ -146,6 +149,10 @@ public class Table1CheckCustNo extends bvalidate {
     setValueAt("table1", bstatus, sRow, "IsBlackList");
     setValueAt("table1", cstatus, sRow, "IsControlList");
     setValueAt("table1", rstatus, sRow, "IsLinked");
+    
+    //補強資料
+    //有護照號沒外國籍 => 外國籍帶入本國籍欄位
+    if(StringUtils.isNotBlank(engNo) && StringUtils.isBlank(countryName2)) setValueAt("table1", countryName, sRow, "CountryName2"); // 國籍2
 
     // 萊斯Start
     String amlText = projectId + "," + orderNo + "," + orderDate + "," + funcName + "," + recordType + "," + value + "," + custName + "," + birthday + "," + indCode + ","

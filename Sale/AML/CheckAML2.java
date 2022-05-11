@@ -710,7 +710,6 @@ public class CheckAML2 extends bproc {
         }
 
         if ("Y".equals(str082Deputy)) {// 有代繳人
-
           // 代繳款人與購買人關係為非二等親內血/姻親。請依洗錢防制作業辦理
           if ("朋友".equals(str082Rlatsh) || "其他".equals(str082Rlatsh)) {
             // Sale05M070

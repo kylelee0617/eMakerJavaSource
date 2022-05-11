@@ -168,10 +168,11 @@ public class Sale05R27401_New extends bTransaction {
     Farglory.Excel.FargloryExcel exeExcel = new Farglory.Excel.FargloryExcel();
     String stringFilePath = "";
     if ("Y".equals(stringIsVoid)) {
-      stringFilePath = "G:\\資訊室\\Excel\\Sale\\Sale05R274\\Sale05R27401_Void.xls";
+      stringFilePath = "G:\\資訊室\\Excel\\Sale\\Sale05R274\\Sale05R27401_Void.xlt";
     } else {
-      stringFilePath = "G:\\資訊室\\Excel\\Sale\\Sale05R274\\Sale05R27401.xls";
+      stringFilePath = "G:\\資訊室\\Excel\\Sale\\Sale05R274\\Sale05R27401.xlt";
     }
+	System.out.println(">>>stringFilePath: " + stringFilePath);
 
     Vector retVector = exeExcel.getExcelObject(stringFilePath);
     Dispatch objectSheets = (Dispatch) retVector.get(3);
@@ -1232,10 +1233,8 @@ public class Sale05R27401_New extends bTransaction {
           exeExcel.putDataIntoExcel(11, intInsertSaleRow2, stringSalesCS, objectSheetTemp);
           if (blnIsEndState) {
             // 審核人(內業業管、行銷、財務代銷、營業經辦、營業部、開發經辦、開發部、財務經辦、財務室、法務室)、不動產、會計
-            // exeExcel.putDataIntoExcel( 6, intInsertSaleRow2, stringIDandTimeCS1,
-            // objectSheetTemp);
-            // exeExcel.putDataIntoExcel( 4, intInsertSaleRow2, stringIDandTimeCS2,
-            // objectSheetTemp);
+            // exeExcel.putDataIntoExcel( 6, intInsertSaleRow2, stringIDandTimeCS1, objectSheetTemp);
+            // exeExcel.putDataIntoExcel( 4, intInsertSaleRow2, stringIDandTimeCS2, objectSheetTemp);
             exeExcel.putDataIntoExcel(2, intInsertSaleRow2, stringIDandTimeCS3, objectSheetTemp);
           }
         } else if ("01".equals(retData[intRow][0])) {

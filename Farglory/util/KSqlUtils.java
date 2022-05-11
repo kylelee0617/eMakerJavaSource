@@ -266,7 +266,7 @@ public class KSqlUtils extends bproc {
   public boolean insSaleLog(SaleLogBean bean) throws Throwable {
     boolean rs = false;
     String sql = "INSERT INTO SaleLog (FuncName, RecordType, EmpNo, FgEmpNo, LogDesc, UpdateDate, Type1, Type2, Type3) " + "VALUES " + "('" + bean.getFuncName() + "', '"
-        + bean.getRecordType() + "', '" + bean.getEmpNo() + "', '" + bean.getFgEmpNo() + "', " + "N'" + bean.getLogDesc() + "', '" + bean.getUpdateDate() + "', '" + bean.getType1()
+        + bean.getRecordType() + "', '" + bean.getEmpNo() + "', '" + bean.getFgEmpNo() + "', " + "N'" + bean.getLogDesc() + "  ', '" + bean.getUpdateDate() + "', '" + bean.getType1()
         + "', '" + bean.getType2() + "', '" + bean.getType3() + "') ";
     try {
       this.dbSale.execFromPool(sql);
