@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-public class DefaultInfo extends jcx.jform.sproc {
+public class DefaultInfo_bk220701 extends jcx.jform.sproc {
 
   public String getDefaultValue(String value) throws Throwable {
     StringBuilder showConfig = new StringBuilder();
@@ -13,9 +13,11 @@ public class DefaultInfo extends jcx.jform.sproc {
     InetAddress addr = InetAddress.getLocalHost();
 
     String serverName = addr.getHostName().toString(); // 獲得本機名稱
+    put("serverName", serverName);
     showConfig.append("server name:").append(serverName).append("\n");
 
     String serverIP = addr.getHostAddress().toString(); // 獲得本機IP
+    put("serverIP", serverIP);
     showConfig.append("server ip:").append(serverIP).append("\n");
 
     // =============================== Map 化 ==================================
@@ -34,6 +36,7 @@ public class DefaultInfo extends jcx.jform.sproc {
 
     // 測試機或正式
     String serverType = resource.getString("serverType");
+    put("serverType", serverType);
     showConfig.append("serverType:").append(serverType).append("\n");
 
     // EMAKER主機資訊
@@ -45,12 +48,6 @@ public class DefaultInfo extends jcx.jform.sproc {
     put("config", configMap);
     setValue("config", showConfig.toString());
     
-    // session ================================================================
-    //server
-    put("serverType", serverType);
-    put("serverName", serverName);
-    put("serverIP", serverIP);
-    
     // ???
     String NINJACODE = resource.getString("NINJACODE");
     put("NINJACODE", NINJACODE);
@@ -61,6 +58,7 @@ public class DefaultInfo extends jcx.jform.sproc {
     put("GENLIB", GENLIB);
     put("LSPFLIB" , resource.getString("AS400.LSPFLIB"));
     put("PSLIB" , resource.getString("AS400.PSLIB"));
+    put("WENLIB" , resource.getString("AS400.WENLIB"));
     put("WENLIB" , resource.getString("AS400.WENLIB"));
 
     return value;

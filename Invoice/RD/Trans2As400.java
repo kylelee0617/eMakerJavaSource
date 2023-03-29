@@ -9,43 +9,30 @@ import jcx.html.*;
 import jcx.db.*;
 import Farglory.util.*;
 
-public class BufaPio extends bproc {
+public class Trans2As400 extends bproc {
 
   KUtils util = new KUtils();
 
   public String getDefaultValue(String value) throws Throwable {
-    System.out.println("補發票行動>>>>>>>>>> Start");
+    System.out.println("補發票行動>>>>>>>>>> Start :" + this.getClass());
     talk dbInvoice = getTalk("" + get("put_dbInvoice"));
     talk dbAs400 = getTalk("AS400");
     String GENLIB = ((Map) get("config")).get("GENLIB").toString().trim();
 
-    String projectId = this.getValue("projectID").trim();
-    String invoiceNo = this.getValue("InvoiceNo").trim();
-    String sDate = this.getValue("SDate").trim();
-    String eDate = this.getValue("EDate").trim();
-    String fsChar = this.getValue("FSChar").trim();
+    String projectId = this.getValue("ProjectNo").trim();
+    String invoiceDate = getValue("InvoiceDate").trim();
     StringBuilder sql = null;
-
-    // not null
-    if ("".equals(sDate)) {
-      messagebox("S日期必填");
-      return value;
-    }
 
     // TODO: 依照條件取M030發票
     sql = new StringBuilder();
     sql.append("SELECT * FROM INVOM030 a ");
     sql.append("WHERE 1=1 ");
-    sql.append("AND invoiceDate >= '" + util.formatACDate(sDate) + "' ");
-    if (!"".equals(eDate)) sql.append("AND invoiceDate <= '" + util.formatACDate(eDate) + "' ");
-    if (!"".equals(projectId)) sql.append("AND projectNo = '" + projectId + "' ");
-    if (!"".equals(invoiceNo)) sql.append("AND invoiceNO = '" + invoiceNo + "' ");
-    if (!"".equals(fsChar)) sql.append("AND substring(invoiceNO,1,2) = '" + fsChar + "' ");
-    sql.append("ORDER BY invoiceDate desc, CreateDateTime desc , InvoiceNo desc");
+    sql.append("AND invoiceDate = '" + invoiceDate + "' ");
+    sql.append("AND projectNo = '" + projectId + "' ");
     String[][] retM030 = dbInvoice.queryFromPool(sql.toString());
 
     if (retM030.length == 0) {
-      messagebox("查無發票資料");
+      messagebox(this.getClass() + ": 查無發票資料");
       return value;
     }
 
@@ -110,7 +97,7 @@ public class BufaPio extends bproc {
 
     message("共轉檔發票" + retM030.length + "筆，客戶" + retM0C0.length + "筆");
 
-    System.out.println("補發票行動>>>>>>>>>> End");
+    System.err.println("補發票行動>>>>>>>>>> End");
     return value;
   }
 

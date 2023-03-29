@@ -1,16 +1,29 @@
-package Sale.Report;
+package Sale.test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
+
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
 import org.apache.commons.lang.StringUtils;
+
+import com.jacob.com.ComThread;
 import com.jacob.com.Dispatch;
+
 import Farglory.util.FargloryUtil;
+import Farglory.util.KSqlUtils;
+import Farglory.util.KUtils;
+import Farglory.util.MLPUtils;
+import jcx.db.talk;
 import jcx.jform.bproc;
+import jcx.util.convert;
 
 public class RSTableToExcel extends bproc {
+  KUtils kUtil = new KUtils();
+  KSqlUtils ksUtil = new KSqlUtils();
   FargloryUtil exeUtil = new FargloryUtil();
   List mainList = new ArrayList();
   String tableName = "";
@@ -47,6 +60,7 @@ public class RSTableToExcel extends bproc {
     int columnNum = 0;
     while (true) {
       String columnName = dtm.getColumnName(columnNum);
+      System.out.println(">>>tt:" + columnName);
       if (StringUtils.isBlank(columnName)) break;
       v.add(columnName);
       columnNum++;
@@ -66,11 +80,9 @@ public class RSTableToExcel extends bproc {
     // 建立表格 開始列數 結束列數 一頁列數 初始頁數
     Farglory.Excel.FargloryExcel exeFun = new Farglory.Excel.FargloryExcel(1, mainList.size() + 1, mainList.size(), 1);
 
-    // sample檔路徑
-    String stringPrintExcel = "G:\\資訊室\\Excel\\public\\PaperExcel.xlt";
-    if(StringUtils.contains(this.getFunctionName(), "財務")) {
-      stringPrintExcel = "N:\\公用資料區\\財務室\\EXCELTEMP\\PaperExcel.xlt";
-    }
+    // 吃sample檔路徑
+    String stringPrintExcel = "G:\\kyleTest\\Excel\\PaperExcel.xlt";
+    // System.out.println(stringPrintExcel);
 
     // 建立Excel物件
     Vector retVector = exeFun.getExcelObject(stringPrintExcel);
@@ -88,7 +100,7 @@ public class RSTableToExcel extends bproc {
         exeFun.putDataIntoExcel(intCon, recordNo + 1, thisRow[intCon], objectSheet1);
       }
     }
-    // End of Body
+    // End of BodyEXEFUN
 
     exeFun.getReleaseExcelObject(retVector);
     return;

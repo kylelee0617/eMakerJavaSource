@@ -485,13 +485,16 @@ public class KSqlUtils extends bproc {
       String custNo = retCustom[ii][0].trim();
       String custNo2 = retCustom[ii][12].trim();
       String custNo3 = "";
-      if (custNo.compareTo(custNo2) < 0) {
+      if(StringUtils.equals(custNo, custNo2)) {
+        custNo3 = custNo;
+      }else if (custNo.compareTo(custNo2) < 0) {
         custNo3 = custNo2 + custNo;
       } else {
         custNo3 = custNo + custNo2;
       }
       RiskCustomBean cBean = new RiskCustomBean();
       QueryLogBean qBean = this.getQueryLogByCustNoProjectId(projectId, custNo3);
+      
       cBean.setCustomNo(StringUtils.isNotBlank(custNo) ? custNo : custNo2);
       cBean.setCustomName(retCustom[ii][1].trim());
       cBean.setBirthday(retCustom[ii][2].trim());
@@ -783,7 +786,7 @@ public class KSqlUtils extends bproc {
    * @throws Throwable
    */
   public QueryLogBean getQueryLogByName(String projectId, String custName) throws Throwable {
-    QueryLogBean bean = null;
+    QueryLogBean bean = new QueryLogBean();
 
     String sql = "select top 1 QID, REASON, PROJECT_ID, NATIONAL_ID, QUERY_TYPE, NTCODE, NAME, QUERY_ID, BIRTHDAY, SEX, JOB_TYPE, CITY, TOWN, ADDRESS, B_STATUS, C_STATUS, R_STATUS, STATUS, CONTENTS, PCONTENTS, EMPNO, IP4, CREATE_DATE, CREATE_TIME, UPDATE_DATE, UPDATE_TIME, NTCODE2, ENG_NAME, ENG_NO, QUERY_ID3 "
         + "from query_log a where a.PROJECT_ID = '" + projectId + "' and (a.NAME = '" + custName + "' or a.ENG_NAME = '" + custName + "') "
@@ -792,7 +795,6 @@ public class KSqlUtils extends bproc {
     String[][] ret = dbPW0D.queryFromPool(sql);
     if (ret.length > 0) {
       String[] ret1 = ret[0]; // 只要第一筆
-      bean = new QueryLogBean();
       bean.setQid(ret1[0].toString().trim());
       bean.setReason(ret1[1].toString().trim());
       bean.setProjectId(ret1[2].toString().trim());
@@ -837,7 +839,7 @@ public class KSqlUtils extends bproc {
    * @throws Throwable
    */
   public QueryLogBean getQueryLogLike3(String projectId, String custNo) throws Throwable {
-    QueryLogBean bean = null;
+    QueryLogBean bean = new QueryLogBean();
 
     String sql = "select top 1 " + "QID, REASON, PROJECT_ID, NATIONAL_ID, QUERY_TYPE, NTCODE, NAME, QUERY_ID, BIRTHDAY, SEX, JOB_TYPE, CITY, "
         + "TOWN, ADDRESS, B_STATUS, C_STATUS, R_STATUS, STATUS, CONTENTS, PCONTENTS, EMPNO, IP4, CREATE_DATE, CREATE_TIME, UPDATE_DATE, UPDATE_TIME, "
@@ -846,7 +848,6 @@ public class KSqlUtils extends bproc {
 
     String[][] ret = dbPW0D.queryFromPool(sql);
     if (ret.length > 0) {
-      bean = new QueryLogBean();
       bean.setQid(ret[0][0].toString().trim());
       bean.setReason(ret[0][1].toString().trim());
       bean.setProjectId(ret[0][2].toString().trim());
@@ -891,16 +892,16 @@ public class KSqlUtils extends bproc {
    * @throws Throwable
    */
   public QueryLogBean getQueryLogByCustNoProjectId(String projectId, String custNo) throws Throwable {
-    QueryLogBean bean = null;
+    QueryLogBean bean = new QueryLogBean();
 
-    String sql = "select top 1 " + "QID, REASON, PROJECT_ID, NATIONAL_ID, QUERY_TYPE, NTCODE, NAME, QUERY_ID, BIRTHDAY, SEX, JOB_TYPE, CITY, "
+    String sql = "select top 1 QID, REASON, PROJECT_ID, NATIONAL_ID, QUERY_TYPE, NTCODE, NAME, QUERY_ID, BIRTHDAY, SEX, JOB_TYPE, CITY, "
         + "TOWN, ADDRESS, B_STATUS, C_STATUS, R_STATUS, STATUS, CONTENTS, PCONTENTS, EMPNO, IP4, CREATE_DATE, CREATE_TIME, UPDATE_DATE, UPDATE_TIME, "
-        + "NTCODE2, ENG_NAME, ENG_NO, QUERY_ID3 " + "from query_log a where a.PROJECT_ID = '" + projectId + "' and a.QUERY_ID3 like '%" + custNo.toUpperCase()
+        + "NTCODE2, ENG_NAME, ENG_NO, QUERY_ID3 from query_log a where a.PROJECT_ID = '" + projectId + "' and a.QUERY_ID3 like '%" + custNo.toUpperCase()
         + "%' order by CREATE_DATE desc , CREATE_TIME desc ";
+    KUtils.info("getQueryLogByCustNoProjectId sql:" + sql);
 
     String[][] ret = dbPW0D.queryFromPool(sql);
     if (ret.length > 0) {
-      bean = new QueryLogBean();
       bean.setQid(ret[0][0].toString().trim());
       bean.setReason(ret[0][1].toString().trim());
       bean.setProjectId(ret[0][2].toString().trim());

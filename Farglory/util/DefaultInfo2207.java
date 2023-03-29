@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-public class DefaultInfo extends jcx.jform.sproc {
+public class DefaultInfo2207 extends jcx.jform.sproc {
 
   public String getDefaultValue(String value) throws Throwable {
     StringBuilder showConfig = new StringBuilder();

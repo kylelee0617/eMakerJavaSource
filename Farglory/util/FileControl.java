@@ -8,37 +8,42 @@ import java.util.List;
 
 import jcx.jform.sproc;
 
-public class FileControl extends sproc{
-  public String getDefaultValue(String value)throws Throwable{
+public class FileControl extends sproc {
+  public String getDefaultValue(String value) throws Throwable {
     return value;
   }
-  
+
   public static void main(String[] args) {
+    File file = new File("D:\\oldDir");
+
+    File testFile = new File("G:\\kyleTest\\Transfer\\Trans144");
+    List aa = getFiles2(testFile);
+    System.out.println("aa:" + aa.size());
   }
-  
+
   public static List getFiles2(File file) {
-    List rsList = new ArrayList();  
+    List rsList = new ArrayList();
     listDir2(file, rsList);
     return rsList;
   }
-  
+
   public static void listDir2(File file, List rsList) {
     boolean isDir = false;
+    
     if (file.isDirectory()) { // 是一個目錄
-      System.out.println("是目錄");
+      System.out.println("目錄...");
       // 列出目錄中的全部內容
       File results[] = file.listFiles();
       if (results != null) {
         for (int i = 0; i < results.length; i++) {
-          listDir2(results[i], rsList); // 繼續一次判斷
+          //listDir2(results[i], rsList); // 繼續一次判斷
+          rsList.add(results[i]);
         }
       }
-    }
-    
-    // 獲取完整路徑
-    if(file.isFile()) {
+    } else if (file.isFile()) {
       rsList.add(file);
     }
+    
   }
 
   /**

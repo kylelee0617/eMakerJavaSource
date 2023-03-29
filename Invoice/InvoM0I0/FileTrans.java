@@ -45,6 +45,7 @@ public class FileTrans extends bproc {
       message("叫块[祇布ら戳]");
       return value;
     }
+
     // ミcomじン
     ActiveXComponent Excel;
     ComThread.InitSTA();
@@ -217,15 +218,15 @@ public class FileTrans extends bproc {
         message("材" + intRow + " 肂 ぃフ");
         break;
       }
-      
-      //眔そ参絪┣┣矪瞶
-      String last2 = StringUtils.substring(string参絪, string参絪.length()-2);
+
+      // 眔そ参絪┣┣矪瞶
+      String last2 = StringUtils.substring(string参絪, string参絪.length() - 2);
       kUtil.info(last2);
-      if( StringUtils.equals(last2, "E7") ) {
+      if (StringUtils.equals(last2, "E7")) {
         string参絪 = string参絪.replace("E7", "").replace(".", "").trim();
       }
       KUtils.info(string参絪);
-      
+
       //
       if (string参絪.length() == 8 && !check.isCoId(string参絪)) {
         stringStatus = "Error";
@@ -286,7 +287,7 @@ public class FileTrans extends bproc {
         break;
       }
       System.out.println("test1>>>" + string参絪 + "-" + intRow + "-" + stringNowInvoiceNo + "-" + stringInvoiceEndNo);
-      
+
       // 灿
       Calendar cal = Calendar.getInstance();// Current time
       stringUserkey = getUser() + "_T" + ((cal.get(Calendar.HOUR_OF_DAY) * 10000) + (cal.get(Calendar.MINUTE) * 100) + cal.get(Calendar.SECOND));
@@ -350,8 +351,8 @@ public class FileTrans extends bproc {
       stringSQL = "spInvoM030Insert '" + stringNowInvoiceNo + "','" + stringFSChar + "','" + stringStartNo + "','" + getValue("InvoiceDate").trim() + "','" + stringInvoiceKind
           + "','" + getValue("CompanyNo").trim() + "','5600','" + getValue("ProjectNo").trim() + "','A','" + stringめ + "','" + string参絪 + "','" + string篕璶絏 + "',"
           + stringInvoiceMoney + "," + stringInvoiceTax + "," + stringInvoiceTotalMoney + ",'A','1','" + stringInvoiceYYYYMM + "'," + stringInvoiceBook + ",'" + stringEndYes
-          + "','" + getUser() + "','" + stringSystemDateTime + "','" + stringSystemDateTime + "','A','" + stringUserkey + "','" + invoiceTime + "','" + ranCode + "',"
-              + "'" + string禦 + "','祇布锣郎' ";
+          + "','" + getUser() + "','" + stringSystemDateTime + "','" + stringSystemDateTime + "','A','" + stringUserkey + "','" + invoiceTime + "','" + ranCode + "'," + "'"
+          + string禦 + "','祇布锣郎' ";
       dbInvoice.execFromPool(stringSQL);
 
       // RollBack
@@ -370,6 +371,7 @@ public class FileTrans extends bproc {
 
       intRow++;
     }
+
     if (stringStatus.equals("Error")) {
       stringSQL = "SELECT InvoiceNo  FROM InvoM0I0RollBack  WHERE UseKey = '" + stringUserkey + "'";
       String retInvoM0I0RollBack[][] = dbInvoice.queryFromPool(stringSQL);
@@ -385,11 +387,16 @@ public class FileTrans extends bproc {
     }
     if (stringStatus.equals("OK")) {
       // Dispatch.call(objectSheet1, "Activate");
+
       message("OK!");
       Dispatch.call(objectWorkbook, "SaveAs", stringFilePathOut + "(祇布腹絏).XLS");
       Excel.invoke("Quit", new Variant[] {});
-      ComThread.Release();
+      ComThread.Release();      
     }
+    
+    // 程рセΩ锣郎糶AS400
+    getButton("Trans2As400").doClick();
+    
     //
     stringSQL = " DELETE  FROM InvoM0I0RollBack WHERE UseKey = '" + stringUserkey + "'";
     dbInvoice.execFromPool(stringSQL);

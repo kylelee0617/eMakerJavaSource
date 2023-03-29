@@ -6,6 +6,8 @@ package Farglory.util;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import org.apache.commons.lang.StringUtils;
@@ -14,7 +16,7 @@ import jcx.db.talk;
 import jcx.jform.bproc;
 import jcx.util.check;
 
-public class KUtils extends bproc {
+public class KUtils2 extends bproc {
   private talk dbSale = null;
   private talk dbPW0D = null;
   private talk db400 = null;
@@ -22,7 +24,7 @@ public class KUtils extends bproc {
   private talk dbEMail = null;
   private talk dbDoc = null;
   private TalkBean tBean = null;
-  private static SimpleDateFormat logDateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+  private static SimpleDateFormat logDateFormat = new SimpleDateFormat("yyyyMMdd hh:mm:ss");
 
   public String getDefaultValue(String value) throws Throwable {
     return value;
@@ -31,8 +33,22 @@ public class KUtils extends bproc {
   /**
    * 被前端呼叫，能自行產生talk物件
    */
-  public KUtils() {
+  public KUtils2() {
     System.err.println("KUtils init 0");
+//    dbSale = getTalk("Sale");
+//    dbPW0D = getTalk("pw0d");
+//    db400 = getTalk("400CRM");
+//    dbEIP = getTalk("EIP");
+//    dbEMail = getTalk("eMail");
+//    dbDoc = getTalk("Doc");
+//    TalkBean tBean = new TalkBean();
+//    tBean.setDbSale(dbSale);
+//    tBean.setDbPw0D(dbPW0D);
+//    tBean.setDb400CRM(db400);
+//    tBean.setDbEIP(dbEIP);
+//    tBean.setDbEMail(dbEMail);
+//    tBean.setDbDOC(dbDoc);
+//    this.tBean = tBean;
   }
 
   /**
@@ -40,8 +56,14 @@ public class KUtils extends bproc {
    * 
    * @param tBean talk物件
    */
-  public KUtils(TalkBean tBean) {
+  public KUtils2(TalkBean tBean) {
     System.err.println("KUtils init 1");
+//    dbSale = tBean.getDbSale();
+//    dbPW0D = tBean.getDbPw0D();
+//    db400 = tBean.getDb400CRM();
+//    dbEIP = tBean.getDbEIP();
+//    dbEMail = tBean.getDbEMail();
+//    this.tBean = tBean;
   }
 
   public TalkBean getTBean() {
@@ -54,7 +76,7 @@ public class KUtils extends bproc {
    */
   public static void info(Object o) {
     String daytime = logDateFormat.format(new Date());
-    System.out.print(">>>info [" + daytime + "] >>>");
+    System.out.print(">>>info [" + daytime + "] :");
     System.out.println(o);
   }
 

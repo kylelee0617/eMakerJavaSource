@@ -11,7 +11,7 @@ import jcx.util.check;
 import jcx.util.convert;
 import jcx.util.datetime;
 
-public class Save extends bproc {
+public class Save_bk20220512 extends bproc {
   public String getDefaultValue(String value) throws Throwable {
     // 退戶存檔
     KSqlUtils ksUtil = new KSqlUtils();
@@ -72,7 +72,7 @@ public class Save extends bproc {
       return value;
     }
     // End
-    
+
     for (int i = 0; i < tb2_string.length; i++) {
       System.out.println("tb2_string" + tb2_string[i][0] + "");
       if (tb2_string[i][0].equals("1")) {
@@ -322,8 +322,8 @@ public class Save extends bproc {
           }
         }
       }
-
-      // 取本訂單客戶
+      
+      // 取客戶
       stringSQL = "select distinct CustomNo , CustomName from Sale05M091 a left join sale05m090 b on a.OrderNo = b.OrderNo "
           + "where ISNULL(a.StatusCd, '') != 'C' and a.OrderNo = '" + getValue("field3").trim() + "' ";
       String[][] custRet = dbSale.queryFromPool(stringSQL);
@@ -341,6 +341,7 @@ public class Save extends bproc {
               + "簽約前退訂取消交易，請依洗錢及資恐防制作業辦理。','" + empNo + "','" + RocNowDate + "','" + strNowTime + "')";
           dbSale.execFromPool(stringSQL);
           intRecordNo++;
+          
           // AS400
           stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97,SHB98, SHB99) VALUES ('RY', '" + getValue("field3").trim() + "', '"
               + RocNowDate + "', '" + strCustomNo + "', '" + strCustomName + "', '773', '006', '同一客戶不動產買賣，簽約前退訂取消購買警示。','" + empNo + "','" + RocNowDate + "','" + strNowTime + "')";
@@ -371,6 +372,7 @@ public class Save extends bproc {
               + "','" + strCustomName + "','" + getValue("field2").trim() + "','RY','773','023'," + "'" + amlDesc + "','" + empNo + "','" + RocNowDate + "','" + strNowTime + "')";
           dbSale.execFromPool(stringSQL);
           intRecordNo++;
+          
           // AS400
           stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97,SHB98, SHB99) VALUES ('RY', '" + getValue("field3").trim() + "', '"
               + RocNowDate + "', '" + strCustomNo + "', '" + strCustomName + "', '773', '023', '" + amlDesc + "','" + empNo + "','" + RocNowDate + "','" + strNowTime + "')";

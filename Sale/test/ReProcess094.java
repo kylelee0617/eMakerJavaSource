@@ -56,10 +56,12 @@ public class ReProcess094 extends bproc {
     String testText = "";
     if (isTest) testText = "top 100";
 
-    String sql91 = "select " + testText + " * from sale05m094 where trxdate BETWEEN '" + 쪁쨓Date + "' AND '" + 쫤켹Date + "' "
-                 + "and OrderNo not in (select OrderNo from sale05m094 "
-                 + "where trxdate BETWEEN '" + 쪁쨓Date + "' AND '" + 쫤켹Date + "' "
-                 + "and BItemCd='03' and MItemCd='03' and SItemCd='01' and DItemCd in ('01','03','04','07','08','09','10','11') ) " + "order by trxdate desc";
+    String sql91 = "select " + testText + " * from sale05m094 "
+        + "where trxdate BETWEEN '" + 쪁쨓Date + "' AND '" + 쫤켹Date + "' " 
+        + "and OrderNo not in (select OrderNo from sale05m094 "
+        + "where trxdate BETWEEN '" + 쪁쨓Date + "' AND '" + 쫤켹Date + "' "
+        + "and BItemCd='03' and MItemCd='03' and SItemCd='01' and DItemCd in ('01','03','04','07','08','09','10','11') ) " 
+        + "order by trxdate desc";
     String[][] ret = dbSale.queryFromPool(sql91);
 
     String stringToday = datetime.getToday("YYYY/mm/dd"); // 2015-05-13 B3018

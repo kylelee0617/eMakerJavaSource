@@ -99,7 +99,7 @@ public class LyodsTools extends bvalidate {
     String custName = cBean.getCustomName();
 
     if (isTest) {
-      System.out.println("LydosTools check custom>>>" + custNo + "," + custName);
+      System.out.println("LydosTools.checkRisk: custom>>>" + custNo + "," + custName);
     }
 
     // 210114 Kyle : ¦æ·~§O

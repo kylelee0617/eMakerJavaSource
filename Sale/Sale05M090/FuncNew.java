@@ -598,7 +598,7 @@ public class FuncNew extends bTransaction {
       }
 
       String cStatus = getValueAt(custTable, idx1, "StatusCd").toString().trim();
-      if (kUtil.isCusCompany(cNo) && !"C".equals(cStatus)) {
+      if (check.isCoId(cNo) && !"C".equals(cStatus)) {
         // System.out.println(">>>ªk¤H!!<<<") ;
         boolean chkHas = false;
         for (int idx2 = 0; idx2 < bCustoms.getRowCount(); idx2++) {

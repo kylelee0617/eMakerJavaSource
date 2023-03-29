@@ -9,8 +9,8 @@ import jcx.html.*;
 import jcx.db.*;
 
 /**
- * åŸæª” : PT1387941781533
- * 2020/12/07 Kyle : addé–‹ç«‹æŠ˜è®“å¯«å…¥AS400åŠŸèƒ½
+ * ­ìÀÉ : PT1387941781533
+ * 2020/12/07 Kyle : add¶}¥ß§éÅı¼g¤JAS400¥\¯à
  * 
  * @author B04391
  *
@@ -21,33 +21,32 @@ public class DisCount_New extends bTransaction{
   KUtils kUtil = new KUtils();
   
   public boolean action(String value)throws Throwable{
-    // å›å‚³å€¼ç‚º true è¡¨ç¤ºåŸ·è¡Œæ¥ä¸‹ä¾†çš„è³‡æ–™åº«ç•°å‹•æˆ–æŸ¥è©¢
-    // å›å‚³å€¼ç‚º false è¡¨ç¤ºæ¥ä¸‹ä¾†ä¸åŸ·è¡Œä»»ä½•æŒ‡ä»¤
-    // å‚³å…¥å€¼ value ç‚º "æ–°å¢","æŸ¥è©¢","ä¿®æ”¹","åˆªé™¤","åˆ—å°","PRINT" (åˆ—å°é è¦½çš„åˆ—å°æŒ‰éˆ•),"PRINTALL" (åˆ—å°é è¦½çš„å…¨éƒ¨åˆ—å°æŒ‰éˆ•) å…¶ä¸­ä¹‹ä¸€
+    // ¦^¶Ç­È¬° true ªí¥Ü°õ¦æ±µ¤U¨Óªº¸ê®Æ®w²§°Ê©Î¬d¸ß
+    // ¦^¶Ç­È¬° false ªí¥Ü±µ¤U¨Ó¤£°õ¦æ¥ô¦ó«ü¥O
+    // ¶Ç¤J­È value ¬° "·s¼W","¬d¸ß","­×§ï","§R°£","¦C¦L","PRINT" (¦C¦L¹wÄıªº¦C¦L«ö¶s),"PRINTALL" (¦C¦L¹wÄıªº¥ş³¡¦C¦L«ö¶s) ¨ä¤¤¤§¤@
     message("");
     String stringDiscountDate = getValue("DiscountDate");
     if(!check.isACDay(stringDiscountDate.replace("/",""))) {
-        message("æŠ˜è®“å–®æ—¥æœŸéŒ¯èª¤(YYYY/MM/DD)");
+        message("§éÅı³æ¤é´Á¿ù»~(YYYY/MM/DD)");
         return false;
     }
     talk dbInvoice = getTalk("Invoice");
     String stringSQL = "";
     String stringUserkey = "";
     
-    //æ˜ç´°
+    //©ú²Ó
     String [][] A_table = getTableData("table1");
     if (A_table.length ==0){
-       message("æ˜ç´°å¿…é ˆè‡³å°‘æœ‰ä¸€ç­†");
+       message("©ú²Ó¥²¶·¦Ü¤Ö¦³¤@µ§");
        return false;
     }
-    
-    //æŠ˜è®“æ—¥æœŸä¸å¯å°æ–¼ç™¼ç¥¨æ—¥æœŸ
+    //§éÅı¤é´Á¤£¥i¤p©óµo²¼¤é´Á
     for(int ii=0 ; ii<A_table.length ; ii++) {
       String[] aTable = A_table[ii];
       String thisInvoDate = aTable[3].trim();
       long subDays = kUtil.subACDaysRDay(stringDiscountDate, thisInvoDate);
       if(subDays < 0) {
-        message("æŠ˜è®“æ—¥æœŸä¸å¯å°æ–¼ç¬¬" + aTable[1].trim() + "ç­†ç™¼ç¥¨æ—¥æœŸ");
+        message("§éÅı¤é´Á¤£¥i¤p©ó²Ä" + aTable[1].trim() + "µ§µo²¼¤é´Á");
         return false;
       }
     }
@@ -60,11 +59,11 @@ public class DisCount_New extends bTransaction{
     String stringCustomNo = "";
     String stringMessage = "";
     int intCustomNo = 0;
-    for(int i=0;i<A_table.length;i++){  //å¯«å‰¯æª”
+    for(int i=0;i<A_table.length;i++){  //¼g°ÆÀÉ
        if(!A_table[i][8].equals("0")){
            if (!stringCustomNo.equals(A_table[i][18])){
              stringCustomNo = A_table[i][18];
-           stringMessage += stringCustomNo+ "ã€";
+           stringMessage += stringCustomNo+ "¡B";
              intCustomNo ++;     
          }
         stringSQL =  "INSERT INTO InvoM041TempBody " +
@@ -110,19 +109,19 @@ public class DisCount_New extends bTransaction{
     }
     if(intCustomNo >1){ 
       stringMessage = stringMessage.substring(0,stringMessage.length()-1);
-      message("åŒä¸€å¼µæŠ˜è®“ä¸å¯æœ‰å¤šç­†å®¢æˆ¶çš„ç™¼ç¥¨!ï¼Œè«‹é–‹ä¸åŒçš„æŠ˜è®“å–®ï¼›" + stringMessage);     
+      message("¦P¤@±i§éÅı¤£¥i¦³¦hµ§«È¤áªºµo²¼!¡A½Ğ¶}¤£¦Pªº§éÅı³æ¡F" + stringMessage);     
         return false; 
     } 
     /*
     if (stringDiscountDate.equals("9999/01/01")){
     } 
     */
-    // è¨ˆç®—ç”¢ç”Ÿå¹¾ç­†æŠ˜è®“å–®(é‡åˆ°æ¯{n=N_RecordNo%}ç­†ä½œå¾ªç’°æ™‚ä½¿ç”¨)
+    // ­pºâ²£¥Í´Xµ§§éÅı³æ(¹J¨ì¨C{n=N_RecordNo%}µ§§@´`Àô®É¨Ï¥Î)
     int intDiscountNoCount = intBodyCount  / 8;
     intDiscountNoCount ++;
     if (intBodyCount % 8 == 0) intDiscountNoCount = intDiscountNoCount -1;
     if(intDiscountNoCount == 0){
-      message("ç™¼ç¥¨æ˜ç´° ä¸å¯ç©ºç™½!");
+      message("µo²¼©ú²Ó ¤£¥iªÅ¥Õ!");
       return false;
     }
     getButton("button3").doClick();
@@ -159,7 +158,7 @@ public class DisCount_New extends bTransaction{
     for(int n=0;n<retInvoM040.length;n++){
       stringDiscountNo += retInvoM040[n][0] + ";";
       
-      //å¯«å…¥AS400æŠ˜è®“ä¸»æª”
+      //¼g¤JAS400§éÅı¥DÀÉ
       talk as400 = getTalk("AS400");
       String disCountNo = retInvoM040[n][0].trim();
       StringBuilder sbSQL = new StringBuilder();
@@ -167,29 +166,29 @@ public class DisCount_New extends bTransaction{
       sbSQL.append("(EB01U, EB02U, EB03U, EB04U, EB05U, EB06U, EB07U, EB08U, EB09U, EB10U, EB11U, EB12U, EB13U, EB14U, EB15U, EB16U, EB17U, EB18U, EB19U) ");
       sbSQL.append("values ");
       sbSQL.append("(");
-      sbSQL.append("'").append(disCountNo).append("', ");                 //æŠ˜è®“è™Ÿç¢¼
-      sbSQL.append("'").append(getValue("DiscountDate").trim()).append("', ");     //æŠ˜è®“æ—¥æœŸ
-      sbSQL.append("'").append(getValue("CompanyNo").trim()).append("', ");       //å…¬å¸ä»£ç¢¼
-      sbSQL.append("'").append(getValue("DepartNo").trim()).append("', ");        //éƒ¨é–€ä»£ç¢¼
-      sbSQL.append("'").append(getValue("ProjectNo").trim()).append("', ");       //æ¡ˆåˆ¥ä»£ç¢¼
-      sbSQL.append("'").append(getValue("HuBei").trim()).append("', ");           //æˆ¶åˆ¥ä»£è™Ÿ
-      sbSQL.append("'").append(getValue("CustomNo").trim()).append("', ");        //å®¢æˆ¶ä»£è™Ÿ
+      sbSQL.append("'").append(disCountNo).append("', ");                 //§éÅı¸¹½X
+      sbSQL.append("'").append(getValue("DiscountDate").trim()).append("', ");     //§éÅı¤é´Á
+      sbSQL.append("'").append(getValue("CompanyNo").trim()).append("', ");       //¤½¥q¥N½X
+      sbSQL.append("'").append(getValue("DepartNo").trim()).append("', ");        //³¡ªù¥N½X
+      sbSQL.append("'").append(getValue("ProjectNo").trim()).append("', ");       //®×§O¥N½X
+      sbSQL.append("'").append(getValue("HuBei").trim()).append("', ");           //¤á§O¥N¸¹
+      sbSQL.append("'").append(getValue("CustomNo").trim()).append("', ");        //«È¤á¥N¸¹
       sbSQL.append("'").append(getValue("DiscountWay").trim()).append("', ");      //Invoice Way
-      sbSQL.append("'").append("").append("', ");                                  //æ–°æˆ¶åˆ¥
-      sbSQL.append("").append(getValue("DiscountMoney").trim()).append(", ");      //æœªç¨…
-      sbSQL.append("").append(getValue("DiscountTax").trim()).append(", ");        //ç¨…é¡
-      sbSQL.append("").append(getValue("DiscountTotalMoney").trim()).append(", "); //å«ç¨…
-      sbSQL.append("'").append("N").append("', ");                                //å·²åˆ—å°YN
-      sbSQL.append("").append(0).append(", ");                                    //è£œå°æ¬¡æ•¸
-      sbSQL.append("'").append("N").append("', ");                                //ä½œå»¢YN
-      sbSQL.append("'").append("N").append("', ");                                //å…¥å¸³YN
-      sbSQL.append("'").append(getUser()).append("', ");                          //ä¿®æ”¹äºº
-      sbSQL.append("'").append(stringSystemDateTime).append("', ");                //æ”¶æ¬¾æ™‚é–“
+      sbSQL.append("'").append("").append("', ");                                  //·s¤á§O
+      sbSQL.append("").append(getValue("DiscountMoney").trim()).append(", ");      //¥¼µ|
+      sbSQL.append("").append(getValue("DiscountTax").trim()).append(", ");        //µ|ÃB
+      sbSQL.append("").append(getValue("DiscountTotalMoney").trim()).append(", "); //§tµ|
+      sbSQL.append("'").append("N").append("', ");                                //¤w¦C¦LYN
+      sbSQL.append("").append(0).append(", ");                                    //¸É¦L¦¸¼Æ
+      sbSQL.append("'").append("N").append("', ");                                //§@¼oYN
+      sbSQL.append("'").append("N").append("', ");                                //¤J±bYN
+      sbSQL.append("'").append(getUser()).append("', ");                          //­×§ï¤H
+      sbSQL.append("'").append(stringSystemDateTime).append("', ");                //¦¬´Ú®É¶¡
       sbSQL.append("'").append("1").append("' ");                                 //PROCESS DISCOUNT
       sbSQL.append(") ");
       as400.execFromPool(sbSQL.toString());
       
-      //å¯«å…¥AS400æŠ˜è®“æ˜ç´°
+      //¼g¤JAS400§éÅı©ú²Ó
       int GLECPFUFCount = 1;
       for(int i=0;i<A_table.length;i++){
         sbSQL = new StringBuilder();
@@ -197,16 +196,16 @@ public class DisCount_New extends bTransaction{
         sbSQL.append("(EC01U, EC02U, EC03U, EC04U, EC05U, EC06U, EC07U, EC08U, EC09U, EC10U) ");
         sbSQL.append("values ");
         sbSQL.append("(");
-        sbSQL.append("'").append(disCountNo).append("', ");                         //æŠ˜è®“è™Ÿç¢¼
-        sbSQL.append("").append(GLECPFUFCount).append(", ");                        //ç­†æ•¸
-        sbSQL.append("'").append("Y").append("', ");                                //å‹¾é¸
-        sbSQL.append("'").append( A_table[i][2].trim() ).append("', ");             //ç™¼ç¥¨è™Ÿç¢¼
-        sbSQL.append("'").append( A_table[i][4].trim() ).append("', ");            //æ‘˜è¦ä»£ç¢¼
-        sbSQL.append("").append( A_table[i][10].trim() ).append(", ");               //æœªç¨…
-        sbSQL.append("").append( A_table[i][11].trim() ).append(", ");               //ç¨…é¡
-        sbSQL.append("").append( A_table[i][6].trim() ).append(", ");               //ç¸½é‡‘é¡
-        sbSQL.append("").append( A_table[i][7].trim() ).append(", ");              //å·²æŠ˜è®“é‡‘é¡
-        sbSQL.append("").append( A_table[i][8].trim() ).append(" ");                //æ¬²æŠ˜è®“é‡‘é¡
+        sbSQL.append("'").append(disCountNo).append("', ");                         //§éÅı¸¹½X
+        sbSQL.append("").append(GLECPFUFCount).append(", ");                        //µ§¼Æ
+        sbSQL.append("'").append("Y").append("', ");                                //¤Ä¿ï
+        sbSQL.append("'").append( A_table[i][2].trim() ).append("', ");             //µo²¼¸¹½X
+        sbSQL.append("'").append( A_table[i][4].trim() ).append("', ");            //ºK­n¥N½X
+        sbSQL.append("").append( A_table[i][10].trim() ).append(", ");               //¥¼µ|
+        sbSQL.append("").append( A_table[i][11].trim() ).append(", ");               //µ|ÃB
+        sbSQL.append("").append( A_table[i][6].trim() ).append(", ");               //Á`ª÷ÃB
+        sbSQL.append("").append( A_table[i][7].trim() ).append(", ");              //¤w§éÅıª÷ÃB
+        sbSQL.append("").append( A_table[i][8].trim() ).append(" ");                //±ı§éÅıª÷ÃB
         sbSQL.append(") ");
         as400.execFromPool(sbSQL.toString());
         GLECPFUFCount++;
@@ -214,8 +213,8 @@ public class DisCount_New extends bTransaction{
       
     }
     action(9);
-    message("å·²ç”¢ç”ŸæŠ˜è®“å–® = " + stringDiscountNo);    
-    // 2013-12-25 è¤‡è£½åˆ°å‰ªè²¼ç°¿      
+    message("¤w²£¥Í§éÅı³æ = " + stringDiscountNo);    
+    // 2013-12-25 ½Æ»s¨ì°Å¶KÃ¯      
     Farglory.util.FargloryUtil  exeUtil  =  new  Farglory.util.FargloryUtil() ;
     exeUtil.ClipCopy (exeUtil.doSubstring(stringDiscountNo,  0,  stringDiscountNo.length()-1)) ;
     return false;
